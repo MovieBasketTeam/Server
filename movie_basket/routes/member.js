@@ -67,7 +67,6 @@ router.post('/', function (req, res, next) {
                         }
                         else {
                             var insertQuery = 'insert into member(member_name, member_email, member_pwd) values (?, ?, ?)';
-                            console.log("req body member_pwd : "[req.body.member_name, req.body.member_email]);
                             var inserts = [req.body.member_name, req.body.member_email, cipherPassword(req.body.member_pwd)];
                             connection.query(insertQuery, inserts, function (error, rows) {
                                 if (error) {
