@@ -21,7 +21,7 @@ function decipherPassword (password) {
 
 // 회원가입 중복확인 후 가입 처리를 해주는 함수
 function signUp (signUpInfo, callback) {
-    var sql_repetition = 'select * from member where member_name = ? or member_email = ?';
+    var sql_repetition = 'select * from member where member_email = ?';
     var sql_insert_member = 'insert into member(member_name, member_email, member_pwd) values (?, ?, ?)';
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
@@ -40,7 +40,7 @@ function signUp (signUpInfo, callback) {
         });
         // 중복 확인 함수
         function checkRepetition (done) {
-            dbConn.query(sql_repetition, [signUpInfo.member_name, signUpInfo.member_email], function (error, rows) {
+            dbConn.query(sql_repetition, [signUpInfo.member_email], function (error, rows) {
                 if (error) {
                     return done(error);
                 }
