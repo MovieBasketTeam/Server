@@ -23,7 +23,7 @@ router.post('/like', function(req,res,next){
 // 영화 추천 /movie/recommend 경로로 영화추천 post방식 요청 처리
 router.post('/movie/recommend', function(req,res,next){
   var movieRecommendInfo = {
-      movie_id : req.body.movie_id;
+      movie_id : req.body.movie_id
   }
   Basket.movieRecommend(movieRecommendInfo, function(error, results){
     if(error){
@@ -39,7 +39,7 @@ router.post('/movie/recommend', function(req,res,next){
 // 영화 담기 /movie/cart경로로 영화담기 post방식 요청 처리
 router.post('/movie/cart', function(req,res,next){
   var movieCartInfo = {
-      movie_id : req.body.movie_id;
+      movie_id : req.body.movie_id
   }
   Basket.movieCart(movieCartInfo, function(error, results){
     if(error){
@@ -56,8 +56,8 @@ router.post('/movie/cart', function(req,res,next){
 // 영화 추가 /movie/add 경로로 영화담기 post방식 요청 처리
 router.post('/movie/add', function(req,res,next){
   var movieAddInfo = {
-      basket_id : req.body.basket_id;
-      movie_url : req.body.movie_url;
+      basket_id : req.body.basket_id,
+      movie_url : req.body.movie_url
   }
   Basket.movieAdd(movieAddInfo, function(error, results){
     if(error){
