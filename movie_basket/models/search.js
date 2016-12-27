@@ -1,6 +1,6 @@
 var dbPool = require('./common').dbPool;
 var async = require('async');
-var crypto = require('crypto');
+//var crypto = require('crypto');
 
 // 암호화 함수 password 를 넣으면 암호화된 password 값을 리턴.
 function cipherPassword (password) {
@@ -19,7 +19,7 @@ function decipherPassword (password) {
 }
 
 // 로그인 처리 함수
-function logIn (logInInfo, callback) {
+function SearchMain (logInInfo, callback) {
     var sql_login_check = 'select * from member where member_email = ? and member_pwd = ? and available = 1';
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {

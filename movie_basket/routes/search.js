@@ -1,15 +1,11 @@
 var express = require('express');
-var Member = require('../models/member');
+var Search = require('../models/search');
 var router = express.Router();
 
 // 로그인 '/' post 방식 요청 처리
-router.post('/', function (req, res, next) {
-    var logInInfo = {
-        member_email : req.body.member_email,
-        member_pwd : req.body.member_pwd
-    };
+router.get('/', function (req, res, next) {
 
-    Member.logIn(logInInfo, function (error, results) {
+    Search.logIn(logInInfo, function (error, results) {
         if (error) {
             console.log("Connection error " + error);
             res.send(error);
