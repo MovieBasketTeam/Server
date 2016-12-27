@@ -18,14 +18,43 @@ function decipherPassword (password) {
     return decipherd;
 }
 
+// 로그인 처리 함수
+function logIn (logInInfo, callback) {
+    var sql_login_check = 'select * from member where member_email = ? and member_pwd = ? and available = 1';
+    dbPool.getConnection ( function (error, dbConn) {
+        if (error) {
+            return callback(error);
+        }
 
+        var logInMessage = {};
+        dbConn.query(sql_login_check, [logInInfo.member_email, cipherPassword(logInInfo.member_pwd)], function (error, rows) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+            // 로그인 성공
+            if (rows.length >= 1) {
+                dbConn.release();
+                logInMessage = { message : "login success"};
+                return callback(null, logInMessage);
+            }
+            // 아이디 혹은 비밀번호가 잘못됨 혹은 탈퇴된 회원
+            else {
+                dbConn.release();
+                logInMessage = { message : "check information"};
+                return callback(null, logInMessage);
+            }
+        });
+    });
+}
 // 회원가입 중복확인 후 가입 처리를 해주는 함수
+// async 사용
 function signUp (signUpInfo, callback) {
-    var sql_repetition = 'select * from member where member_name = ? or member_email = ?';
+    var sql_repetition = 'select * from member where member_email = ? or member_name = ?';
     var sql_insert_member = 'insert into member(member_name, member_email, member_pwd) values (?, ?, ?)';
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
-            return callback(err);
+            return callback(error);
         }
 
         var signUpMessage = {};
@@ -36,16 +65,16 @@ function signUp (signUpInfo, callback) {
                 return callback(error);
             }
             dbConn.release();
-            callback(null, signUpMessage);
+            return callback(null, signUpMessage);
         });
         // 중복 확인 함수
         function checkRepetition (done) {
-            dbConn.query(sql_repetition, [signUpInfo.member_name, signUpInfo.member_email], function (error, rows) {
+            dbConn.query(sql_repetition, [signUpInfo.member_email, signUpInfo.member_name], function (error, rows) {
                 if (error) {
                     return done(error);
                 }
                 else if (rows.length > 0) {
-                    signUpMessage = {result : "repetition"};
+                    signUpMessage = {message : "repetition" };
                     isRepetition = true;
                 }
                 return done(null);
@@ -60,11 +89,12 @@ function signUp (signUpInfo, callback) {
                 if (error) {
                     return done(error);
                 }
-                signUpMessage = {result : "create"};
+                signUpMessage = { message : "create" };
                 return done(null);
             });
         }
     });
 }
 
+module.exports.logIn = logIn;
 module.exports.signUp = signUp;

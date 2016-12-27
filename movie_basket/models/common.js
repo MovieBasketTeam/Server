@@ -1,6 +1,8 @@
 var mysql = require('mysql');
 var db_config = require('../config/db_config.json');
 
+
+// db pool 생성
 var dbPool = mysql.createPool({
     host : db_config.host,
     port : db_config.port,
