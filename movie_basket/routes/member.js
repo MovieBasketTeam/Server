@@ -7,7 +7,7 @@ router.post('/', function (req, res, next) {
     var logInInfo = {
         member_email : req.body.member_email,
         member_pwd : req.body.member_pwd
-    }
+    };
 
     Member.logIn(logInInfo, function (error, results) {
         if (error) {
