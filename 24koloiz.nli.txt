@@ -1,0 +1,15 @@
+﻿Revert "Merge remote-tracking branch 'refs/remotes/MovieBasketTeam/master'"
+
+This reverts commit 8cfa49d4b4b1c7ff265a330cbee72526d0ba82ad, reversing
+changes made to 2d38804ac65aab8f513d3a22a5253247e7b381a4.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is ahead of 'origin/master' by 4 commits.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	modified:   movie_basket/app.js
+#
+
