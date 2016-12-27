@@ -2,7 +2,7 @@ var express = require('express');
 var Member = require('../models/member');
 var router = express.Router();
 
-
+// 로그인 '/' post 방식 요청 처리
 router.post('/', function (req, res, next) {
     var logInInfo = {
         member_email : req.body.member_email,
@@ -20,7 +20,7 @@ router.post('/', function (req, res, next) {
     });
 });
 
-// 회원가입으로 '/' 경로로 post 방식 요청 처리
+// 회원가입으로 '/signUp' 경로로 post 방식 요청 처리
 router.post('/signUp', function (req, res, next) {
     var signUpInfo = {
         member_name : req.body.member_name,

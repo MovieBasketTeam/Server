@@ -32,7 +32,6 @@ function logIn (logInInfo, callback) {
                 dbConn.release();
                 return callback(error);
             }
-            console.log("email and password" + logInInfo.member_email +" " +cipherPassword(logInInfo.member_pwd));
             // 로그인 성공
             if (rows.length >= 1) {
                 dbConn.release();
