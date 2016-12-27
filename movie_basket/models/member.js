@@ -32,7 +32,6 @@ function logIn (logInInfo, callback) {
                 dbConn.release();
                 return callback(error);
             }
-            console.log("email and password" + logInInfo.member_email +" " +cipherPassword(logInInfo.member_pwd));
             // 로그인 성공
             if (rows.length >= 1) {
                 dbConn.release();
@@ -49,6 +48,7 @@ function logIn (logInInfo, callback) {
     });
 }
 // 회원가입 중복확인 후 가입 처리를 해주는 함수
+// async 사용
 function signUp (signUpInfo, callback) {
     var sql_repetition = 'select * from member where member_email = ? or member_name = ?';
     var sql_insert_member = 'insert into member(member_name, member_email, member_pwd) values (?, ?, ?)';
