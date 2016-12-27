@@ -9,7 +9,7 @@ function category () {
 }
 
 //ㅋ테고리 선택 후 밧켓 조회 함수
-function detail_category (c_id) {
+function detailCategory (c_id) {
   var sql_detail_category = '';
   dbPool.getConnection(function(error,dbConn){
     if(error){
@@ -18,5 +18,5 @@ function detail_category (c_id) {
     dbConn.query(sql_detail_category, []);
   });
 }
-module.exports.logIn = logIn;
-module.exports.signUp = signUp;
+module.exports.category = category;
+module.exports.detailCategory = detailCategory;

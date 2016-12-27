@@ -39,7 +39,7 @@ router.get('/search/:c_id', function (req, res, next) {
   };
 
 
-   Search.detail_category(req.params.c_id, function (error, results) {
+   Search. detailCategory(req.params.c_id, function (error, results) {
           if (error) {
               console.log("Connection error " + error);
               res.send(error);
