@@ -25,15 +25,19 @@ router.get('/', function (req, res, next) {
             res.send(error);
         }
         else {
-            res.status(201).send({result : result});
+            res.status(201).send({result : results});
         }
     });
 });
 
 
 //성공시 추천순으로 바스켓 목록 보냄
-router.get('/search/:c_id', function (req, res, next) {
-  var results = {
+router.get('/:c_id', function (req, res, next) {
+  var searchInfo ={
+    c_id : req.params.c_id,
+    u_id : req.session.member_id
+  }
+  /*var results = {
     baskets : [
       {
         basket_id : 1,
@@ -42,10 +46,10 @@ router.get('/search/:c_id', function (req, res, next) {
         basket_like : 123
       }
     ]
-  };
+  };*/
 
 
-   Search. detailCategory(req.params.c_id, function (error, results) {
+   Search.detailCategory(searchInfo, function (error, results) {
           if (error) {
               console.log("Connection error " + error);
               res.send(error);
