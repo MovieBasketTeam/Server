@@ -4,19 +4,19 @@ var async = require('async');
 
 
 //category 검색 메인 화면
-function category () {
-  var sql_category_todayRecommend = 'SELECT * FROM category AS c WHERE c.today_recommand = 1';
+function category (search_Category_info, callback) {
+  var sql_category_todayRecommend = 'SELECT c_id, small_category FROM category WHERE today_recommand=1';
   dbPool.getConnection(function(error,dbConn){
     if(error){
       return callback(error);
     }
     var result = {};
-    dbConn.query(sql_category_todayRecommend, function(err,rows){
+    dbConn.query(sql_category_todayRecommend, search_Category_info,function(err,rows){
       if(error){
         dbConn.release();
         return done(error);
       }
-      else if(rows.length > 0){
+      else{
         dbConn.release();
         result = { today_recommand : rows};
         return callback(null, result);
@@ -26,8 +26,8 @@ function category () {
 }
 
 //카테고리 선택 후 밧켓 조회 함수
-function detailCategory (c_id) {
-  var sql_detail_category = '';
+// function detailCategory (c_id) {
+//   var sql_detail_category = '';
 
 //ㅋ테고리 선택 후 밧켓 조회 함수
 function detailCategory (searchInfo, callback) {

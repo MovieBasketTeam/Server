@@ -4,22 +4,26 @@ var router = express.Router();
 
 
 router.get('/', function (req, res, next) {
-    var result =
-    {
-        today_recommand :
-        [
-            {
-                c_id : 1,
-                small_category : '우울할 때'
-            },
-            {
-                c_id : 2,
-                small_category : '우울할'
-            }
-        ]
-    };
+  var search_Category_info ={
+    c_id : req.params.c_id,
+    small_category  : req.session.small_category
+  }
+    // var result =
+    // {
+    //     today_recommand :
+    //     [
+    //         {
+    //             c_id : 1,
+    //             small_category : '우울할 때'
+    //         },
+    //         {
+    //             c_id : 2,
+    //             small_category : '우울할'
+    //         }
+    //     ]
+    // };
 
-    Search.category( function (error, results) {
+    Search.category(search_Category_info, function (error, results) {
         if (error) {
             console.log("Connection error " + error);
             res.send(error);
