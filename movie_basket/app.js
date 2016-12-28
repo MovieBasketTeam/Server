@@ -10,7 +10,7 @@ var session = require('express-session');
 var passport = require('passport');
 
 // 레디스 서버의 세션 구성을 위한 정보
-var redisClient = require('./models/redisClient.js');
+//var redisClient = require('./models/redisClient.js');
 var redisStore = require('connect-redis')(session);
 
 var routes = require('./routes/index');
