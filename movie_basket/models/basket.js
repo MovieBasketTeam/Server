@@ -96,15 +96,46 @@ function likeBasket(basketLikeInfo, callback) {
         }
     });
 }
+
+// basket 내부의 영화 목록을 보여주는 함수
+// basket_id 에 따라 부르고 좋아요 여부를 확인하기 위해 member_id에 따라 left join을 한다.
+function showBasketDetail (basketDetailInfo, callback) {
+    var sql_basket_detail =
+        'SELECT movie_id, movie_title, movie_image, movie_pub_date, movie_director, movie_user_rating, movie_link, movie_adder, movie_like,'+
+        '(CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked '+
+        'FROM movie AS m '+
+        'LEFT JOIN (SELECT m_id, u_id FROM movie_heart WHERE u_id = ?) AS mh ON(m.movie_id = mh.m_id) '+
+        'WHERE basket_id = ? '
+        'ORDER BY m.movie_like DESC';
+
+    dbPool.getConnection ( function (error, dbConn) {
+        if (error) {
+            return callback(error);
+        }
+        var basketDetailMessage = {};
+        dbConn.query(sql_basket_detail, [basketDetailInfo.member_id, basketDetailInfo.basket_id], function (error, rows) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+            else {
+                dbConn.release();
+                basketDetailMessage = { movies : rows}
+                return callback(null, basketDetailMessage);
+            }
+        });
+    });
+}
 // 영화 추천 처리 함수
-function movieRecommend(movieRecommendInfo, callback){
-  var sql_movie_recommend = '';
-  dbPool.getConnection(function(error,dbConn){
-    if(error){
-      return callback(error);
+function movieRecommend (movieRecommendInfo, callback) {
+    var sql_movie_recommend = '';
+    dbPool.getConnection (function (error,dbConn) {
+    if (error) {
+        return callback(error);
     }
+
     dbConn.query();
-  });
+});
 }
 
 // 영화 담기 처리 함수
@@ -130,6 +161,7 @@ function movieAdd(movieAddInfo, callback){
 
 module.exports.showBaksets = showBaksets;
 module.exports.likeBasket = likeBasket;
+module.exports.showBasketDetail = showBasketDetail;
 module.exports.movieRecommend = movieRecommend;
 module.exports.movieCart = movieCart;
 module.exports.movieAdd = movieAdd;
