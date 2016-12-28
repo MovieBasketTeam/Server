@@ -25,13 +25,9 @@ router.post('/', function (req, res, next) {
                 var sess = req.session;
                 sess.member_id = results.member_info.member_id;
                 sess.member_name = results.member_info.member_name;
-                console.log("session made " +req.session);
             }
-    //        res.status(201).send({result : results.message});
         }
-        console.log("results message : "+results.message);
         res.status(201).send({result : results.message});
-        console.log("results message : "+results.message);
     });
 });
 
