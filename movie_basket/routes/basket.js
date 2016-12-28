@@ -2,14 +2,31 @@ var express = require('express');
 var Basket = require('../models/basket');
 var router = express.Router();
 
+// basket 목록을 보여주는 get 요청 처리
+// query params에 sort 정보를 전달해준다.
+router.get('/:sort', function (req, res, next) {
+    var basketInfo = {
+        sort : req.params.sort,
+        u_id : req.session.member_id
+    }
+
+    Basket.showBaksets(basketInfo, function (error, results) {
+        if (error) {
+            console.log("Connection error " + error);
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
+});
 
 // 바스켓 /like 경로로 바스켓 담기 post 방식 요청 처리, 바스켓 추천과 담기
-router.post('/like', function(req,res,next){
+router.post('/like', function(req,res,next) {
   var basketLikeInfo = {
       basket_id : req.body.basket_id
   }
   Basket.like(basketLikeInfo, function(error, results){
-    if(error){
+    if (error) {
       console.log("Connection error " + error);
       res.send(error);
     }
