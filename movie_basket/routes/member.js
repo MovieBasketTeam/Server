@@ -27,7 +27,8 @@ router.post('/', function (req, res, next) {
                 sess.member_name = results.member_info.member_name;
             }
         }
-        res.status(201).send({result : results.message});
+        var result_value = {message : results.message};
+        res.status(201).send({result : result_value});
     });
 });
 
