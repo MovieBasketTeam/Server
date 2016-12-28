@@ -128,35 +128,101 @@ function showBasketDetail (basketDetailInfo, callback) {
 }
 // 영화 추천 처리 함수
 function movieRecommend (movieRecommendInfo, callback) {
-    var sql_movie_recommend = '';
-    dbPool.getConnection (function (error,dbConn) {
-    if (error) {
-        return callback(error);
-    }
+    var sql_update_my_movie_recommend = [
+        'insert into movie_heart(m_id, u_id) values (?, ?)',
+        'delete from movie_heart where m_id = ? and u_id =?'
+    ];
 
-    dbConn.query();
-});
+    var sql_update_movie_recommend = [
+        'update movie set movie_like = movie_like + 1 where movie_id = ?',
+        'update movie set movie_like = movie_like - 1 where movie_id = ?'
+    ];
+
+    dbPool.getConnection (function (error,dbConn) {
+        if (error) {
+            return callback(error);
+        }
+        var movieRecommendMessage = {};
+        async.series([updateMyMovieRecommend, updateMovieRecommend], function (error, results) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+            dbConn.release();
+            movieRecommendMessage = {message : "movie recommend updated"};
+            return callback(null, movieRecommendMessage);
+        });
+
+        function updateMyMovieRecommend (done) {
+            dbConn.query(
+                sql_update_my_movie_recommend[movieRecommendInfo.is_liked],
+                [movieRecommendInfo.movie_id, movieRecommendInfo.member_id],
+                function (error, rows) {
+                    if (error) {
+                        return done(error);
+                    }
+                    else {
+                        return done(null);
+                    }
+                }
+            );
+        }
+
+        function updateMovieRecommend (done) {
+            dbConn.query(
+                sql_update_movie_recommend[movieRecommendInfo.is_liked],
+                [movieRecommendInfo.movie_id],
+                function (error, rows) {
+                    if (error) {
+                        return done(error);
+                    }
+                    else {
+                        return done(null);
+                    }
+                }
+            );
+        }
+    });
 }
 
 // 영화 담기 처리 함수
 function movieCart(movieCartInfo, callback){
-  var sql_movie_cart = '';
-  dbPool.getConnection(function(error,dbConn){
-    if(error){
-      return callback(error);
-    }
-    dbConn.query();
-  });
+    var sql_update_my_movie_cart = [
+        'insert into movie_clip(m_id, u_id) values (?, ?)',
+        'delete from movie_clip where m_id = ? and u_id = ?'
+    ];
+
+    dbPool.getConnection(function (error,dbConn) {
+        if(error){
+            dbConn.release();
+            return callback(error);
+        }
+        var movieCartMessage = {};
+        dbConn.query(
+            sql_update_my_movie_cart[movieCartInfo.is_carted],
+            [movieCartInfo.movie_id, movieCartInfo.member_id],
+            function (error, rows) {
+                if (error) {
+                    dbConn.release();
+                    return callback(error);
+                }
+                else {
+                    movieCartMessage = {message : "movie cart success"};
+                    return callback(null, movieCartMessage);
+                }
+            }
+        );
+    });
 }
 
 function movieAdd(movieAddInfo, callback){
-  var sql_movie_add = '';
-  dbPool.getConnection(function(error,dbConn){
-    if(error){
-      return callback(error);
-    }
+    var sql_movie_add = '';
+    dbPool.getConnection(function(error,dbConn){
+        if(error){
+            return callback(error);
+        }
     dbConn.query();
-  });
+    });
 }
 
 module.exports.showBaksets = showBaksets;
