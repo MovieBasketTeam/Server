@@ -1,4 +1,4 @@
-var redis = require('redis');
+/*var redis = require('redis');
 
 var redisClient = redis.createClient();
 
@@ -7,3 +7,4 @@ redisClient.on('error', function (error) {
 });
 
 module.exports = redisClient;
+*/
