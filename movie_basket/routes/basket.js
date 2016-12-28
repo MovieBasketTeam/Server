@@ -21,22 +21,42 @@ router.get('/:sort', function (req, res, next) {
 });
 
 // 바스켓 /like 경로로 바스켓 담기 post 방식 요청 처리, 바스켓 추천과 담기
-router.post('/like', function(req,res,next) {
-      var basketLikeInfo = {
-          member_id : req.session.member_id,
-          basket_id : req.body.basket_id,
-          is_liked : req.body.is_liked
-      }
-      Basket.likeBasket(basketLikeInfo, function(error, results){
-          if (error) {
-              console.log("Connection error " + error);
-              res.send(error);
-          }
-          else {
-              res.status(201).send({result : results});
-          }
-      });
-  });
+router.post('/like', function (req, res, next) {
+    var basketLikeInfo =
+    {
+        member_id : req.session.member_id,
+        basket_id : req.body.basket_id,
+        is_liked : req.body.is_liked
+    }
+    Basket.likeBasket(basketLikeInfo, function (error, results) {
+        if (error) {
+            console.log("Connection error " + error);
+            res.send(error);
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
+});
+
+// 바스켓 내부 영화 상세 목록 조회 get 방식 요청 처리
+router.get('/detail/:basket_id', function (req, res, next) {
+    var basketDetailInfo =
+    {
+        member_id : req.session.member_id,
+        basket_id : req.params.basket_id
+    }
+
+    Basket.showBasketDetail(basketDetailInfo, function (error, results) {
+        if (error) {
+            console.log("Connection error " + error);
+            res.send(error);
+        }
+        else {
+            res.status(200).send({result : results});
+        }
+    });
+});
 
 
 // 영화 추천 /movie/recommend 경로로 영화추천 post방식 요청 처리
