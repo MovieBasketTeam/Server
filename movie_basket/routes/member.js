@@ -8,13 +8,35 @@ router.get('/', function (req, res) {
     res.send({result : 'check'});
 });
 
+router.get('/logout', function(req,res,next){
+    req.session.destroy(function(err){});
+    var results = {message : 'logout success'};
+    res.send({result : results});
+});
+
+//회원탈퇴
+router.post('/withdraw', function(req,res,next){
+    var withdrawInfo = {
+      member_id : req.session.member_id
+    };
+
+    Member.withdraw(withdrawInfo, function (error, results){
+      if (error) {
+          console.log("Connection error " + error);
+          return res.send(error);
+      }
+      else {
+          res.status(201).send({result : results});
+      }
+    });
+});
+
 // 로그인 '/' post 방식 요청 처리
 router.post('/', function (req, res, next) {
     var logInInfo = {
         member_email : req.body.member_email,
         member_pwd : req.body.member_pwd
     };
-
     Member.logIn(logInInfo, function (error, results) {
         if (error) {
             console.log("Connection error " + error);
@@ -29,6 +51,7 @@ router.post('/', function (req, res, next) {
         }
         var result_value = {message : results.message};
         res.status(201).send({result : result_value});
+
     });
 });
 
