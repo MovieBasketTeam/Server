@@ -21,14 +21,22 @@ router.post('/', function (req, res, next) {
         member_pwd : req.body.member_pwd
     };
 
-    Member.logIn(logOutInfo, function (error, results) {
-      if (error) {
-          console.log("Connection error " + error);
-          res.send(error);
-      }
-      else {
-          res.status(200).send({result : results});
-      }
+
+    Member.logIn(logInInfo, function (error, results) {
+        if (error) {
+            console.log("Connection error " + error);
+            return res.send(error);
+        }
+        else {
+            if (results.member_info) {
+                var sess = req.session;
+                sess.member_id = results.member_info.member_id;
+                sess.member_name = results.member_info.member_name;
+            }
+        }
+        var result_value = {message : results.message};
+        res.status(201).send({result : result_value});
+
     });
 });
 
