@@ -18,5 +18,6 @@ function detailCategory (c_id) {
     dbConn.query(sql_detail_category, []);
   });
 }
+
 module.exports.category = category;
 module.exports.detailCategory = detailCategory;
