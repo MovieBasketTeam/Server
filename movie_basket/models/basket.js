@@ -32,7 +32,7 @@ function showBaksets (basketInfo, callback) {
             }
             else {
                 dbConn.release();
-                showMessage = { baskets : rows}
+                showMessage = { baskets : rows};
                 return callback(null, showMessage);
             }
         });
