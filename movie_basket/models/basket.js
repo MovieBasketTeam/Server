@@ -215,13 +215,88 @@ function movieCart(movieCartInfo, callback){
     });
 }
 
+// 바스켓에 영화 정보 추가, 동시에 마이 영화 추천 정보에 영화 추가
 function movieAdd(movieAddInfo, callback){
-    var sql_movie_add = '';
-    dbPool.getConnection(function(error,dbConn){
-        if(error){
+    var sql_movie_add =
+        'insert into movie '+
+        '(movie_title, movie_image, movie_director, movie_pub_date, movie_user_rating, movie_link, movie_adder, movie_add_date, movie_like, basket_id) '+
+        'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    var sql_my_movie_id = 'select movie_id from movie where movie_title = ? and basket_id = ?';
+    var sql_my_movie_add = 'insert into movie_heart (m_id, u_id) values (?, ?)';
+    dbPool.getConnection (function (error,dbConn) {
+        if (error) {
             return callback(error);
         }
-    dbConn.query();
+        var movieAddMessage = {};
+        var movieId;
+        async.series([updateMovieAdd, getMovieId, updateMyMovieLike], function (error, results) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+            dbConn.release();
+            movieAddMessage = {message : "movie add success"};
+            return callback(null, movieAddMessage);
+        });
+        // 영화 테이블에 영화 추가
+        function updateMovieAdd (done) {
+            dbConn.query(
+                sql_movie_add,
+                [
+                    movieAddInfo.movie_title,
+                    movieAddInfo.movie_image,
+                    movieAddInfo.movie_director,
+                    movieAddInfo.movie_pub_date,
+                    movieAddInfo.movie_user_rating,
+                    movieAddInfo.movie_link,
+                    movieAddInfo.movie_adder,
+                    new Date(),
+                    1,
+                    movieAddInfo.basket_id
+                ],
+                function (error, rows) {
+                    if (error) {
+                        return done(error);
+                    }
+                    else {
+                        return done(null);
+                    }
+                }
+            );
+        }
+
+        // 영화 id를 위하여 검색
+        function getMovieId (done) {
+            dbConn.query(
+                sql_my_movie_id,
+                [movieAddInfo.movie_title, movieAddInfo.basket_id],
+                function (error, rows) {
+                    if (error) {
+                        return done(error);
+                    }
+                    else {
+                        movieId = rows[0].movie_id;
+                        return done(null);
+                    }
+                }
+            )
+        }
+
+        // 내 영화 정보에 영화 추가
+        function updateMyMovieLike (done) {
+            dbConn.query(
+                sql_my_movie_add,
+                [movieId, movieAddInfo.member_id],
+                function (error, rows) {
+                    if (error) {
+                        return done(error);
+                    }
+                    else {
+                        return done(null);
+                    }
+                }
+            )
+        }
     });
 }
 

@@ -99,19 +99,26 @@ router.post('/movie/cart', function(req,res,next){
 
 // 영화 추가 /movie/add 경로로 영화담기 post방식 요청 처리
 router.post('/movie/add', function(req,res,next){
-  var movieAddInfo = {
-      basket_id : req.body.basket_id,
-      movie_url : req.body.movie_url
-  }
-  Basket.movieAdd(movieAddInfo, function(error, results){
-    if(error){
-      console.log("Connection error " + error);
-      res.send(error);
+    var movieAddInfo = {
+        basket_id : req.body.basket_id,
+        movie_title : req.body.movie_title,
+        movie_image : req.body.movie_image,
+        movie_pub_date : req.body.movie_pub_date,
+        movie_director : req.body.movie_director,
+        movie_user_rating : req.body.movie_user_rating,
+        movie_link : req.body.movie_link,
+        movie_adder : req.session.member_name,
+        member_id : req.session.member_id
     }
-    else {
-      res.status(201).send({result : results});
-    }
-  });
+    Basket.movieAdd(movieAddInfo, function(error, results){
+        if(error){
+            console.log("Connection error " + error);
+            res.send(error);
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
 });
 
 module.exports = router;
