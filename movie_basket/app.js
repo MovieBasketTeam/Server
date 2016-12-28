@@ -5,9 +5,18 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// 세션과 인증
+var session = require('express-session');
+var passport = require('passport');
+
+// 레디스 서버의 세션 구성을 위한 정보
+//var redisClient = require('./models/redisClient.js');
+var redisStore = require('connect-redis')(session);
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var member = require('./routes/member');
+var search = require('./routes/search');
 var basket = require('./routes/basket');
 
 var app = express();
@@ -19,13 +28,38 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(session({
+    secret : 'test',
+    /*
+    store : new redisStore({
+        host: "127.0.0.1",
+        port: 6379,
+        client : redisClient
+    }),*/
+    resave: false,
+    saveUninitialized : false,
+    cookie : {
+        path : '/',
+        httpOnly : true,
+        secure : false,
+        maxAge : 1000 * 60 * 60 * 24 * 30
+    }
+}));
+/*
+app.use(passport.initialize());
+app.use(passport.session());*/
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/', routes);
 app.use('/users', users);
 app.use('/member', member);
+app.use('/search', search);
+app.use('/basket', basket);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
