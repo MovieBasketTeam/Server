@@ -18,6 +18,7 @@ var users = require('./routes/users');
 var member = require('./routes/member');
 var search = require('./routes/search');
 var basket = require('./routes/basket');
+var mypage = require('./routes/mypage');
 
 var app = express();
 
@@ -57,8 +58,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/member', member);
+app.use('/mypage', mypage);
 app.use('/search', search);
 app.use('/basket', basket);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
