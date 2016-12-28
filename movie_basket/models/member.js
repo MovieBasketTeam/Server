@@ -35,7 +35,10 @@ function logIn (logInInfo, callback) {
             // 로그인 성공
             if (rows.length >= 1) {
                 dbConn.release();
-                logInMessage = { message : "login success"};
+                logInMessage =  {
+                                    message : "login success",
+                                    member_info : rows[0]
+                                };
                 return callback(null, logInMessage);
             }
             // 아이디 혹은 비밀번호가 잘못됨 혹은 탈퇴된 회원
