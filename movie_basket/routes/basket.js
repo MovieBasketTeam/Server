@@ -4,9 +4,9 @@ var router = express.Router();
 
 // basket 목록을 보여주는 get 요청 처리
 // query params에 sort 정보를 전달해준다.
-router.get('/:sort', function (req, res, next) {
+router.get('/', function (req, res, next) {
     var basketInfo = {
-        sort : req.params.sort,
+        sort : req.query.sort,
         u_id : req.session.member_id
     }
 

@@ -207,6 +207,7 @@ function movieCart(movieCartInfo, callback){
                     return callback(error);
                 }
                 else {
+                    dbConn.release();
                     movieCartMessage = {message : "movie cart success"};
                     return callback(null, movieCartMessage);
                 }
