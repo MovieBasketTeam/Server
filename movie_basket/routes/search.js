@@ -4,36 +4,48 @@ var router = express.Router();
 
 
 router.get('/', function (req, res, next) {
-    var result =
-    {
-        today_recommand :
-        [
-            {
-                c_id : 1,
-                small_category : '우울할 때'
-            },
-            {
-                c_id : 2,
-                small_category : '우울할'
-            }
-        ]
-    };
+  var search_Category_info = {
+    c_id : req.params.c_id,
+    small_category  : req.body.small_category,
+    big_category : req.body.big_category
+  }
+    // var result =
+    // {
+    //     today_recommand :
+    //     [
+    //         {
+    //             c_id : 1,
+    //             small_category : '우울할 때'
+    //         },
+    //         {
+    //             c_id : 2,
+    //             small_category : '우울할'
+    //         }
+    //     ]
+    // };
 
-    Search.category( function (error, results) {
+    Search.category(search_Category_info, function (error, results1, result2) {
         if (error) {
             console.log("Connection error " + error);
             res.send(error);
         }
         else {
-            res.status(201).send({result : result});
+            res.send({
+              result : {  today_recommand : results1 , categories : [result2] }
+
+            });
         }
     });
 });
 
 
 //성공시 추천순으로 바스켓 목록 보냄
-router.get('/search/:c_id', function (req, res, next) {
-  var results = {
+router.get('/:c_id', function (req, res, next) {
+  var searchInfo ={
+    c_id : req.params.c_id,
+    u_id : req.session.member_id
+  }
+  /*var results = {
     baskets : [
       {
         basket_id : 1,
@@ -42,10 +54,10 @@ router.get('/search/:c_id', function (req, res, next) {
         basket_like : 123
       }
     ]
-  };
+  };*/
 
 
-   Search. detailCategory(req.params.c_id, function (error, results) {
+   Search.detailCategory(searchInfo, function (error, results) {
           if (error) {
               console.log("Connection error " + error);
               res.send(error);
