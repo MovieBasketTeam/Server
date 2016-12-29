@@ -31,7 +31,7 @@ router.get('/', function (req, res, next) {
         }
         else {
             res.send({
-              result : {  today_recommand : results1 , categories : [result2] }
+              result : {  today_recommand : results1 , categories : result2 }
 
             });
         }
