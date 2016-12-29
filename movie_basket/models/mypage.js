@@ -1,6 +1,6 @@
 var dbPool = require('./common').dbPool;
 var async = require('async');
-
+/*
 function showMypages(mypageInfo, callback) {
   var sql_mypage_shows =
     'SELECT member_name, member_image from member where member_name = ?';
@@ -22,6 +22,7 @@ function showMypages(mypageInfo, callback) {
     });
   });
 }
+*/
 
 function movieBasket(mypageInfo, callback) {
   var sql_movieBasket =
@@ -100,7 +101,6 @@ function movieRecommend(mypageInfo, callback) {
   });
 }
 
-module.exports.showMypages = showMypages;
 module.exports.movieBasket = movieBasket;
 module.exports.movieCart = movieCart;
 module.exports.movieRecommend = movieRecommend;
