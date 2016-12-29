@@ -4,7 +4,7 @@ var router = express.Router();
 
 
 router.get('/', function (req, res) {
-    console.log(req.session.member_name);
+    console.log(req.session);
     res.send({result : 'check'});
 });
 
@@ -25,6 +25,7 @@ router.post('/', function (req, res, next) {
                 var sess = req.session;
                 sess.member_id = results.member_info.member_id;
                 sess.member_name = results.member_info.member_name;
+                sess.member_email = results.member_info.member_email;
             }
         }
         var result_value = {message : results.message};
@@ -47,6 +48,18 @@ router.post('/signUp', function (req, res, next) {
         }
         else {
             res.status(201).send({result : results});
+        }
+    });
+});
+
+router.get('/version', function (req, res, next) {
+    Member.checkVersion(function (error, results) {
+        if (error) {
+            console.log("Connection error " + error);
+            res.send(error);
+        }
+        else {
+            res.status(200).send({result : results});
         }
     });
 });
