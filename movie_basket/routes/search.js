@@ -42,8 +42,8 @@ router.get('/', function (req, res, next) {
 //성공시 추천순으로 바스켓 목록 보냄
 router.get('/:c_id', function (req, res, next) {
   var searchInfo ={
-    c_id : req.params.c_id,
-    u_id : req.session.member_id
+    member_token : req.headers.member_token,
+    c_id : req.params.c_id
   }
   /*var results = {
     baskets : [
