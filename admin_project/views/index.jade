@@ -2,13 +2,52 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
-  
+
+
   form(action='/', method="post", enctype="multipart/form-data")
-    h3 바스켓을 추가해 주세요!!
+  h4 ▶ 바스켓 추가하기
     p
       input(type='text', name="basket_name", placeholder="Basket name")
     p
       input(type='file', name="basket_image")
+  h4 ▶ 카테고리 추가하기
+  h5 내 상황
+    p
+    input(type="checkbox", name="situation") 
+    | Checkbox 1
+    input(type="checkbox", name="situation") 
+    | Checkbox 1
+    input(type="checkbox", name="situation") 
+    | Checkbox 1
+    input(type="checkbox", name="situation") 
+    | Checkbox 1
+    input(type="checkbox", name="situation") 
+    | Checkbox 1
+    input(type="checkbox", name="situation") 
+    | Checkbox 1
+    input(type="checkbox", name="situation") 
+    | Checkbox 1
+    input(type="checkbox", name="situation") 
+    | Checkbox 1
+  h5 감정/기분
+    p
+    input(type="checkbox", name="mood") 
+    | Checkbox 1
+    input(type="checkbox", name="mood") 
+    | Checkbox 1
+    input(type="checkbox", name="mood") 
+    | Checkbox 1
+    input(type="checkbox", name="mood") 
+    | Checkbox 1
+  h5 기타
+    p
+    input(type="checkbox", name="etc") 
+    | Checkbox 1
+    input(type="checkbox", name="etc") 
+    | Checkbox 1
+    input(type="checkbox", name="etc") 
+    | Checkbox 1
+      
     p
       input(type='submit', value="업로드")
+      
