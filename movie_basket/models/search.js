@@ -56,7 +56,8 @@ function category (search_Category_info, callback) {
     //     return done(null);
     //   });
     // }
-
+    
+    // FIXME : refactoring this
     function categoryAll(done){
       dbConn.query(sql_category, search_Category_info, function(err, rows){
         if (error) {

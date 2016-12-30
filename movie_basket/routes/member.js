@@ -8,19 +8,26 @@ router.get('/', function (req, res) {
     res.send({result : 'check'});
 });
 
-router.get('/logout', function(req,res,next){
+router.get('/verify', function (req, res, next) {
+
+});
+
+router.get('/logout', function(req,res,next) {
+
     req.session.destroy(function(err){});
     var results = {message : 'logout success'};
     res.send({result : results});
+
 });
 
 //회원탈퇴
-router.post('/withdraw', function(req,res,next){
+router.post('/withdraw', function(req,res,next) {
+
     var withdrawInfo = {
       member_id : req.session.member_id
     };
 
-    Member.withdraw(withdrawInfo, function (error, results){
+    Member.withdraw(withdrawInfo, function (error, results) {
       if (error) {
           console.log("Connection error " + error);
           return res.send(error);
@@ -33,33 +40,18 @@ router.post('/withdraw', function(req,res,next){
 
 // 로그인 '/' post 방식 요청 처리
 router.post('/', function (req, res, next) {
+
     var logInInfo = {
         member_email : req.body.member_email,
         member_pwd : req.body.member_pwd
     };
+
     Member.logIn(logInInfo, function (error, results) {
         if (error) {
             console.log("Connection error " + error);
             return res.send(error);
         }
-        else {
-            if (results.member_info) {
-                var sess = req.session;
-                sess.member_id = results.member_info.member_id;
-                sess.member_name = results.member_info.member_name;
-                sess.member_email = results.member_info.member_email;
-            }
-        }
-        var result_value = {message : results.message};
-        res.status(201).send({
-          result : {
-            message : results.message,
-            userInfo : {
-              member_name : results.member_info.member_name,
-              member_email : results.member_info.member_email
-            }
-          }
-        });
+        res.status(201).send({result : results});
 
     });
 });
