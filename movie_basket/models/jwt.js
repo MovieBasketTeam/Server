@@ -4,8 +4,6 @@ var secret = 'dudghk';
 
 function makeToken (value) {
     var token = jwt.encode(value, secret);
-    console.log(value);
-    console.log("token is : " + token);
     return token;
 }
 
