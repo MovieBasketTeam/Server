@@ -7,10 +7,18 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
     var mypageInfo =
     {
-        member_name : req.session.member_name
+          member_token : req.headers.member_token
     };
 
-    res.status(200).send({result : mypageInfo});
+    Mypage.basicMypage(mypageInfo, function(error, results){
+      if (error) {
+          console.log("Connection error " + error);
+      }
+      else{
+        console.log("in here");
+        res.status(201).send({result : results});
+      }
+    });
   /*
   Mypage.showMypages(mypageInfo, function (error, results) {
     if(error) {
@@ -28,7 +36,7 @@ router.get('/', function(req, res, next) {
 router.get('/basket', function(req, res, next) {
     var mypageInfo =
     {
-        member_id : req.session.member_id
+          member_token : req.headers.member_token
     };
 
     Mypage.movieBasket(mypageInfo, function(error, results) {
@@ -44,7 +52,7 @@ router.get('/basket', function(req, res, next) {
 // 4-c.담은 영화
 router.get('/movie/cart', function(req, res, next) {
   var mypageInfo = {
-    member_id : req.session.member_id
+      member_token : req.headers.member_token
   }
 
   Mypage.movieCart(mypageInfo, function(error, results) {
@@ -60,7 +68,7 @@ router.get('/movie/cart', function(req, res, next) {
 // 4-d. 추천한 영화
 router.get('/movie/recommend', function(req, res, next) {
     var mypageInfo = {
-        member_id : req.session.member_id
+          member_token : req.headers.member_token
     }
 
     Mypage.movieRecommend(mypageInfo, function(error, results) {
@@ -77,14 +85,17 @@ router.get('/movie/recommend', function(req, res, next) {
 router.get('/setting', function (req, res, next) {
     var settingInfo =
     {
-        member_name : req.session.member_name,
-        member_email : req.session.member_email
-    };
-
-    if (!settingInfo.member_name) {
-        res.sendStatus(500);
+      member_token : req.headers.member_token
     }
-    res.status(200).send({result : settingInfo});
+
+    Mypage.settingMypage(settingInfo, function(error, results){
+      if (error) {
+          console.log("Connection error " + error);
+      }
+      else{
+        res.status(201).send({result : results});
+      }
+    });
 });
 
 module.exports = router;
