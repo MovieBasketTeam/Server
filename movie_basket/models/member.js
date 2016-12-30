@@ -122,6 +122,30 @@ function signUp (signUpInfo, callback) {
     });
 }
 
+function checkVersion (callback) {
+    var ver_sql = 'select ver from connection';
+    dbPool.getConnection( function (error, dbConn) {
+        if (error) {
+            return callback(error);
+        }
+
+        var checkVerMessage = {};
+        dbConn.query(ver_sql, function (error, rows) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+
+            else {
+                dbConn.release();
+                checkVerMessage = { version : rows[0].ver };
+                return callback(null, checkVerMessage);
+            }
+        });
+    });
+}
+
 module.exports.logIn = logIn;
 module.exports.signUp = signUp;
+module.exports.checkVersion = checkVersion;
 module.exports.withdraw = withdraw;
