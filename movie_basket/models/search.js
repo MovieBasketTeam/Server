@@ -100,7 +100,7 @@ function category (search_Category_info, callback) {
       });
     }
 
-
+  });
   });
 }
 
@@ -118,20 +118,27 @@ function detailCategory (searchInfo, callback) {
       return callback(error);
     }
      var showMessage = {};
-     dbConn.query(sql_detail_category, [searchInfo.u_id, searchInfo.c_id], function (error, rows) {
+     dbConn.beginTransaction (function (error) {
+         if (error) {
+             dbConn.release();
+             return callback(error);
+         }
+        dbConn.query(sql_detail_category, [searchInfo.u_id, searchInfo.c_id], function (error, rows) {
           if (error) {
-              dbConn.release();
-              return callback(error);
+            return dbConn.rollback(function () {
+                dbConn.release();
+                callback(error);
+            });
           }
-          else {
-              dbConn.release();
-              showMessage = { baskets : rows};
-              return callback(null, showMessage);
-          }
-
+          dbConn.commit(function () {
+            dbConn.release();
+            showMessage = { baskets : rows};
+            return callback(null, showMessage);
+          });
         });
       });
     });
+
 }
 
 module.exports.category = category;
