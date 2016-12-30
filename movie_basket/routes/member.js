@@ -9,22 +9,28 @@ router.get('/', function (req, res) {
 });
 
 router.get('/verify', function (req, res, next) {
-
+    console.log(req.headers);
+    var verifyInfo =
+    {
+        member_token : req.headers.member_token
+    }
+    Member.verify(verifyInfo, function (error, results) {
+        if (error) {
+            console.log("Connection error " + error);
+            return res.send(error);
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
 });
 
-router.get('/logout', function(req,res,next) {
-
-    req.session.destroy(function(err){});
-    var results = {message : 'logout success'};
-    res.send({result : results});
-
-});
 
 //회원탈퇴
-router.post('/withdraw', function(req,res,next) {
+router.get('/withdraw', function(req,res,next) {
 
     var withdrawInfo = {
-      member_id : req.session.member_id
+      member_token : req.headers.member_token
     };
 
     Member.withdraw(withdrawInfo, function (error, results) {
