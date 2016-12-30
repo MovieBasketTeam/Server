@@ -1,4 +1,5 @@
 var dbPool = require('./common').dbPool;
+var jwt = require('./jwt');
 var async = require('async');
 var crypto = require('crypto');
 
@@ -25,7 +26,6 @@ function withdraw(withdrawInfo, callback) {
     if(error){
       return callback(error);
     }
-
     var withdrawMessage = {};
     dbConn.query(sql_withdraw, [withdrawInfo.member_id], function(error,rows){
       if (error) {
@@ -43,7 +43,7 @@ function withdraw(withdrawInfo, callback) {
 
 // 로그인 처리 함수
 function logIn (logInInfo, callback) {
-    var sql_login_check = 'select * from member where member_email = ? and member_pwd = ? and available = 1';
+    var sql_login_check = 'select member_name, member_email, member_pwd from member where member_email = ? and member_pwd = ? and available = 1';
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
             return callback(error);
@@ -58,10 +58,11 @@ function logIn (logInInfo, callback) {
             // 로그인 성공
             if (rows.length >= 1) {
                 dbConn.release();
-                logInMessage =  {
-                                    message : "login success",
-                                    member_info : rows[0]
-                                };
+                var logInMessage =
+                {
+                    message : "login success",
+                    token : jwt.makeToken(rows[0])
+                };
                 return callback(null, logInMessage);
             }
             // 아이디 혹은 비밀번호가 잘못됨 혹은 탈퇴된 회원
