@@ -14,14 +14,23 @@ function category (search_Category_info, callback) {
     var result_categoryMessage_today = {};
     var result_categoryMessage = {};
 
+    dbConn.beginTransaction (function (error) {
+        if (error) {
+            dbConn.release();
+            return callback(error);
+        }
+
     async.series([categoryTodayRecommend, categoryAll], function(error, results){
       if(error){
-        dbConn.relaease();
-        callback(error);
-      } else {
+        return dbConn.rollback(function () {
+            dbConn.release();
+            callback(error);
+        });
+      }
+      dbConn.commit(function () {
         dbConn.release();
         callback(null, result_categoryMessage_today, result_categoryMessage);
-      }
+      });
     });
 
     function categoryTodayRecommend(done){
@@ -47,7 +56,8 @@ function category (search_Category_info, callback) {
     //     return done(null);
     //   });
     // }
-
+    
+    // FIXME : refactoring this
     function categoryAll(done){
       dbConn.query(sql_category, search_Category_info, function(err, rows){
         if (error) {
@@ -91,7 +101,7 @@ function category (search_Category_info, callback) {
       });
     }
 
-
+  });
   });
 }
 
@@ -109,18 +119,27 @@ function detailCategory (searchInfo, callback) {
       return callback(error);
     }
      var showMessage = {};
-      dbConn.query(sql_detail_category, [searchInfo.u_id, searchInfo.c_id], function (error, rows) {
+     dbConn.beginTransaction (function (error) {
+         if (error) {
+             dbConn.release();
+             return callback(error);
+         }
+        dbConn.query(sql_detail_category, [searchInfo.u_id, searchInfo.c_id], function (error, rows) {
           if (error) {
-              dbConn.release();
-              return callback(error);
+            return dbConn.rollback(function () {
+                dbConn.release();
+                callback(error);
+            });
           }
-          else {
-              dbConn.release();
-              showMessage = { baskets : rows};
-              return callback(null, showMessage);
-          }
+          dbConn.commit(function () {
+            dbConn.release();
+            showMessage = { baskets : rows};
+            return callback(null, showMessage);
+          });
+        });
       });
     });
+
 }
 
 module.exports.category = category;

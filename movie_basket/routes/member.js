@@ -4,12 +4,49 @@ var router = express.Router();
 
 
 router.get('/', function (req, res) {
-    console.log(req.session.member_name);
+    console.log(req.session);
     res.send({result : 'check'});
+});
+
+router.get('/verify', function (req, res, next) {
+    console.log(req.headers);
+    var verifyInfo =
+    {
+        member_token : req.headers.member_token
+    }
+    Member.verify(verifyInfo, function (error, results) {
+        if (error) {
+            console.log("Connection error " + error);
+            return res.send(error);
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
+});
+
+
+//회원탈퇴
+router.get('/withdraw', function(req,res,next) {
+
+    var withdrawInfo = {
+      member_token : req.headers.member_token
+    };
+
+    Member.withdraw(withdrawInfo, function (error, results) {
+      if (error) {
+          console.log("Connection error " + error);
+          return res.send(error);
+      }
+      else {
+          res.status(201).send({result : results});
+      }
+    });
 });
 
 // 로그인 '/' post 방식 요청 처리
 router.post('/', function (req, res, next) {
+
     var logInInfo = {
         member_email : req.body.member_email,
         member_pwd : req.body.member_pwd
@@ -20,15 +57,8 @@ router.post('/', function (req, res, next) {
             console.log("Connection error " + error);
             return res.send(error);
         }
-        else {
-            if (results.member_info) {
-                var sess = req.session;
-                sess.member_id = results.member_info.member_id;
-                sess.member_name = results.member_info.member_name;
-            }
-        }
-        var result_value = {message : results.message};
-        res.status(201).send({result : result_value});
+        res.status(201).send({result : results});
+
     });
 });
 
@@ -47,6 +77,18 @@ router.post('/signUp', function (req, res, next) {
         }
         else {
             res.status(201).send({result : results});
+        }
+    });
+});
+
+router.get('/version', function (req, res, next) {
+    Member.checkVersion(function (error, results) {
+        if (error) {
+            console.log("Connection error " + error);
+            res.send(error);
+        }
+        else {
+            res.status(200).send({result : results});
         }
     });
 });

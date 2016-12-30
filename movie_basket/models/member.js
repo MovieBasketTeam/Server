@@ -1,4 +1,5 @@
 var dbPool = require('./common').dbPool;
+var jwt = require('./jwt');
 var async = require('async');
 var crypto = require('crypto');
 
@@ -18,9 +19,31 @@ function decipherPassword (password) {
     return decipherd;
 }
 
+//회원탈퇴
+function withdraw(withdrawInfo, callback) {
+  var sql_withdraw = 'update member set available = 0 where member_id = ? and available = 1';
+  dbPool.getConnection( function(error,dbConn) {
+    if(error){
+      return callback(error);
+    }
+    var withdrawMessage = {};
+    dbConn.query(sql_withdraw, [jwt.decodeToken(withdrawInfo.member_token).member_id], function(error,rows){
+      if (error) {
+        dbConn.release();
+        return callback(error);
+      }
+      else {
+          dbConn.release();
+          withdrawMessage = { message : "withdraw success"};
+          return callback(null, withdrawMessage);
+      }
+    });
+  });
+}
+
 // 로그인 처리 함수
 function logIn (logInInfo, callback) {
-    var sql_login_check = 'select * from member where member_email = ? and member_pwd = ? and available = 1';
+    var sql_login_check = 'select member_id, member_name, member_email, member_pwd from member where member_email = ? and member_pwd = ? and available = 1';
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
             return callback(error);
@@ -35,10 +58,11 @@ function logIn (logInInfo, callback) {
             // 로그인 성공
             if (rows.length >= 1) {
                 dbConn.release();
-                logInMessage =  {
-                                    message : "login success",
-                                    member_info : rows[0]
-                                };
+                var logInMessage =
+                {
+                    message : "login success",
+                    member_token : jwt.makeToken(rows[0])
+                };
                 return callback(null, logInMessage);
             }
             // 아이디 혹은 비밀번호가 잘못됨 혹은 탈퇴된 회원
@@ -99,5 +123,57 @@ function signUp (signUpInfo, callback) {
     });
 }
 
+function checkVersion (callback) {
+    var ver_sql = 'select ver from connection';
+    dbPool.getConnection( function (error, dbConn) {
+        if (error) {
+            return callback(error);
+        }
+
+        var checkVerMessage = {};
+        dbConn.query(ver_sql, function (error, rows) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+
+            else {
+                dbConn.release();
+                checkVerMessage = { version : rows[0].ver };
+                return callback(null, checkVerMessage);
+            }
+        });
+    });
+}
+
+function verify (verifyInfo, callback) {
+    var sql_verify = 'select member_id from member where member_id = ?';
+    dbPool.getConnection ( function (error, dbConn) {
+        if (error) {
+            return callback(error);
+        }
+
+        var verifyMessage = {};
+        dbConn.query(sql_verify, [jwt.decodeToken(verifyInfo.member_token).member_id], function (error, rows) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+            else if (rows.length == 0) {
+                dbConn.release();
+                verifyMessage = {message : "is not logined"};
+                return callback(null, verifyMessage);
+            }
+            else {
+                dbConn.release();
+                verifyMessage = {message : "is logined"};
+                return callback(null, verifyMessage);
+            }
+        });
+    });
+}
 module.exports.logIn = logIn;
 module.exports.signUp = signUp;
+module.exports.checkVersion = checkVersion;
+module.exports.withdraw = withdraw;
+module.exports.verify = verify;

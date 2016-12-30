@@ -1,6 +1,6 @@
 var dbPool = require('./common').dbPool;
 var async = require('async');
-
+/*
 function showMypages(mypageInfo, callback) {
   var sql_mypage_shows =
     'SELECT member_name, member_image from member where member_name = ?';
@@ -22,6 +22,7 @@ function showMypages(mypageInfo, callback) {
     });
   });
 }
+*/
 
 function movieBasket(mypageInfo, callback) {
   var sql_movieBasket =
@@ -34,16 +35,24 @@ function movieBasket(mypageInfo, callback) {
       return callback(error);
     }
     var showMessage = {};
+    dbConn.beginTransaction (function (error) {
+        if (error) {
+            dbConn.release();
+            return callback(error);
+        }
     dbConn.query(sql_movieBasket, [mypageInfo.member_id], function(error, rows) {
-      if(error) {
-        dbConn.release();
-        return callback(error);
+      if (error) {
+        return dbConn.rollback(function () {
+            dbConn.release();
+            callback(error);
+        });
       }
-      else {
+      dbConn.commit(function () {
         dbConn.release();
         showMessage = { result : rows }
         return callback(null, showMessage);
-      }
+      });
+    });
     });
   });
 }
@@ -60,18 +69,26 @@ function movieCart(mypageInfo, callback) {
       return callback(error);
     }
     var showMessage = {};
+    dbConn.beginTransaction (function (error) {
+        if (error) {
+            dbConn.release();
+            return callback(error);
+        }
     dbConn.query(sql_movieCart, [mypageInfo.member_id], function(error, rows) {
-      if(error) {
-        dbConn.release();
-        return callback(error);
+      if (error) {
+        return dbConn.rollback(function () {
+            dbConn.release();
+            callback(error);
+        });
       }
-      else {
+      dbConn.commit(function () {
         dbConn.release();
         showMessage = { result : rows }
         return callback(null, showMessage);
-      }
+      });
     });
   });
+});
 }
 
 function movieRecommend(mypageInfo, callback) {
@@ -86,21 +103,28 @@ function movieRecommend(mypageInfo, callback) {
       return callback(error);
     }
     var showMessage = {};
+    dbConn.beginTransaction (function (error) {
+        if (error) {
+            dbConn.release();
+            return callback(error);
+        }
     dbConn.query(sql_movieReccomend, [mypageInfo.member_id], function(error, rows) {
-      if(error) {
-        dbConn.release();
-        return callback(error);
+      if (error) {
+        return dbConn.rollback(function () {
+            dbConn.release();
+            callback(error);
+        });
       }
-      else {
+      dbConn.commit(function (){
         dbConn.release();
         showMessage = { result : rows }
         return callback(null, showMessage);
-      }
+      });
     });
+  });
   });
 }
 
-module.exports.showMypages = showMypages;
 module.exports.movieBasket = movieBasket;
 module.exports.movieCart = movieCart;
 module.exports.movieRecommend = movieRecommend;
