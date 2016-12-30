@@ -3,6 +3,7 @@ var async = require('async');
 
 // 홈 화면에서 바스켓 조회
 function showBaksets (basketInfo, callback) {
+
     // sort 방식에 따른 다른 쿼리문
     var sql_basket_shows = [
         'SELECT basket_id, basket_name, basket_image, basket_like, (CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked '+
