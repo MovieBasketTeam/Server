@@ -1,109 +1,69 @@
 var dbPool = require('./common').dbPool;
 var jwt = require('./jwt');
 var async = require('async');
+var _ = require('underscore');
 //var crypto = require('crypto');
 
 
 //category 검색 메인 화면
-function category (search_Category_info, callback) {
-  var sql_category_todayRecommend = 'SELECT c_id, small_category FROM category WHERE today_recommand=1';
-  var sql_category = 'SELECT c_id, small_category, big_category FROM category WHERE big_category =1 OR 2 OR 3';
-  dbPool.getConnection(function(error,dbConn){
-    if(error){
-      return callback(error);
-    }
-    var result_categoryMessage_today = {};
-    var result_categoryMessage = {};
-
-    dbConn.beginTransaction (function (error) {
-        if (error) {
-            dbConn.release();
+function category (callback) {
+    var sql_category_todayRecommend = 'SELECT c_id, small_category FROM category WHERE today_recommand=1';
+    var sql_category = 'SELECT c_id, small_category, big_category FROM category';
+    dbPool.getConnection(function(error,dbConn){
+        if(error){
             return callback(error);
         }
+        var categoryMessage = {};
 
-    async.series([categoryTodayRecommend, categoryAll], function(error, results){
-      if(error){
-        return dbConn.rollback(function () {
-            dbConn.release();
-            callback(error);
+        dbConn.beginTransaction (function (error) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+
+            async.series([categoryTodayRecommend, categoryAll], function(error, results){
+                if(error){
+                    return dbConn.rollback(function () {
+                        dbConn.release();
+                        callback(error);
+                    });
+                }
+                dbConn.commit(function () {
+                    dbConn.release();
+                    callback(null, categoryMessage);
+                });
+            });
+
+            function categoryTodayRecommend(done){
+                dbConn.query(sql_category_todayRecommend, function(err,rows){
+                    if(error){
+                        return done(error);
+                    }
+                    else{
+                        categoryMessage.today_recommand = rows;
+                    }
+                    return done(null);
+                });
+            }
+
+            function categoryAll(done){
+                dbConn.query(sql_category, function(err, rows){
+                    if (error) {
+                        return done(error);
+                    }
+                    else {
+                        categoryMessage.categories = [];
+                        for (var i = 0 ; i < 3 ; i++) {
+                            categoryMessage.categories.push(_.filter(rows, function(item) {
+                                return item.big_category == i+1;
+                            }));
+                        }
+                    return done(null);
+                    }
+                });
+            }
         });
-      }
-      dbConn.commit(function () {
-        dbConn.release();
-        callback(null, result_categoryMessage_today, result_categoryMessage);
-      });
     });
-
-    function categoryTodayRecommend(done){
-      dbConn.query(sql_category_todayRecommend, search_Category_info, function(err,rows){
-        if(error){
-          return done(error);
-        }
-        else{
-          result_categoryMessage_today = rows;
-        }
-        return done(null);
-      });
-    }
-
-    // function categoryAll(done){
-    //   dbConn.query(sql_category, search_Category_info, function(err, rows){
-    //     if(error){
-    //       return done(error);
-    //     }
-    //     else{
-    //       result_categoryMessage = rows;
-    //     }
-    //     return done(null);
-    //   });
-    // }
-
-    // FIXME : refactoring this
-    function categoryAll(done){
-      dbConn.query(sql_category, search_Category_info, function(err, rows){
-        if (error) {
-          done(error);
-        } else {
-          //result_categoryMessage = rows;
-          result_categoryMessage.big_category1 = [];
-          result_categoryMessage.big_category2 = [];
-          result_categoryMessage.big_category3 = [];
-          async.each(rows, function(item, callback) {
-              if( item.big_category === 1 ) {
-                result_categoryMessage.big_category1.push({
-                  c_id : item.c_id,
-                  small_category : item.small_category,
-                  big_category : item.big_category
-                });
-                // callback('File name too long');
-              } else if ( item.big_category === 2 ) {
-                result_categoryMessage.big_category2.push({
-                  c_id : item.c_id,
-                  small_category : item.small_category,
-                  big_category : item.big_category
-                });
-              } else if ( item.big_category === 3 ) {
-                result_categoryMessage.big_category3.push({
-                  c_id : item.c_id,
-                  small_category : item.small_category,
-                  big_category : item.big_category
-                });
-              }
-              callback();
-          }, function(err) {
-              // if any of the file processing produced an error, err would equal that error
-              if( err ) {
-                done(err);
-              } else {
-                done(null);
-              }
-          });
-        }
-      });
-    }
-
-  });
-  });
 }
 
 
