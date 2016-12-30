@@ -143,7 +143,7 @@ function movieRecommend(mypageInfo, callback) {
 
 
 //setting
-function settingMypage (settingInfo, callback) {
+function settingMypage (settingInfo, callback) {. u=oop
   var showMessage = {};
   // if (!jwt.decodeToken(settingInfo.member_token).member_name) {
   //     //res.sendStatus(500);
