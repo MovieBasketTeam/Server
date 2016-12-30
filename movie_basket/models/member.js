@@ -19,7 +19,7 @@ function decipherPassword (password) {
     return decipherd;
 }
 
-//로그아웃
+//회원탈퇴
 function withdraw(withdrawInfo, callback) {
   var sql_withdraw = 'update member set available = 0 where member_id = ? and available = 1';
   dbPool.getConnection( function(error,dbConn) {
@@ -27,7 +27,7 @@ function withdraw(withdrawInfo, callback) {
       return callback(error);
     }
     var withdrawMessage = {};
-    dbConn.query(sql_withdraw, [withdrawInfo.member_id], function(error,rows){
+    dbConn.query(sql_withdraw, [jwt.decodeToken(withdrawInfo.member_token).member_id], function(error,rows){
       if (error) {
         dbConn.release();
         return callback(error);
@@ -43,7 +43,7 @@ function withdraw(withdrawInfo, callback) {
 
 // 로그인 처리 함수
 function logIn (logInInfo, callback) {
-    var sql_login_check = 'select member_name, member_email, member_pwd from member where member_email = ? and member_pwd = ? and available = 1';
+    var sql_login_check = 'select member_id, member_name, member_email, member_pwd from member where member_email = ? and member_pwd = ? and available = 1';
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
             return callback(error);
@@ -61,7 +61,7 @@ function logIn (logInInfo, callback) {
                 var logInMessage =
                 {
                     message : "login success",
-                    token : jwt.makeToken(rows[0])
+                    member_token : jwt.makeToken(rows[0])
                 };
                 return callback(null, logInMessage);
             }
@@ -146,7 +146,34 @@ function checkVersion (callback) {
     });
 }
 
+function verify (verifyInfo, callback) {
+    var sql_verify = 'select member_id from member where member_id = ?';
+    dbPool.getConnection ( function (error, dbConn) {
+        if (error) {
+            return callback(error);
+        }
+
+        var verifyMessage = {};
+        dbConn.query(sql_verify, [jwt.decodeToken(verifyInfo.member_token).member_id], function (error, rows) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+            else if (rows.length == 0) {
+                dbConn.release();
+                verifyMessage = {message : "is not logined"};
+                return callback(null, verifyMessage);
+            }
+            else {
+                dbConn.release();
+                verifyMessage = {message : "is logined"};
+                return callback(null, verifyMessage);
+            }
+        });
+    });
+}
 module.exports.logIn = logIn;
 module.exports.signUp = signUp;
 module.exports.checkVersion = checkVersion;
 module.exports.withdraw = withdraw;
+module.exports.verify = verify;
