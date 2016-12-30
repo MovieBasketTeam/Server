@@ -1,5 +1,6 @@
 var dbPool = require('./common').dbPool;
 var async = require('async');
+var jwt = require('./jwt');
 /*
 function showMypages(mypageInfo, callback) {
   var sql_mypage_shows =
@@ -24,6 +25,21 @@ function showMypages(mypageInfo, callback) {
 }
 */
 
+function basicMypage (mypageInfo, callback) {
+  var showMessage = {};
+  // if (!jwt.decodeToken(settingInfo.member_token).member_name) {
+  //     //res.sendStatus(500);
+  //     return callback(error);
+  // }
+
+  console.log("in here");
+  showMessage = {
+    member_name : jwt.decodeToken(mypageInfo.member_token).member_name
+  }
+  return callback(null, showMessage);
+
+}
+
 function movieBasket(mypageInfo, callback) {
   var sql_movieBasket =
   'SELECT b.basket_id, b.basket_name, b.basket_image, b.basket_like ' +
@@ -40,7 +56,7 @@ function movieBasket(mypageInfo, callback) {
             dbConn.release();
             return callback(error);
         }
-    dbConn.query(sql_movieBasket, [mypageInfo.member_id], function(error, rows) {
+    dbConn.query(sql_movieBasket, [jwt.decodeToken(mypageInfo.member_token).member_id], function(error, rows) {
       if (error) {
         return dbConn.rollback(function () {
             dbConn.release();
@@ -74,7 +90,7 @@ function movieCart(mypageInfo, callback) {
             dbConn.release();
             return callback(error);
         }
-    dbConn.query(sql_movieCart, [mypageInfo.member_id], function(error, rows) {
+    dbConn.query(sql_movieCart, [jwt.decodeToken(mypageInfo.member_token).member_id], function(error, rows) {
       if (error) {
         return dbConn.rollback(function () {
             dbConn.release();
@@ -108,7 +124,7 @@ function movieRecommend(mypageInfo, callback) {
             dbConn.release();
             return callback(error);
         }
-    dbConn.query(sql_movieReccomend, [mypageInfo.member_id], function(error, rows) {
+    dbConn.query(sql_movieReccomend, [jwt.decodeToken(mypageInfo.member_token).member_id], function(error, rows) {
       if (error) {
         return dbConn.rollback(function () {
             dbConn.release();
@@ -123,6 +139,22 @@ function movieRecommend(mypageInfo, callback) {
     });
   });
   });
+}
+
+
+//setting
+function settingMypage (settingInfo, callback) {
+  var showMessage = {};
+  // if (!jwt.decodeToken(settingInfo.member_token).member_name) {
+  //     //res.sendStatus(500);
+  //     return callback(error);
+  // }
+  showMessage = {
+    member_name : jwt.decodeToken(settingInfo.member_token).member_name,
+    member_email : jwt.decodeToken(settingInfo.member_token).member_email
+  }
+  return callback(null, showMessage);
+
 }
 
 module.exports.movieBasket = movieBasket;
