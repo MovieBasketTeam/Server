@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  
+  form(action='/', method="post", enctype="multipart/form-data")
+    h3 바스켓을 추가해 주세요!!
+    p
+      input(type='text', name="basket_name", placeholder="Basket name")
+    p
+      input(type='file', name="basket_image")
+    p
+      input(type='submit', value="업로드")
