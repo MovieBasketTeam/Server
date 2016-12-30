@@ -51,7 +51,15 @@ router.post('/', function (req, res, next) {
             }
         }
         var result_value = {message : results.message};
-        res.status(201).send({result : result_value});
+        res.status(201).send({
+          result : {
+            message : results.message,
+            userInfo : {
+              member_name : results.member_info.member_name,
+              member_email : results.member_info.member_email
+            }
+          }
+        });
 
     });
 });
