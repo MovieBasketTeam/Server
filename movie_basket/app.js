@@ -49,8 +49,14 @@ app.use(session({
 /*
 app.use(passport.initialize());
 app.use(passport.session());*/
+
+// app.use(express.static(path.join(__dirname, 'public')));
+// view engine setup
+
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 app.use('/', routes);
 app.use('/users', users);

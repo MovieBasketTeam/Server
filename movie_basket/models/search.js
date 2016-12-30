@@ -1,4 +1,5 @@
 var dbPool = require('./common').dbPool;
+var jwt = require('./jwt');
 var async = require('async');
 //var crypto = require('crypto');
 
@@ -56,7 +57,7 @@ function category (search_Category_info, callback) {
     //     return done(null);
     //   });
     // }
-    
+
     // FIXME : refactoring this
     function categoryAll(done){
       dbConn.query(sql_category, search_Category_info, function(err, rows){
@@ -124,7 +125,7 @@ function detailCategory (searchInfo, callback) {
              dbConn.release();
              return callback(error);
          }
-        dbConn.query(sql_detail_category, [searchInfo.u_id, searchInfo.c_id], function (error, rows) {
+        dbConn.query(sql_detail_category, [jwt.decodeToken(searchInfo.member_token).member_id, searchInfo.c_id], function (error, rows) {
           if (error) {
             return dbConn.rollback(function () {
                 dbConn.release();
