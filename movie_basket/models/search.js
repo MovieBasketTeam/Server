@@ -100,7 +100,7 @@ function category (search_Category_info, callback) {
       });
     }
 
-
+  });
   });
 }
 
@@ -138,7 +138,7 @@ function detailCategory (searchInfo, callback) {
         });
       });
     });
-  });
+
 }
 
 module.exports.category = category;
