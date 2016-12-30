@@ -7,7 +7,7 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
     var basketInfo = {
         sort : req.query.sort,
-        u_id : req.session.member_id
+        member_token : req.headers.member_token
     }
 
     Basket.showBaksets(basketInfo, function (error, results) {
@@ -24,7 +24,7 @@ router.get('/', function (req, res, next) {
 router.post('/like', function (req, res, next) {
     var basketLikeInfo =
     {
-        member_id : req.session.member_id,
+        member_token : req.headers.member_token,
         basket_id : req.body.basket_id,
         is_liked : req.body.is_liked
     }
@@ -43,7 +43,7 @@ router.post('/like', function (req, res, next) {
 router.get('/detail/:basket_id', function (req, res, next) {
     var basketDetailInfo =
     {
-        member_id : req.session.member_id,
+        member_token : req.headers.member_token,
         basket_id : req.params.basket_id
     }
 
@@ -64,7 +64,7 @@ router.post('/movie/recommend', function(req,res,next){
     var movieRecommendInfo = {
         is_liked : req.body.is_liked,
         movie_id : req.body.movie_id,
-        member_id : req.session.member_id
+        member_token : req.headers.member_token
     }
     Basket.movieRecommend(movieRecommendInfo, function(error, results){
         if(error){
@@ -83,7 +83,7 @@ router.post('/movie/cart', function(req,res,next){
     var movieCartInfo = {
         is_carted : req.body.is_carted,
         movie_id : req.body.movie_id,
-        member_id : req.session.member_id
+        member_token : req.headers.member_token
     }
 
     Basket.movieCart(movieCartInfo, function(error, results){
@@ -107,8 +107,7 @@ router.post('/movie/add', function(req,res,next){
         movie_director : req.body.movie_director,
         movie_user_rating : req.body.movie_user_rating,
         movie_link : req.body.movie_link,
-        movie_adder : req.session.member_name,
-        member_id : req.session.member_id
+        member_token : req.headers.member_token
     }
     Basket.movieAdd(movieAddInfo, function(error, results){
         if(error){
