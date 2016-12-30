@@ -160,3 +160,5 @@ function settingMypage (settingInfo, callback) {
 module.exports.movieBasket = movieBasket;
 module.exports.movieCart = movieCart;
 module.exports.movieRecommend = movieRecommend;
+module.exports.basicMypage = basicMypage;
+module.exports.settingMypage = settingMypage;
