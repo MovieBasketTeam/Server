@@ -14,14 +14,23 @@ function category (search_Category_info, callback) {
     var result_categoryMessage_today = {};
     var result_categoryMessage = {};
 
+    dbConn.beginTransaction (function (error) {
+        if (error) {
+            dbConn.release();
+            return callback(error);
+        }
+
     async.series([categoryTodayRecommend, categoryAll], function(error, results){
       if(error){
-        dbConn.relaease();
-        callback(error);
-      } else {
+        return dbConn.rollback(function () {
+            dbConn.release();
+            callback(error);
+        });
+      }
+      dbConn.commit(function () {
         dbConn.release();
         callback(null, result_categoryMessage_today, result_categoryMessage);
-      }
+      });
     });
 
     function categoryTodayRecommend(done){
@@ -109,7 +118,7 @@ function detailCategory (searchInfo, callback) {
       return callback(error);
     }
      var showMessage = {};
-      dbConn.query(sql_detail_category, [searchInfo.u_id, searchInfo.c_id], function (error, rows) {
+     dbConn.query(sql_detail_category, [searchInfo.u_id, searchInfo.c_id], function (error, rows) {
           if (error) {
               dbConn.release();
               return callback(error);
@@ -119,6 +128,8 @@ function detailCategory (searchInfo, callback) {
               showMessage = { baskets : rows};
               return callback(null, showMessage);
           }
+
+        });
       });
     });
 }
