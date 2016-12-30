@@ -1,5 +1,6 @@
 var dbPool = require('./common').dbPool;
 var async = require('async');
+var jwt = require('./jwt');
 
 // 홈 화면에서 바스켓 조회
 function showBaksets (basketInfo, callback) {
@@ -26,7 +27,7 @@ function showBaksets (basketInfo, callback) {
             return callback(error);
         }
         var showMessage = {};
-        dbConn.query(current_sql, [basketInfo.u_id], function (error, rows) {
+        dbConn.query(current_sql, [jwt.decodeToken(basketInfo.member_token).member_id], function (error, rows) {
             if (error) {
                 dbConn.release();
                 return callback(error);
@@ -57,7 +58,7 @@ function likeBasket(basketLikeInfo, callback) {
     [
         'update basket set basket_like = basket_like + 1 where basket_id = ?',
         'update basket set basket_like = basket_like - 1 where basket_id = ?'
-    ]
+    ];
 
     dbPool.getConnection(function(error,dbConn) {
         if(error){
@@ -86,29 +87,41 @@ function likeBasket(basketLikeInfo, callback) {
 
             // 자신의 바스켓 목록 업데이트 함수
             function updateMyBasket (done) {
-                dbConn.query(sql_update_my_basket[basketLikeInfo.is_liked], [basketLikeInfo.basket_id, basketLikeInfo.member_id], function (error, rows) {
-                    if (error) {
-                        return done(error);
+                dbConn.query
+                (
+                    sql_update_my_basket[basketLikeInfo.is_liked],
+                    [
+                        basketLikeInfo.basket_id,
+                        jwt.decodeToken(basketLikeInfo.member_token).member_id
+                    ],
+                    function (error, rows) {
+                        if (error) {
+                            return done(error);
+                        }
+                        else if (rows.affectedRows == 0) {
+                            return done(new Error("fail delete"));
+                        }
+                        else {
+                            return done(null);
+                        }
                     }
-                    else if (rows.affectedRows == 0) {
-                        return done(new Error("fail delete"));
-                    }
-                    else {
-                        return done(null);
-                    }
-                });
+                );
             }
         // 바스켓 좋아요 수 업데이트 함수
             function updateBasketLike (done) {
-                dbConn.query(sql_update_basket_like[basketLikeInfo.is_liked], [basketLikeInfo.basket_id], function (error, rows) {
-                    console.log("in update basket like");
-                    if (error) {
-                        return done(error);
+                dbConn.query
+                (
+                    sql_update_basket_like[basketLikeInfo.is_liked],
+                    [basketLikeInfo.basket_id],
+                    function (error, rows) {
+                        if (error) {
+                            return done(error);
+                        }
+                        else {
+                            return done(null);
+                        }
                     }
-                    else {
-                        return done(null);
-                    }
-                });
+                );
             }
         });
     });
@@ -130,17 +143,23 @@ function showBasketDetail (basketDetailInfo, callback) {
             return callback(error);
         }
         var basketDetailMessage = {};
-        dbConn.query(sql_basket_detail, [basketDetailInfo.member_id, basketDetailInfo.basket_id], function (error, rows) {
-            if (error) {
-                dbConn.release();
-                return callback(error);
+        console.log(basketDetailInfo);
+        dbConn.query
+        (
+            sql_basket_detail,
+            [jwt.decodeToken(basketDetailInfo.member_token).member_id, basketDetailInfo.basket_id],
+            function (error, rows) {
+                if (error) {
+                    dbConn.release();
+                    return callback(error);
+                }
+                else {
+                    dbConn.release();
+                    basketDetailMessage = { movies : rows}
+                    return callback(null, basketDetailMessage);
+                }
             }
-            else {
-                dbConn.release();
-                basketDetailMessage = { movies : rows}
-                return callback(null, basketDetailMessage);
-            }
-        });
+        );
     });
 }
 // 영화 추천 처리 함수
@@ -173,10 +192,13 @@ function movieRecommend (movieRecommendInfo, callback) {
         function updateMyMovieRecommend (done) {
             dbConn.query(
                 sql_update_my_movie_recommend[movieRecommendInfo.is_liked],
-                [movieRecommendInfo.movie_id, movieRecommendInfo.member_id],
+                [movieRecommendInfo.movie_id, jwt.decodeToken(movieRecommendInfo.member_token).member_id],
                 function (error, rows) {
                     if (error) {
                         return done(error);
+                    }
+                    else if (rows.affectedRows == 0) {
+                        return done(new Error("fail delete"));
                     }
                     else {
                         return done(null);
@@ -217,11 +239,14 @@ function movieCart(movieCartInfo, callback){
         var movieCartMessage = {};
         dbConn.query(
             sql_update_my_movie_cart[movieCartInfo.is_carted],
-            [movieCartInfo.movie_id, movieCartInfo.member_id],
+            [movieCartInfo.movie_id, jwt.decodeToken(movieCartInfo.member_token).member_id],
             function (error, rows) {
                 if (error) {
                     dbConn.release();
                     return callback(error);
+                }
+                else if (rows.affectedRows == 0) {
+                    return done(new Error("fail delete"));
                 }
                 else {
                     dbConn.release();
@@ -277,7 +302,7 @@ function movieAdd(movieAddInfo, callback){
                         movieAddInfo.movie_pub_date,
                         movieAddInfo.movie_user_rating,
                         movieAddInfo.movie_link,
-                        movieAddInfo.movie_adder,
+                        jwt.decodeToken(movieAddInfo.member_token).member_id,
                         new Date(),
                         1,
                         movieAddInfo.basket_id
@@ -317,7 +342,7 @@ function movieAdd(movieAddInfo, callback){
             function updateMyMovieLike (done) {
                 dbConn.query(
                     sql_my_movie_add,
-                    [movieId, movieAddInfo.member_id],
+                    [movieId, jwt.decodeToken(movieAddInfo.member_token).member_id],
                     function (error, rows) {
                         if (error) {
                             return done(error);
