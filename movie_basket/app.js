@@ -49,8 +49,12 @@ app.use(session({
 /*
 app.use(passport.initialize());
 app.use(passport.session());*/
+<<<<<<< HEAD
 // app.use(express.static(path.join(__dirname, 'public')));
 // view engine setup
+=======
+app.use(express.static(path.join(__dirname, 'public')));
+>>>>>>> refs/remotes/MovieBasketTeam/master
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
