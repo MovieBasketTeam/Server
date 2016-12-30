@@ -18,6 +18,29 @@ function decipherPassword (password) {
     return decipherd;
 }
 
+//로그아웃
+function withdraw(withdrawInfo, callback) {
+  var sql_withdraw = 'update member set available = 0 where member_id = ? and available = 1';
+  dbPool.getConnection( function(error,dbConn) {
+    if(error){
+      return callback(error);
+    }
+
+    var withdrawMessage = {};
+    dbConn.query(sql_withdraw, [withdrawInfo.member_id], function(error,rows){
+      if (error) {
+        dbConn.release();
+        return callback(error);
+      }
+      else {
+          dbConn.release();
+          withdrawMessage = { message : "withdraw success"};
+          return callback(null, withdrawMessage);
+      }
+    });
+  });
+}
+
 // 로그인 처리 함수
 function logIn (logInInfo, callback) {
     var sql_login_check = 'select * from member where member_email = ? and member_pwd = ? and available = 1';
@@ -99,5 +122,30 @@ function signUp (signUpInfo, callback) {
     });
 }
 
+function checkVersion (callback) {
+    var ver_sql = 'select ver from connection';
+    dbPool.getConnection( function (error, dbConn) {
+        if (error) {
+            return callback(error);
+        }
+
+        var checkVerMessage = {};
+        dbConn.query(ver_sql, function (error, rows) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+
+            else {
+                dbConn.release();
+                checkVerMessage = { version : rows[0].ver };
+                return callback(null, checkVerMessage);
+            }
+        });
+    });
+}
+
 module.exports.logIn = logIn;
 module.exports.signUp = signUp;
+module.exports.checkVersion = checkVersion;
+module.exports.withdraw = withdraw;
