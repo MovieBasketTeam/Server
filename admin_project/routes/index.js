@@ -3,7 +3,7 @@ var mysql = require('mysql');
 var multer = require('multer');
 //var multerS3 = require('multer-s3');
 var db_config = require('../config/db_config.json');
-var awsinfo_config = require('../config/awsinfo_config.json');
+var awsinfo_config = require('../config/aws_config.json');
 var router = express.Router();
 
 
