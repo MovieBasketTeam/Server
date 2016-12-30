@@ -8,6 +8,10 @@ router.get('/', function (req, res) {
     res.send({result : 'check'});
 });
 
+router.get('/verify', function (req, res, next) {
+
+});
+
 router.get('/logout', function(req,res,next) {
 
     req.session.destroy(function(err){});
@@ -47,16 +51,7 @@ router.post('/', function (req, res, next) {
             console.log("Connection error " + error);
             return res.send(error);
         }
-        else {
-            if (results.member_info) {
-                var sess = req.session;
-                sess.member_id = results.member_info.member_id;
-                sess.member_name = results.member_info.member_name;
-                sess.member_email = results.member_info.member_email;
-            }
-        }
-        var result_value = {message : results.message};
-        res.status(201).send({result : result_value});
+        res.status(201).send({result : results});
     });
 });
 
