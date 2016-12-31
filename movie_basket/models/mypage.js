@@ -67,7 +67,6 @@ function movieCart(mypageInfo, callback) {
     'FROM movie m JOIN (SELECT m_id, u_id FROM movie_clip WHERE u_id = ?) mc ON(m.movie_id = mc.m_id) '+
     'LEFT JOIN (SELECT m_id, u_id FROM movie_heart WHERE u_id = ?) mh ON(m.movie_id = mh.m_id) '+
     'JOIN (SELECT basket_name, basket_id FROM basket) AS bn ON(m.basket_id = bn.basket_id)';
-
     dbPool.getConnection(function(error, dbConn) {
         if(error) {
             return callback(error);
