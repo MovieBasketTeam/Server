@@ -75,6 +75,21 @@ function movieBasket(mypageInfo, callback) {
 
 function movieCart(mypageInfo, callback) {
   var sql_movieCart =
+  'SELECT m.movie_id, m.movie_title, m.movie_image, m.movie_director, m.movie_pub_date, m.movie_adder, '+
+  'm.movie_user_rating, m.movie_link, m.movie_like, (CASE WHEN mh.u_id IS NULL THEN 0 ELSE 1 END) AS is_liked, '+
+  '(CASE WHEN mc.u_id IS NULL THEN 0 ELSE 1 END) AS is_cart '+
+  'FROM movie m JOIN (SELECT m_id, u_id FROM movie_clip WHERE u_id = ?) mc ON(m.movie_id = mc.m_id) '+
+  'LEFT JOIN (SELECT m_id, u_id FROM movie_heart WHERE u_id = ?) mh ON(m.movie_id = mh.m_id) '+
+  'JOIN (SELECT basket_name, basket_id FROM basket) AS bn ON(m.basket_id = bn.basket_id)';
+
+
+
+
+
+
+
+
+
   'SELECT movie_id, movie_title, movie_image, movie_director, movie_pub_date, movie_adder, ' +
   'movie_user_rating, movie_link, movie_like, (CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked, ' +
   '(CASE WHEN m.movie_id=mc.m_id THEN 1 ELSE 0 END) AS is_cart '+
@@ -122,7 +137,7 @@ function movieRecommend(mypageInfo, callback) {
 
   'SELECT m.movie_id, m.movie_title, m.movie_image, m.movie_director, m.movie_pub_date, m.movie_adder, '+
   'm.movie_user_rating, m.movie_link, m.movie_like, (CASE WHEN mh.u_id IS NULL THEN 0 ELSE 1 END) AS is_liked, '+
-  '(CASE WHEN mc.u_id IS NULL THEN 0 ELSE 1 END) AS is_cart, bn.basket_name'+
+  '(CASE WHEN mc.u_id IS NULL THEN 0 ELSE 1 END) AS is_cart '+
   'FROM movie m JOIN (SELECT m_id, u_id FROM movie_heart WHERE u_id = ?) mh ON(m.movie_id = mh.m_id) '+
   'LEFT JOIN (SELECT m_id, u_id FROM movie_clip WHERE u_id = ?) mc ON(m.movie_id = mc.m_id) '+
   'JOIN (SELECT basket_name, basket_id FROM basket) AS bn ON(m.basket_id = bn.basket_id)';
