@@ -3,7 +3,7 @@ var mysql = require('mysql');
 var multer = require('multer');
 //var multerS3 = require('multer-s3');
 var db_config = require('../config/db_config.json');
-var awsinfo_config = require('../config/aws_config.json');
+var awsinfo_config = require('../config/awsinfo_config.json');
 var router = express.Router();
 
 
@@ -48,7 +48,33 @@ var pool = mysql.createPool({
 });
 
 router.get('/', function(req, res, next) {
-    res.render('index', { title : '바스켓 추가 페이지'});
+  pool.getConnection(function(error, connection){
+    if (error){
+      console.log("getConnection Error" + error);
+      res.sendStatus(500);
+    }
+    else{
+        sql = 'select big_category, small_category from category order by big_category ASC';
+      connection.query(sql, function(error, rows){
+        if (error){
+          console.log("Connection Error" + error);
+          res.sendStatus(500);
+          connection.release();
+        }
+        else {
+          // res.status(201).send({result : 'create'});
+          connection.release();
+          console.log(rows);
+          res.render('index',
+            {
+              title : '바스켓 랭킹 설정 페이지',
+              categorys : rows
+            }
+          );
+        }
+      });
+    }
+  });
 });
 
 router.post('/', upload.single('basket_image'), function(req, res, next) {
