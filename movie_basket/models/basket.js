@@ -26,7 +26,14 @@ function showBaksets (basketInfo, callback) {
         if (error) {
             return callback(error);
         }
+
         var showMessage = {};
+        if (basketInfo.member_token == '') {
+            showMessage = {message : "is not logined"};
+            dbConn.release();
+            return callback(null, showMessage);
+        }
+
         dbConn.query(current_sql, [jwt.decodeToken(basketInfo.member_token).member_id], function (error, rows) {
             if (error) {
                 dbConn.release();
@@ -64,7 +71,14 @@ function likeBasket(basketLikeInfo, callback) {
         if(error){
             return callback(error);
         }
+
         var basketLikeMessage = {};
+        if (basketLikeInfo.member_token =='') {
+            dbConn.release();
+            basketLikeMessage = {message : "is not logined"};
+            return callback(null, basketLikeMessage);
+        }
+
         dbConn.beginTransaction (function (error) {
             if (error) {
                 dbConn.release();
@@ -142,8 +156,15 @@ function showBasketDetail (basketDetailInfo, callback) {
         if (error) {
             return callback(error);
         }
+
         var basketDetailMessage = {};
-        console.log(basketDetailInfo);
+
+        if (basketDetailInfo.member_token == '') {
+            dbConn.release();
+            basketDetailMessage = {message : "is not logined"};
+            return callback(null, basketDetailMessage);
+        }
+
         dbConn.query
         (
             sql_basket_detail,
@@ -178,7 +199,14 @@ function movieRecommend (movieRecommendInfo, callback) {
         if (error) {
             return callback(error);
         }
+
         var movieRecommendMessage = {};
+        if (movieRecommendInfo.member_token == '') {
+            dbConn.release();
+            movieRecommendMessage = { message : "is not logined"};
+            return callback(null, movieRecommendMessage);
+        }
+
         async.series([updateMyMovieRecommend, updateMovieRecommend], function (error, results) {
             if (error) {
                 dbConn.release();
@@ -237,6 +265,12 @@ function movieCart(movieCartInfo, callback){
             return callback(error);
         }
         var movieCartMessage = {};
+        if (movieCartInfo.member_token == '') {
+            movieCartMessage = {message : "is not logined"};
+            dbConn.release();
+            return callback(null, movieCartMessage);
+        }
+
         dbConn.query(
             sql_update_my_movie_cart[movieCartInfo.is_carted],
             [movieCartInfo.movie_id, jwt.decodeToken(movieCartInfo.member_token).member_id],
@@ -271,12 +305,19 @@ function movieAdd(movieAddInfo, callback){
         if (error) {
             return callback(error);
         }
+
+        var movieAddMessage = {};
+        if (movieAddInfo.member_token == '') {
+            dbConn.release();
+            movieAddMessage = {message : "is not logined"};
+            return callback(null, movieAddMessage);
+        }
+
         dbConn.beginTransaction(function (error) {
             if (error) {
                 dbConn.release();
                 return callback(error);
             }
-            var movieAddMessage = {};
             var movieId;
             async.series([updateMovieAdd, getMovieId, updateMyMovieLike], function (error, results) {
                 if (error) {
