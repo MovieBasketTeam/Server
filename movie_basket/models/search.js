@@ -66,44 +66,48 @@ function category (callback) {
     });
 }
 
-sql = '';
-for (var i = 0 ; i < 5 ; i++) {
-    sql+'WHEN '+i+' THEN '+(i+1)+'';
-}
 //카테고리 선택 후 바스켓 조회 함수
 function detailCategory (searchInfo, callback) {
-  var sql_detail_category =
-  'SELECT '+
-  'basket_id, basket_name, basket_image, basket_like, (CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked '+
-  'FROM basket AS b LEFT JOIN (SELECT b_id, u_id FROM basket_heart WHERE u_id = ?) AS bh ON (b.basket_id = bh.b_id) '+
-  				 'JOIN (SELECT c_id, b_id FROM categoryKey WHERE c_id = ?) AS ck ON (b.basket_id = ck.b_id)';
+    var sql_detail_category =
+    'SELECT '+
+    'basket_id, basket_name, basket_image, basket_like, (CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked '+
+    'FROM basket AS b LEFT JOIN (SELECT b_id, u_id FROM basket_heart WHERE u_id = ?) AS bh ON (b.basket_id = bh.b_id) '+
+  	'JOIN (SELECT c_id, b_id FROM categoryKey WHERE c_id = ?) AS ck ON (b.basket_id = ck.b_id)';
 
-  dbPool.getConnection(function(error,dbConn){
-    if(error){
-      return callback(error);
-    }
-     var showMessage = {};
-     dbConn.beginTransaction (function (error) {
-         if (error) {
-             dbConn.release();
-             return callback(error);
-         }
-        dbConn.query(sql_detail_category, [jwt.decodeToken(searchInfo.member_token).member_id, searchInfo.c_id], function (error, rows) {
-          if (error) {
-            return dbConn.rollback(function () {
-                dbConn.release();
-                callback(error);
-            });
-          }
-          dbConn.commit(function () {
+    dbPool.getConnection(function(error,dbConn){
+
+        if(error){
+            return callback(error);
+        }
+
+        var showMessage = {};
+
+        if (searchInfo.member_token == '') {
             dbConn.release();
-            showMessage = { baskets : rows};
+            showMessage = {message : "is not logined"};
             return callback(null, showMessage);
-          });
-        });
-      });
-    });
+        }
 
+        dbConn.beginTransaction (function (error) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+            dbConn.query(sql_detail_category, [jwt.decodeToken(searchInfo.member_token).member_id, searchInfo.c_id], function (error, rows) {
+                if (error) {
+                    return dbConn.rollback(function () {
+                        dbConn.release();
+                        callback(error);
+                    });
+                }
+                dbConn.commit(function () {
+                    dbConn.release();
+                    showMessage = { baskets : rows};
+                    return callback(null, showMessage);
+                });
+            });
+        });
+    });
 }
 
 module.exports.category = category;
