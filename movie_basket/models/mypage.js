@@ -1,4 +1,5 @@
 var dbPool = require('./common').dbPool;
+var Common = require('./common');
 var async = require('async');
 var jwt = require('./jwt');
 
@@ -88,14 +89,13 @@ function movieCart(mypageInfo, callback) {
                 if (error) {
                     return dbConn.rollback(function () {
                         dbConn.release();
-                        console.log("in rollback");
                         return callback(error);
                     });
                 }
                 dbConn.commit(function () {
                     dbConn.release();
-                    console.log("in commit");
-                    showMessage = { result : rows }
+                    showMessage = { result : Common.refineMovieRating(rows) }
+                    console.log(Common.refineMovieRating(rows));
                     return callback(null, showMessage);
                 });
             });
@@ -138,7 +138,7 @@ function movieRecommend(mypageInfo, callback) {
                 }
                 dbConn.commit(function (){
                     dbConn.release();
-                    showMessage = { result : rows }
+                    showMessage = { result : Common.refineMovieRating(rows) }
                     return callback(null, showMessage);
                 });
             });

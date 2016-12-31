@@ -1,4 +1,5 @@
 var dbPool = require('./common').dbPool;
+var Common = require('./common');
 var async = require('async');
 var jwt = require('./jwt');
 
@@ -176,7 +177,7 @@ function showBasketDetail (basketDetailInfo, callback) {
                 }
                 else {
                     dbConn.release();
-                    basketDetailMessage = { movies : rows}
+                    basketDetailMessage = { movies : Common.refineMovieRating(rows)}
                     return callback(null, basketDetailMessage);
                 }
             }
