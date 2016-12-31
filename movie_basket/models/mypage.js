@@ -112,7 +112,7 @@ function movieRecommend(mypageInfo, callback) {
   'SELECT m.movie_id, m.movie_title, m.movie_image, m.movie_director, m.movie_pub_date, ' +
   'm.movie_user_rating, m.movie_link, m.movie_like, (CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked ' +
   'FROM movie m JOIN movie_heart mh ON (m.movie_id = mh.m_id) ' +
-			         'JOIN member mem ON (mh.u_id = mem.member_id) ' +
+  'JOIN member mem ON (mh.u_id = mem.member_id) ' +
   'WHERE mem.member_id = ?';
   dbPool.getConnection(function(error, dbConn) {
     if(error) {
