@@ -66,7 +66,10 @@ function category (callback) {
     });
 }
 
-
+sql = '';
+for (var i = 0 ; i < 5 ; i++) {
+    sql+'WHEN '+i+' THEN '+(i+1)+'';
+}
 //카테고리 선택 후 바스켓 조회 함수
 function detailCategory (searchInfo, callback) {
   var sql_detail_category =

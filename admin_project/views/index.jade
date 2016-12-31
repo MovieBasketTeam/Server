@@ -2,6 +2,7 @@ extends layout
 
 block content
   h1= title
+<<<<<<< HEAD
 
 
   form(action='/', method="post", enctype="multipart/form-data")
@@ -27,3 +28,19 @@ block content
     p
       input(type='submit', value="업로드")
       
+=======
+  p Welcome to #{title}
+
+  form(action='/', method="post", enctype="multipart/form-data")
+    h3 바스켓의 랭킹을 정해주세요
+    script(type='text/javascript')
+    select(name='job')
+      option(value='') 성별 선택
+      option(value='남') 남
+      option(value='여') 여
+
+
+
+    p
+      input(type='submit', value="수정")
+>>>>>>> refs/remotes/MovieBasketTeam/master

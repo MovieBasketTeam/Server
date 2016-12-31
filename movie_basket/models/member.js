@@ -154,6 +154,12 @@ function verify (verifyInfo, callback) {
         }
 
         var verifyMessage = {};
+        if (!verifyInfo.member_token) {
+            dbConn.release();
+            verifyMessage = {message : "is not logined"};
+            return callback(null, verifyMessage);
+        }
+
         dbConn.query(sql_verify, [jwt.decodeToken(verifyInfo.member_token).member_id], function (error, rows) {
             if (error) {
                 dbConn.release();
