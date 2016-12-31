@@ -106,7 +106,7 @@ function movieRecommend(mypageInfo, callback) {
     var sql_movieReccomend =
     'SELECT m.movie_id, m.movie_title, m.movie_image, m.movie_director, m.movie_pub_date, m.movie_adder, '+
     'm.movie_user_rating, m.movie_link, m.movie_like, (CASE WHEN mh.u_id IS NULL THEN 0 ELSE 1 END) AS is_liked, '+
-    '(CASE WHEN mc.u_id IS NULL THEN 0 ELSE 1 END) AS is_cart, bn.basket_name'+
+    '(CASE WHEN mc.u_id IS NULL THEN 0 ELSE 1 END) AS is_cart, bn.basket_name '+
     'FROM movie m JOIN (SELECT m_id, u_id FROM movie_heart WHERE u_id = ?) mh ON(m.movie_id = mh.m_id) '+
     'LEFT JOIN (SELECT m_id, u_id FROM movie_clip WHERE u_id = ?) mc ON(m.movie_id = mc.m_id) '+
     'JOIN (SELECT basket_name, basket_id FROM basket) AS bn ON(m.basket_id = bn.basket_id)';
