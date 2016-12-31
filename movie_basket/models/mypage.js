@@ -75,8 +75,9 @@ function movieBasket(mypageInfo, callback) {
 
 function movieCart(mypageInfo, callback) {
   var sql_movieCart =
-  'SELECT movie_id, movie_title, movie_image, movie_director, movie_pub_date, ' +
-  'movie_user_rating, movie_link, movie_like, (CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked ' +
+  'SELECT movie_id, movie_title, movie_image, movie_director, movie_pub_date, movie_adder, ' +
+  'movie_user_rating, movie_link, movie_like, (CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked, ' +
+  '(CASE WHEN m.movie_id=mc.m_id THEN 1 ELSE 0 END) AS is_cart '+
   'FROM movie m JOIN movie_clip mc ON (m.movie_id = mc.m_id) ' +
                'JOIN member mem ON (mc.u_id = mem.member_id) ' +
   'WHERE mem.member_id = ?';
