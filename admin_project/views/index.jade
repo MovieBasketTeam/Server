@@ -3,12 +3,16 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  
+
   form(action='/', method="post", enctype="multipart/form-data")
-    h3 바스켓을 추가해 주세요!!
+    h3 바스켓의 랭킹을 정해주세요
+    script(type='text/javascript')
+    select(name='job')
+      option(value='') 성별 선택
+      option(value='남') 남
+      option(value='여') 여
+
+
+
     p
-      input(type='text', name="basket_name", placeholder="Basket name")
-    p
-      input(type='file', name="basket_image")
-    p
-      input(type='submit', value="업로드")
+      input(type='submit', value="수정")
