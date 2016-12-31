@@ -109,10 +109,12 @@ function movieCart(mypageInfo, callback) {
 
 function movieRecommend(mypageInfo, callback) {
   var sql_movieReccomend =
-  'SELECT m.movie_id, m.movie_title, m.movie_image, m.movie_director, m.movie_pub_date, ' +
-  'm.movie_user_rating, m.movie_link, m.movie_like, (CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked ' +
+  'SELECT m.movie_id, m.movie_title, m.movie_image, m.movie_director, m.movie_pub_date,  m.movie_adder, ' +
+  'm.movie_user_rating, m.movie_link, m.movie_like, (CASE WHEN mh.u_id IS NULL THEN 0 ELSE 1 END) AS is_liked ' +
+  '(CASE WHEN m.movie_id=mc.m_id THEN 1 ELSE 0 END) AS is_cart '+
   'FROM movie m JOIN movie_heart mh ON (m.movie_id = mh.m_id) ' +
 			         'JOIN member mem ON (mh.u_id = mem.member_id) ' +
+               'JOIN movie_clip mc On(mc.u_id = mem.member_id) ' +
   'WHERE mem.member_id = ?';
   dbPool.getConnection(function(error, dbConn) {
     if(error) {
@@ -143,7 +145,7 @@ function movieRecommend(mypageInfo, callback) {
 
 
 //setting
-function settingMypage (settingInfo, callback) {
+function settingMypage (settingInfo, callback) {. u=oop
   var showMessage = {};
   // if (!jwt.decodeToken(settingInfo.member_token).member_name) {
   //     //res.sendStatus(500);
