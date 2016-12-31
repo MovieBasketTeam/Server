@@ -51,7 +51,7 @@ function movieBasket(mypageInfo, callback) {
                 }
                 dbConn.commit(function () {
                     dbConn.release();
-                    showMessage = { result : rows }
+                    showMessage = { baskets : rows }
                     return callback(null, showMessage);
                 });
             });
