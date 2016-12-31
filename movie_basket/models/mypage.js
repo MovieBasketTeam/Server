@@ -63,7 +63,7 @@ function movieCart(mypageInfo, callback) {
     var sql_movieCart =
     'SELECT m.movie_id, m.movie_title, m.movie_image, m.movie_director, m.movie_pub_date, m.movie_adder, '+
     'm.movie_user_rating, m.movie_link, m.movie_like, (CASE WHEN mh.u_id IS NULL THEN 0 ELSE 1 END) AS is_liked, '+
-    '(CASE WHEN mc.u_id IS NULL THEN 0 ELSE 1 END) AS is_cart , bn.basket_name'+
+    '(CASE WHEN mc.u_id IS NULL THEN 0 ELSE 1 END) AS is_cart , bn.basket_name '+
     'FROM movie m JOIN (SELECT m_id, u_id FROM movie_clip WHERE u_id = ?) mc ON(m.movie_id = mc.m_id) '+
     'LEFT JOIN (SELECT m_id, u_id FROM movie_heart WHERE u_id = ?) mh ON(m.movie_id = mh.m_id) '+
     'JOIN (SELECT basket_name, basket_id FROM basket) AS bn ON(m.basket_id = bn.basket_id)';
@@ -83,16 +83,18 @@ function movieCart(mypageInfo, callback) {
                 return callback(error);
             }
             var member_id = jwt.decodeToken(mypageInfo.member_token).member_id;
+            console.log(member_id);
             dbConn.query(sql_movieCart, [member_id, member_id], function(error, rows) {
                 if (error) {
                     return dbConn.rollback(function () {
                         dbConn.release();
-                        showMessage = {message : "is not logined"};
-                        return callback(null, showMessage);
+                        console.log("in rollback");
+                        return callback(error);
                     });
                 }
                 dbConn.commit(function () {
                     dbConn.release();
+                    console.log("in commit");
                     showMessage = { result : rows }
                     return callback(null, showMessage);
                 });
