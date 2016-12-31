@@ -19,29 +19,7 @@ function decipherPassword (password) {
     return decipherd;
 }
 
-//회원탈퇴
-function withdraw(withdrawInfo, callback) {
-  var sql_withdraw = 'update member set available = 0 where member_id = ? and available = 1';
-  dbPool.getConnection( function(error,dbConn) {
-    if(error){
-      return callback(error);
-    }
-    var withdrawMessage = {};
-    dbConn.query(sql_withdraw, [jwt.decodeToken(withdrawInfo.member_token).member_id], function(error,rows){
-      if (error) {
-        dbConn.release();
-        return callback(error);
-      }
-      else {
-          dbConn.release();
-          withdrawMessage = { message : "withdraw success"};
-          return callback(null, withdrawMessage);
-      }
-    });
-  });
-}
-
-// 로그인 처리 함수
+// 1-a 로그인 처리 함수
 function logIn (logInInfo, callback) {
     var sql_login_check = 'select member_id, member_name, member_email, member_pwd from member where member_email = ? and member_pwd = ? and available = 1';
     dbPool.getConnection ( function (error, dbConn) {
@@ -74,7 +52,9 @@ function logIn (logInInfo, callback) {
         });
     });
 }
-// 회원가입 중복확인 후 가입 처리를 해주는 함수
+
+
+// 1-b 회원가입 중복확인 후 가입 처리를 해주는 함수
 // async 사용
 function signUp (signUpInfo, callback) {
     var sql_repetition = 'select * from member where member_email = ? or member_name = ?';
@@ -123,6 +103,36 @@ function signUp (signUpInfo, callback) {
     });
 }
 
+// 1-c 회원탈퇴 함수
+function withdraw(withdrawInfo, callback) {
+    var sql_withdraw = 'update member set available = 0 where member_id = ? and available = 1';
+    dbPool.getConnection( function(error,dbConn) {
+        if(error){
+            return callback(error);
+        }
+
+        var withdrawMessage = {};
+        if (withdrawInfo.member_token =='') {
+            dbConn.release();
+            withdrawMessage = {message : "is not logined"};
+            return callback(null, withdrawMessage);
+        }
+
+        dbConn.query(sql_withdraw, [jwt.decodeToken(withdrawInfo.member_token).member_id], function(error,rows){
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+            else {
+                dbConn.release();
+                withdrawMessage = { message : "withdraw success"};
+                return callback(null, withdrawMessage);
+            }
+        });
+    });
+}
+
+// 1-d 버전확인 함수
 function checkVersion (callback) {
     var ver_sql = 'select ver from connection';
     dbPool.getConnection( function (error, dbConn) {
@@ -146,6 +156,7 @@ function checkVersion (callback) {
     });
 }
 
+// 1-e 로그인 상태 확인 함수
 function verify (verifyInfo, callback) {
     var sql_verify = 'select member_id from member where member_id = ?';
     dbPool.getConnection ( function (error, dbConn) {
@@ -154,7 +165,7 @@ function verify (verifyInfo, callback) {
         }
 
         var verifyMessage = {};
-        if (!verifyInfo.member_token) {
+        if (verifyInfo.member_token =='') {
             dbConn.release();
             verifyMessage = {message : "is not logined"};
             return callback(null, verifyMessage);
