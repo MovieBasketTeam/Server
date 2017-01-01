@@ -62,7 +62,7 @@ router.get('/', function(req, res, next) {
     }
   });
 });
-
+;
 router.post('/', function(req, res, next) {
   //console.log(req.body);
   pool.getConnection(function(error, connection){
@@ -72,30 +72,33 @@ router.post('/', function(req, res, next) {
       res.sendStatus(500);
     }
     else{
-        // for( var i = 0; i < length; i++ ){
-        //   sql =
-        // }
-        sql = "update basket set basket_rank='basket.basket_rank' where basket_name = 'basket.basket_name'";
-        connection.query(sql, function(error, rows){
-        if (error){
-          console.log("Connection Error" + error);
-          connection.release();
-          res.sendStatus(500);
+        sql = 'UPDATE basket SET basket_rank = CASE basket_id ';
+        for( var i =0; i < req.body["rank[]"].length; i++){
+            console.log(req.body["rank[]"][i]);
+            var newRank = req.body["rank[]"][i];
+            sql += 'WHEN '+(i+1)+' THEN '+newRank+' '
+
         }
-        else {
-          // res.status(201).send({result : 'create'});
-          connection.release();
-          console.log("in body");
-          console.log(req.body);
-          // res.render('basketRank',
-          //   {
-          //     title : '바스켓 랭킹 설정 페이지',
-          //     baskets : rows
-          //   }
-          // );
-          res.send({result : rows});
-        }
-      });
+        sql += 'ELSE basket_rank END';
+        console.log(sql);
+            connection.query(sql, function(error, rows){
+                if (error){
+                  console.log("Connection Error" + error);
+                  connection.release();
+                  res.sendStatus(500);
+                }
+                else {
+                  // res.status(201).send({result : 'create'});
+                  connection.release();
+                  // res.render('basketRank',
+                  //   {
+                  //     title : '바스켓 랭킹 설정 페이지',
+                  //     baskets : rows
+                  //   }
+                  // );
+                  res.send({result : rows});
+            }
+          });
     }
   });
 });

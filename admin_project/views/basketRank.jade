@@ -19,12 +19,12 @@ block content
                             input(type='text', name="basket_rank" ,value = '#{basket.basket_rank}' )
     p
         input(type='submit', id="saveBtn", value="수정")
-  
+     
     script.
         $(function() {
-            var ranks = [];
             var length = #{baskets.length};
             $("#saveBtn").click(function() {
+                var ranks = [];
                 for (var i = 1 ; i <= length ; i++) {
                      var id = '#id_'+i;
                      ranks.push($(id).find("td:eq(1)").find("input").val());
