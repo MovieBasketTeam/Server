@@ -9,7 +9,6 @@ function makeToken (value) {
 
 function decodeToken (token) {
     var decoded = jwt.decode(token, secret);
-    console.log("decoded value is " + decoded);
     return decoded;
 }
 
