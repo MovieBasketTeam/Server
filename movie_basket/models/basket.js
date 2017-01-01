@@ -56,17 +56,11 @@ function likeBasket(basketLikeInfo, callback) {
 
     // 마이 바스켓 목록 업데이트
     var sql_update_my_basket =
-    [
-        'insert into basket_heart(b_id, u_id) values (?, ?)',
-        'delete from basket_heart where b_id = ? and u_id = ?'
-    ];
+        'insert into basket_heart(b_id, u_id) values (?, ?)';
 
     // 바스켓 추천 수 업데이트
     var sql_update_basket_like =
-    [
-        'update basket set basket_like = basket_like + 1 where basket_id = ?',
-        'update basket set basket_like = basket_like - 1 where basket_id = ?'
-    ];
+        'update basket set basket_like = basket_like + 1 where basket_id = ?';
 
     dbPool.getConnection(function(error,dbConn) {
         if(error){
@@ -104,7 +98,7 @@ function likeBasket(basketLikeInfo, callback) {
             function updateMyBasket (done) {
                 dbConn.query
                 (
-                    sql_update_my_basket[basketLikeInfo.is_liked],
+                    sql_update_my_basket,
                     [
                         basketLikeInfo.basket_id,
                         jwt.decodeToken(basketLikeInfo.member_token).member_id
@@ -126,7 +120,7 @@ function likeBasket(basketLikeInfo, callback) {
             function updateBasketLike (done) {
                 dbConn.query
                 (
-                    sql_update_basket_like[basketLikeInfo.is_liked],
+                    sql_update_basket_like,
                     [basketLikeInfo.basket_id],
                     function (error, rows) {
                         if (error) {
@@ -179,7 +173,7 @@ function showBasketDetail (basketDetailInfo, callback) {
                 }
                 else {
                     dbConn.release();
-                    basketDetailMessage = { movies : Common.refineMovieRating(rows)}
+                    basketDetailMessage = { result : Common.refineMovieRating(rows)}
                     return callback(null, basketDetailMessage);
                 }
             }
