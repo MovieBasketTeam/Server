@@ -163,8 +163,52 @@ function settingMypage (settingInfo, callback) {
     return callback(null, showMessage);
 }
 
+
+//movie-delete
+function movieDelete(movieDeleteInfo, callback){
+    var sql_update_my_movie_delete =
+        'delete from movie_clip where m_id = ? and u_id = ?';
+
+    dbPool.getConnection(function (error,dbConn) {
+        if(error){
+            dbConn.release();
+            return callback(error);
+        }
+        var movieCartMessage = {};
+        if (movieDeleteInfo.member_token == '') {
+            movieCartMessage = {message : "is not logined"};
+            dbConn.release();
+            return callback(null, movieCartMessage);
+        }
+
+        dbConn.query(
+            sql_update_my_movie_delete,
+            [movieDeleteInfo.movie_id, jwt.decodeToken(movieDeleteInfo.member_token).member_id],
+            function (error, rows) {
+                if (error) {
+                    dbConn.release();
+                    return callback(error);
+                }
+                else if (rows.affectedRows == 0) {
+                  console.log(rows);
+                    //return done(new Error("fail delete"));
+                    return callback(new Error("fail delete"));
+                }
+                else {
+                    dbConn.release();
+                    movieCartMessage = {message : "movie delete success"};
+                    return callback(null, movieCartMessage);
+                }
+            }
+        );
+    });
+}
+
+
+
 module.exports.movieBasket = movieBasket;
 module.exports.movieCart = movieCart;
 module.exports.movieRecommend = movieRecommend;
 module.exports.basicMypage = basicMypage;
 module.exports.settingMypage = settingMypage;
+module.exports.movieDelete = movieDelete;

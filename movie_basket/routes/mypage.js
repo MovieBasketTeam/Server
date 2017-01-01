@@ -98,4 +98,24 @@ router.get('/setting', function (req, res, next) {
     });
 });
 
+//4-f 담은영화 빼기
+router.post('/movie/cart/delete', function(req,res,next){
+
+    var movieDeleteInfo = {
+        movie_id : req.body.movie_id,
+        member_token : req.headers.member_token
+    }
+
+    Mypage.movieDelete(movieDeleteInfo, function(error, results){
+        if(error){
+            console.log("Connection error " + error);
+            res.send(error);
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
+});
+
+
 module.exports = router;
