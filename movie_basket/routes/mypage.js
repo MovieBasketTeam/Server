@@ -98,4 +98,21 @@ router.get('/setting', function (req, res, next) {
     });
 });
 
+router.post('/basket/delete', function (req, res, next) {
+    var basketInfo = {
+        basket_id : req.body.basket_id,
+        member_token : req.headers.member_token
+    }
+
+    Mypage.deleteBasket(basketInfo, function (error, results) {
+        if (error) {
+            console.log("Connection error " + error);
+            res.send(error);
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
+});
+
 module.exports = router;

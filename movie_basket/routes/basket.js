@@ -25,8 +25,7 @@ router.post('/like', function (req, res, next) {
     var basketLikeInfo =
     {
         member_token : req.headers.member_token,
-        basket_id : req.body.basket_id,
-        is_liked : req.body.is_liked
+        basket_id : req.body.basket_id
     }
     Basket.likeBasket(basketLikeInfo, function (error, results) {
         if (error) {
