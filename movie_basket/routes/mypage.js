@@ -109,9 +109,20 @@ router.post('/movie/cart/delete', function(req,res,next){
 
     Mypage.movieDelete(movieDeleteInfo, function(error, results){
         if(error){
+<<<<<<< HEAD
         }
       });
     });
+=======
+            console.log("Connection error " + error);
+            res.send(error);
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
+});
+>>>>>>> refs/remotes/MovieBasketTeam/master
 
 router.post('/basket/delete', function (req, res, next) {
     var basketInfo = {
@@ -130,5 +141,6 @@ router.post('/basket/delete', function (req, res, next) {
         }
     });
 });
+
 
 module.exports = router;
