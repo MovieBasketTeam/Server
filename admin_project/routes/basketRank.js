@@ -118,7 +118,6 @@ router.post('/', function(req, res, next) {
             console.log(req.body["rank[]"][i]);
             var newRank = req.body["rank[]"][i];
             sql += 'WHEN '+(i+1)+' THEN '+newRank+' '
-
         }
         sql += 'ELSE basket_rank END';
         console.log(sql);
