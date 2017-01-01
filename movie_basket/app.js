@@ -13,7 +13,7 @@ var passport = require('passport');
 //var redisClient = require('./models/redisClient.js');
 var redisStore = require('connect-redis')(session);
 
-var routes = require('./routes/index');
+//var routes = require('./routes/index');
 var users = require('./routes/users');
 var member = require('./routes/member');
 var search = require('./routes/search');
@@ -58,7 +58,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use('/', routes);
+//app.use('/', routes);
 app.use('/users', users);
 app.use('/member', member);
 app.use('/mypage', mypage);

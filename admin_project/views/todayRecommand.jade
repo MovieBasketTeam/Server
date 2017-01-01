@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+
+  form(action='/', method="post", enctype="multipart/form-data")
+    h4 바스켓의 랭킹을 정해주세요
+  
+    script(type='text/javascript')
+    select(name='job')
+      option(value='') 성별 선택
+      option(value='남') 남
+      option(value='여') 여
+  
+    p
+      input(type='submit', value="수정")
+      

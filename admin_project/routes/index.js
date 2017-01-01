@@ -1,26 +1,8 @@
 var express = require('express');
 var mysql = require('mysql');
-var multer = require('multer');
-//var multerS3 = require('multer-s3');
 var db_config = require('../config/db_config.json');
 var awsinfo_config = require('../config/awsinfo_config.json');
 var router = express.Router();
-
-
-/*
-var s3 = new aws.S3();
-
-var upload = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: 'minha',
-    acl: 'public-read',
-    key: function (req, file, cb) {
-      cb(null, Date.now() + '.' + file.originalname.split('.').pop());
-    }
-  })
-});
-*/
 
 var fs = require('fs');
 var multer = require('multer');
@@ -36,7 +18,6 @@ var _storage = multer.diskStorage({
 var upload = multer({
   storage: _storage
 });
-
 
 var pool = mysql.createPool({
   host : db_config.host,
@@ -80,5 +61,48 @@ router.post('/', upload.single('basket_image'), function(req, res, next) {
     }
   });
 });
+
+// 아래부터 재림이가 한 부분
+/*
+router.get('/', function(req, res, next) {
+  pool.getConnection(function(error, connection){
+    if (error){
+      console.log("getConnection Error" + error);
+      connection.release();
+      res.sendStatus(500);
+    }
+    else{
+        sql = 'select small_category from category';
+      connection.query(sql, function(error, rows){
+        if (error){
+          console.log("Connection Error" + error);
+          connection.release();
+          res.sendStatus(500);
+        }
+        else {
+          connection.release();
+          console.log(rows);
+          res.render('index',
+            {
+              title : '오늘 추천 카테고리',
+              baskets : rows
+            }
+          );
+        }
+      });
+    }
+  });
+});
+*/
+/*
+router.post('/', function(req, res, next) {
+  var info = {
+    req.bodyParser.job.value()
+  };
+  console.log(info);
+  res.send({result : 'ok'});
+
+  });
+*/
 
 module.exports = router;

@@ -4,36 +4,13 @@ var router = express.Router();
 
 
 router.get('/', function (req, res, next) {
-  var search_Category_info = {
-    c_id : req.params.c_id,
-    small_category  : req.body.small_category,
-    big_category : req.body.big_category
-  }
-    // var result =
-    // {
-    //     today_recommand :
-    //     [
-    //         {
-    //             c_id : 1,
-    //             small_category : '우울할 때'
-    //         },
-    //         {
-    //             c_id : 2,
-    //             small_category : '우울할'
-    //         }
-    //     ]
-    // };
-
-    Search.category(search_Category_info, function (error, results1, result2) {
+    Search.category(function (error, results) {
         if (error) {
             console.log("Connection error " + error);
             res.send(error);
         }
         else {
-            res.send({
-              result : {  today_recommand : results1 , categories : result2 }
-
-            });
+            res.send({ result : results });
         }
     });
 });
@@ -41,34 +18,20 @@ router.get('/', function (req, res, next) {
 
 //성공시 추천순으로 바스켓 목록 보냄
 router.get('/:c_id', function (req, res, next) {
-  var searchInfo ={
-    member_token : req.headers.member_token,
-    c_id : req.params.c_id
-  }
-  /*var results = {
-    baskets : [
-      {
-        basket_id : 1,
-        basket_name : '우울한 날 볼 영화',
-        basket_image : '123.456.678/image.png',
-        basket_like : 123
-      }
-    ]
-  };*/
+    var searchInfo ={
+        member_token : req.headers.member_token,
+        c_id : req.params.c_id
+    }
 
-
-   Search.detailCategory(searchInfo, function (error, results) {
-          if (error) {
-              console.log("Connection error " + error);
-              res.send(error);
-          }
-          else {
-              res.status(201).send({result : results});
-          }
-      });
-
-
-  //res.send({result : results});
+    Search.detailCategory(searchInfo, function (error, results) {
+        if (error) {
+            console.log("Connection error " + error);
+            res.send(error);
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
 });
 
 

@@ -13,4 +13,12 @@ var dbPool = mysql.createPool({
 });
 
 
+function refineMovieRating (rows) {
+    for (var i = 0 ; i < rows.length ; i++) {
+        var devidedRating = rows[i].movie_user_rating/2;
+        rows[i].movie_user_rating = Math.round(devidedRating);
+    }
+    return rows;
+}
 module.exports.dbPool = dbPool;
+module.exports.refineMovieRating = refineMovieRating;
