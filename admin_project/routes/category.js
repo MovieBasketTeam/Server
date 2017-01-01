@@ -17,19 +17,21 @@ router.get('/', function(req, res, next) {
   pool.getConnection(function(error, connection){
     if (error){
       console.log("getConnection Error" + error);
+      connection.release();
       res.sendStatus(500);
     }
     else{
-        sql = 'select big_category, small_category from category order by big_category ASC';
+        sql = 'select small_category from category order by big_category';
+        sql2 = 'select basket_name from basket';
       connection.query(sql, function(error, rows){
         if (error){
           console.log("Connection Error" + error);
-          res.sendStatus(500);
           connection.release();
+          res.sendStatus(500);
         }
         else {
           // res.status(201).send({result : 'create'});
-          connection.release();
+          //connection.release();
           console.log(rows);
           res.render('category',
             {
@@ -37,6 +39,22 @@ router.get('/', function(req, res, next) {
               categorys : rows
             }
           );
+        }
+      });
+      connection.query(sql2, function(error, rows){
+        if(error) {
+          console.log("Connection Error" + error);
+          connection.release();
+          res.sendStatus(500);
+        }
+        else{
+          connection.release();
+          console.log(rows);
+          res.render('category',
+        {
+          baskets : rows
+        }
+      );
         }
       });
     }

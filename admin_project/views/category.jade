@@ -10,10 +10,20 @@ block content
     p
       script(type='text/javascript')
       table(border='0')
-        tr
+      tr
         each category, i in categorys
           td
-            input(type='checkbox', name='#{category.small_category}' value = '#{category.small_category}')
+            input(type='checkbox', name='#{category.small_category}', value = '#{category.small_category}')
             | #{category.small_category}
-      p
+    p
       input(type='submit', value="카테고리에 추가")
+    
+    p
+      script(type='text/javascript')
+      table(border='0')
+      tr
+      each basket, i in baskets
+        td
+          input(type='checkbox', name='#{basket.basket_name}', value='#{basket.basket_name}')
+          | #{basket.basket_name}
+            
