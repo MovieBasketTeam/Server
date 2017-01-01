@@ -258,7 +258,6 @@ function movieCart(movieCartInfo, callback){
 
     dbPool.getConnection(function (error,dbConn) {
         if(error){
-            dbConn.release();
             return callback(error);
         }
         var movieCartMessage = {};
@@ -277,6 +276,7 @@ function movieCart(movieCartInfo, callback){
                     return callback(error);
                 }
                 else if (rows.affectedRows == 0) {
+                    dbConn.release();
                     return done(new Error("fail delete"));
                 }
                 else {
