@@ -26,6 +26,7 @@ function movieBasket(mypageInfo, callback) {
     'FROM basket b JOIN basket_heart bh ON (b.basket_id = bh.b_id) ' +
     'JOIN member m ON (bh.u_id = m.member_id) ' +
     'WHERE m.member_id = ? ';
+    //is_liked 수정
 
     dbPool.getConnection (function(error, dbConn) {
         if(error) {
