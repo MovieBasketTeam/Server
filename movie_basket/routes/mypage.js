@@ -109,6 +109,9 @@ router.post('/movie/cart/delete', function(req,res,next){
 
     Mypage.movieDelete(movieDeleteInfo, function(error, results){
         if(error){
+        }
+      });
+    });
 
 router.post('/basket/delete', function (req, res, next) {
     var basketInfo = {

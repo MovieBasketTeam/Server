@@ -66,7 +66,7 @@ router.get('/', function(req, res, next) {
   });
 });
 
-<<<<<<< HEAD
+
 // router.post('/', function(req, res, next) {
 //   console.log(req.body);
 //   res.send({result : 'ok'});
@@ -102,7 +102,7 @@ router.get('/', function(req, res, next) {
 //       });
 //     }
 // });
-=======
+
 router.post('/', function(req, res, next) {
   console.log(req.body);
   pool.getConnection(function(error, connection){
@@ -138,7 +138,7 @@ router.post('/', function(req, res, next) {
     }
   });
 });
->>>>>>> refs/remotes/MovieBasketTeam/master
+
 
 
 // router.post('/', function(req, res, next) {

@@ -8,22 +8,44 @@ block content
   h4 ▶ 카테고리 추가하기      
   h5
     p
-      script(type='text/javascript')
-      table(border='0')
-      tr
-        each category, i in categorys
-          td
-            input(type='checkbox', name='#{category.small_category}', value = '#{category.small_category}')
-            | #{category.small_category}
+      //- -for (var i = 0 ; i < baskets.length ; i++) {
+      //-   input(type='checkbox' name='#{baskets[i].basket_name}')
+      //-   | #{baskets[i].basket_name}
+      //- -}
+      
+      select(name='basket')
+      -for (var i = 0; i < baskets.length; i++) {
+        option(value='#{baskets[i].basket_name}') #{baskets[i].basket_name}
+      -}
+      
+      
+      -for (var i = 0; i < categories.length; i++) {
+        //- input(type='checkbox', name='#{categories[i].small_category}', value = '#{categories[i].small_category}')
+        //- | #{categories[i].small_category}
+        //- option(value='#{categories[i]}') #{categories[i]}
+        input(type='checkbox', name='#{categories[i]}', value='#{categories[i]}')
+        | #{categories[i].}
+        br
+      -}
+      
+      //- script(type='text/javascript')
+      //- table(border='0')
+      //- tr
+      //-   each category, i in categories
+      //-     td
+      //-       input(type='checkbox', name='#{categories.small_category}', value = '#{categories.small_category}')
+      //-       | #{categories.small_category}
     p
       input(type='submit', value="카테고리에 추가")
-    
-    p
-      script(type='text/javascript')
-      table(border='0')
-      tr
-      each basket, i in baskets
-        td
-          input(type='checkbox', name='#{basket.basket_name}', value='#{basket.basket_name}')
-          | #{basket.basket_name}
+      //- #{baskets}
+      //- #{categories}
+      //- 
+    //- p
+    //-   script(type='text/javascript')
+    //-   table(border='0')
+    //-   tr
+    //-   each basket, i in baskets
+    //-     td
+    //-       input(type='checkbox', name='#{basket.basket_name}', value='#{basket.basket_name}')
+    //-       | #{basket.basket_name}
             
