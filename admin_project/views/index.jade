@@ -3,44 +3,28 @@ extends layout
 block content
   h1= title
 
-
-
   form(action='/', method="post", enctype="multipart/form-data")
-  h4 ▶ 바스켓 추가하기
+  h4 바스켓 추가하기
     p
-      input(type='text', name="basket_name", placeholder="Basket name")
-    p
+      input(type='text', name="basket_name", placeholder="Basket name") 
+      br
+      br
       input(type='file', name="basket_image")
-  h4 ▶ 카테고리 추가하기
-
-  h5 기타
-    script(type='text/javascript')
-    table(border='0')
-    tr
-      td  #{category.big_category}
-          each category, i in categorys
   
-    
-              td  
-                input(type='checkbox', name="small_category" value = '#{category.small_category}')
-                | #{category.small_category}
-      
     p
-      input(type='submit', value="업로드")
+      input(type='submit', value="바스켓 추가")
       
-      
-  p Welcome to #{title}
-
-  form(action='/', method="post", enctype="multipart/form-data")
-    h3 바스켓의 랭킹을 정해주세요
-    script(type='text/javascript')
-    select(name='job')
-      option(value='') 성별 선택
-      option(value='남') 남
-      option(value='여') 여
-
-
-
-    p
-      input(type='submit', value="수정")
+  //- 아래부터 재림이가 한 부분
+  //-  
+  //- form(action='/', method="post", enctype="multipart/form-data")
+  //-   h4 바스켓의 랭킹을 정해주세요
+  //- 
+  //-   script(type='text/javascript')
+  //-   select(name='job')
+  //-     option(value='') 성별 선택
+  //-     option(value='남') 남
+  //-     option(value='여') 여
+  //- 
+  //-   p
+  //-     input(type='submit', value="수정")
       
