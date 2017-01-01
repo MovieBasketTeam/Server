@@ -18,41 +18,8 @@ block content
                         td  
                             input(type='text', name="basket_rank" ,value = '#{basket.basket_rank}' )
     p
-
-      input(type='submit', id="saveBtn", value="수정")
-      
-  script.
-    //- var param = {
-    //-   ab1 : $(".class값").val(), //class선택자사용
-    //-   ab2 : $("#id값").val()
-    //- };
-    //- var ranks = [];
-    //- for (var i = 0 ; i < rows.length ; i++) {
-    //-     ranks.push($("#"+"basket"+i.toString()).val());
-    //- }
-    //- console.log("rows length : ");
-    //- console.log(rows.length);
-    //- console.log("basket 1 value : ");
-    //- console.log($("#basket1").val());
-    var param = {
-        //- ranks : $("#basket1").val(); 
-    };
-    $(function() {
-      $("#saveBtn").click(function() {
-        $.ajax({
-          url: "http://localhost:8080/basketRank", //API
-          type: "POST",
-          dataType: "json",
-          data: param,
-          success: function (data) {
-              alert('callback : '+data);
-        },
-          error: function(data){
-            alert("code:"+data.status+"\n");
-          }
-
         input(type='submit', id="saveBtn", value="수정")
-  
+     
     script.
         $(function() {
             var ranks = [];
