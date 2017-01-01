@@ -52,8 +52,6 @@ router.get('/', function(req, res, next) {
           // res.status(201).send({result : 'create'});
           connection.release();
           length = rows.length;
-          console.log(rows);
-          console.log(length);
           res.render('basketRank',
             {
               title : '바스켓 랭킹 설정 페이지',
@@ -67,7 +65,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-  console.log(req.body);
+  //console.log(req.body);
   pool.getConnection(function(error, connection){
     if (error){
       console.log("getConnection Error" + error);
@@ -88,14 +86,15 @@ router.post('/', function(req, res, next) {
         else {
           // res.status(201).send({result : 'create'});
           connection.release();
-          console.log(rows);
+          console.log("in body");
+          console.log(req.body);
           // res.render('basketRank',
           //   {
           //     title : '바스켓 랭킹 설정 페이지',
           //     baskets : rows
           //   }
           // );
-          res.send({result : 'ok'});
+          res.send({result : rows});
         }
       });
     }
