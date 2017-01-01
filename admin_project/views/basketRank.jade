@@ -3,24 +3,23 @@ block content
     h1= title
     p Welcome to #{title}
 
-    form(action='/basketRank', method="post", enctype="multipart/form-data")
-        h3 바스켓의 랭킹을 정해주세요
-        table(border='1')
-            thead
-                tr
-                    th 바스켓 이름
-                    th 바스켓 랭킹
-                tbody
-                    -var index=0
-                    each basket in baskets
-                        - index++
-                        tr(id=('id_'+index))
-                            td  #{basket.basket_name}
-                            td  
-                                input(type='text', name="basket_rank" ,value = '#{basket.basket_rank}' )
-        p
-            input(type='submit', id="saveBtn", value="수정")
-      
+    h3 바스켓의 랭킹을 정해주세요
+    table(border='1')
+        thead
+            tr
+                th 바스켓 이름
+                th 바스켓 랭킹
+            tbody
+                -var index=0
+                each basket in baskets
+                    - index++
+                    tr(id=('id_'+index))
+                        td  #{basket.basket_name}
+                        td  
+                            input(type='text', name="basket_rank" ,value = '#{basket.basket_rank}' )
+    p
+        input(type='submit', id="saveBtn", value="수정")
+  
     script.
         $(function() {
             var ranks = [];
