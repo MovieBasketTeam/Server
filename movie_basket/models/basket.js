@@ -147,9 +147,11 @@ function likeBasket(basketLikeInfo, callback) {
 function showBasketDetail (basketDetailInfo, callback) {
     var sql_basket_detail =
         'SELECT movie_id, movie_title, movie_image, movie_pub_date, movie_director, movie_user_rating, movie_link, movie_adder, movie_like,'+
-        '(CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked '+
+        '(CASE WHEN mh.u_id IS NULL THEN 0 ELSE 1 END) AS is_liked, '+
+        '(CASE WHEN mc.u_id IS NULL THEN 0 ELSE 1 END) AS is_cart '+
         'FROM movie AS m '+
         'LEFT JOIN (SELECT m_id, u_id FROM movie_heart WHERE u_id = ?) AS mh ON(m.movie_id = mh.m_id) '+
+        'LEFT JOIN (SELECT m_id, u_id FROM movie_clip WHERE u_id = ?) mc ON(m.movie_id = mc.m_id) '+
         'WHERE basket_id = ? '
         'ORDER BY m.movie_like DESC';
 
@@ -169,7 +171,7 @@ function showBasketDetail (basketDetailInfo, callback) {
         dbConn.query
         (
             sql_basket_detail,
-            [jwt.decodeToken(basketDetailInfo.member_token).member_id, basketDetailInfo.basket_id],
+            [jwt.decodeToken(basketDetailInfo.member_token).member_id, jwt.decodeToken(basketDetailInfo.member_token).member_id, basketDetailInfo.basket_id],
             function (error, rows) {
                 if (error) {
                     dbConn.release();
