@@ -49,7 +49,6 @@ router.get('/', function(req, res, next) {
           res.sendStatus(500);
         }
         else {
-          // res.status(201).send({result : 'create'});
           connection.release();
           length = rows.length;
           res.render('basketRank',
