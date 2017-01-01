@@ -73,7 +73,7 @@ router.post('/', function(req, res, next) {
     }
     else{
         // for( var i = 0; i < length; i++ ){
-        //   sql =
+        //
         // }
         sql = "update basket set basket_rank='basket.basket_rank' where basket_name = 'basket.basket_name'";
         connection.query(sql, function(error, rows){
@@ -86,7 +86,7 @@ router.post('/', function(req, res, next) {
           // res.status(201).send({result : 'create'});
           connection.release();
           console.log("in body");
-          console.log(req.body);
+          console.log(req.body["rank[]"][i]);
           // res.render('basketRank',
           //   {
           //     title : '바스켓 랭킹 설정 페이지',
