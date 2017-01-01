@@ -2,18 +2,26 @@ extends layout
 
 block content
   h1= title
-
+  h1 바스켓 카테고리 설정 페이지 
   form(action='/', method="post", enctype="multipart/form-data")    
+  
+  
 
-  h4 ▶ 카테고리 추가하기      
+  h4 ▶ 바스켓 선택
   h5
     p
-      script(type='text/javascript')
-      table(border='0')
-        tr
-        each category, i in categorys
-          td
-            input(type='checkbox', name='#{category.small_category}' value = '#{category.small_category}')
-            | #{category.small_category}
-      p
+      -for (var i = 0; i < baskets.length; i++) {
+        input(type='radio', name='radio_basket' value='#{baskets[i].basket_name}')
+        | #{baskets[i].basket_name}
+      -}
+      br
+  h4 ▶ 카테고리 선택
+  h5
+    p
+      -for (var i = 0; i < categories.length; i++) {
+        input(type='checkbox', name='#{categories[i].small_category}', value='#{categories[i].small_category}')
+        | #{categories[i].small_category}
+        br
+      -}
+    p
       input(type='submit', value="카테고리에 추가")

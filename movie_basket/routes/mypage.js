@@ -119,6 +119,11 @@ router.post('/movie/cart/delete', function(req,res,next){
   });
 
         if(error){
+<<<<<<< HEAD
+        }
+      });
+    });
+=======
             console.log("Connection error " + error);
             res.send(error);
         }
@@ -127,6 +132,7 @@ router.post('/movie/cart/delete', function(req,res,next){
         }
     });
 });
+>>>>>>> refs/remotes/MovieBasketTeam/master
 
 router.post('/basket/delete', function (req, res, next) {
     var basketInfo = {
