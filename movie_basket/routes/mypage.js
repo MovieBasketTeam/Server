@@ -108,7 +108,14 @@ router.post('/movie/cart/delete', function(req,res,next){
     }
 
     Mypage.movieDelete(movieDeleteInfo, function(error, results){
-        if(error){
+      if (error) {
+          console.log("Connection error " + error);
+      }
+      else{
+        res.status(201).send({result : results});
+      }
+    });
+  });
 
 router.post('/basket/delete', function (req, res, next) {
     var basketInfo = {
@@ -127,5 +134,4 @@ router.post('/basket/delete', function (req, res, next) {
         }
     });
 });
-
 module.exports = router;

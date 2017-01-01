@@ -298,11 +298,13 @@ function movieAdd(movieAddInfo, callback){
         'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     var sql_my_movie_id = 'select movie_id from movie where movie_title = ? and basket_id = ?';
     var sql_my_movie_add = 'insert into movie_heart (m_id, u_id) values (?, ?)';
+    var sql_repetition = 'select * from movie where movie_title = ?';
     dbPool.getConnection (function (error,dbConn) {
         if (error) {
             return callback(error);
         }
-
+        var my_movie_checkRepititionMessage = {};
+        var isRepetition = false;
         var movieAddMessage = {};
         if (movieAddInfo.member_token == '') {
             dbConn.release();
@@ -316,7 +318,7 @@ function movieAdd(movieAddInfo, callback){
                 return callback(error);
             }
             var movieId;
-            async.series([updateMovieAdd, getMovieId, updateMyMovieLike], function (error, results) {
+            async.series([checkRepitition, updateMovieAdd, getMovieId, updateMyMovieLike], function (error, results) {
                 if (error) {
                     return dbConn.rollback(function () {
                         dbConn.release();
@@ -325,12 +327,31 @@ function movieAdd(movieAddInfo, callback){
                 }
                 dbConn.commit(function () {
                     dbConn.release();
-                    movieAddMessage = {message : "movie add success"};
+                    // movieAddMessage = {message : "movie add success"};
                     return callback(null, movieAddMessage);
                 });
             });
+
+            // 영화 담기 중복확인
+            function checkRepitition (done) {
+              dbConn.query(sql_repetition,[movieAddInfo.movie_title], function (err, rows){
+                if (error) {
+                    return done(error);
+                }
+                else if (rows.length > 0) {
+                    movieAddMessage = {message : "repetitionnnn" };
+                    isRepetition = true;
+                    console.log(isRepetition);
+                    return done(new Error("repetition"));
+                }
+                return done(null);
+              });
+            };
             // 영화 테이블에 영화 추가
             function updateMovieAdd (done) {
+              if (isRepetition) {
+                return done(null);
+              }
                 dbConn.query(
                     sql_movie_add,
                     [
@@ -340,7 +361,7 @@ function movieAdd(movieAddInfo, callback){
                         movieAddInfo.movie_pub_date,
                         movieAddInfo.movie_user_rating,
                         movieAddInfo.movie_link,
-                        jwt.decodeToken(movieAddInfo.member_token).member_id,
+                        jwt.decodeToken(movieAddInfo.member_token).member_name,
                         new Date(),
                         1,
                         movieAddInfo.basket_id
