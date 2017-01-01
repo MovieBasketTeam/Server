@@ -4,9 +4,8 @@ block content
   h1= title
   p Welcome to #{title}
 
-  form(action='/', method="post", enctype="multipart/form-data")
+  form(action='/basketRank', method="post", enctype="multipart/form-data")
     h3 바스켓의 랭킹을 정해주세요
-    script(type='text/javascript')
     table(border='1')
       thead
         tr
@@ -17,7 +16,7 @@ block content
             tr
               td  #{basket.basket_name}
               td  
-                input(type='text', name="basket_rank" value = '#{basket.basket_rank}')
+                input(type='text', name="basket_rank" value = '#{basket.basket_rank}' id ='#{basket.basket_id}')
 
 
     p
