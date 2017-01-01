@@ -1,34 +1,6 @@
 extends layout
 
-block scripts
-  script.
-    //- var param = {
-    //-   ab1 : $(".class값").val(), //class선택자사용
-    //-   ab2 : $("#id값").val()
-    //- };
-    $(function() {
-      $("#saveBtn").click(function() {
-        var param = {
-          ab1 : "1", 
-          ab2 : "2"
-        };
-        $.ajax({
-          url: "http://localhost:8080/basketRank", //API
-          type: "POST",
-          dataType: "json",
-          data: param,
-          success: function (data) {
-            console.log("success");
-            return window.location.href = "http://localhost:8080/basketRank"; //API 성공이후 PAGE
-          }
-            alert('작성실패');
-          },
-          error: function(data){
-            alert("code:"+data.status+"\n");
-          }
-        });
-      });
-    });
+
     
 block content
   h1= title
@@ -46,10 +18,43 @@ block content
             tr
               td  #{basket.basket_name}
               td  
-                input(type='text', name="basket_rank" value = '#{basket.basket_rank}' )
+                input(type='text', id="basket"+i, name="basket_rank" ,value = '#{basket.basket_rank}' )
 
 
     p
       input(type='submit', id="saveBtn", value="수정")
+      
+  script.
+    //- var param = {
+    //-   ab1 : $(".class값").val(), //class선택자사용
+    //-   ab2 : $("#id값").val()
+    //- };
+    //- var ranks = [];
+    //- for (var i = 0 ; i < rows.length ; i++) {
+    //-     ranks.push($("#"+"basket"+i.toString()).val());
+    //- }
+    //- console.log("rows length : ");
+    //- console.log(rows.length);
+    //- console.log("basket 1 value : ");
+    //- console.log($("#basket1").val());
+    var param = {
+        ranks : $("#basket1").val(); 
+    }
+    $(function() {
+      $("#saveBtn").click(function() {
+        $.ajax({
+          url: "http://localhost:8080/basketRank", //API
+          type: "POST",
+          dataType: "json",
+          data: param,
+          success: function (data) {
+              alert('callback : '+data);
+        },
+          error: function(data){
+            alert("code:"+data.status+"\n");
+          }
+        });
+      });
+    });
 
   
