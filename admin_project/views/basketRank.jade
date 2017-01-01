@@ -1,27 +1,24 @@
 extends layout
-
-
-    
 block content
-  h1= title
-  p Welcome to #{title}
+    h1= title
+    p Welcome to #{title}
 
-  form(action='/basketRank', method="post", enctype="multipart/form-data")
     h3 바스켓의 랭킹을 정해주세요
     table(border='1')
-      thead
-        tr
-          th 바스켓 이름
-          th 바스켓 랭킹
-        tbody
-          each basket, i in baskets
+        thead
             tr
-              td  #{basket.basket_name}
-              td  
-                input(type='text', id="basket"+i, name="basket_rank" ,value = '#{basket.basket_rank}' )
-
-
+                th 바스켓 이름
+                th 바스켓 랭킹
+            tbody
+                -var index=0
+                each basket in baskets
+                    - index++
+                    tr(id=('id_'+index))
+                        td  #{basket.basket_name}
+                        td  
+                            input(type='text', name="basket_rank" ,value = '#{basket.basket_rank}' )
     p
+<<<<<<< HEAD
       input(type='submit', id="saveBtn", value="수정")
       
   script.
@@ -53,8 +50,36 @@ block content
           error: function(data){
             alert("code:"+data.status+"\n");
           }
+=======
+        input(type='submit', id="saveBtn", value="수정")
+  
+    script.
+        $(function() {
+            var ranks = [];
+            var length = #{baskets.length};
+            $("#saveBtn").click(function() {
+                for (var i = 1 ; i <= length ; i++) {
+                     var id = '#id_'+i;
+                     ranks.push($(id).find("td:eq(1)").find("input").val());
+                }
+                
+                var param = {
+                    rank : ranks
+                };
+                $.ajax({
+                    url: "http://localhost:8080/basketRank", //API
+                    type: "POST",
+                    dataType: "json",
+                    data: param,
+                    success: function (data) {
+                        alert(data.result);
+                    },
+                    error: function(data){
+                        alert("code:"+data.status+"\n");
+                    }
+                });
+            });
+>>>>>>> refs/remotes/MovieBasketTeam/master
         });
-      });
-    });
 
   
