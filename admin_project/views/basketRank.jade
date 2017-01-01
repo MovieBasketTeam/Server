@@ -1,12 +1,41 @@
 extends layout
 
+block scripts
+  script.
+    //- var param = {
+    //-   ab1 : $(".class값").val(), //class선택자사용
+    //-   ab2 : $("#id값").val()
+    //- };
+    $(function() {
+      $("#saveBtn").click(function() {
+        var param = {
+          ab1 : "1", 
+          ab2 : "2"
+        };
+        $.ajax({
+          url: "http://localhost:8080/basketRank", //API
+          type: "POST",
+          dataType: "json",
+          data: param,
+          success: function (data) {
+            console.log("success");
+            return window.location.href = "http://localhost:8080/basketRank"; //API 성공이후 PAGE
+          }
+            alert('작성실패');
+          },
+          error: function(data){
+            alert("code:"+data.status+"\n");
+          }
+        });
+      });
+    });
+    
 block content
   h1= title
   p Welcome to #{title}
 
-  form(action='/', method="post", enctype="multipart/form-data")
+  form(action='/basketRank', method="post", enctype="multipart/form-data")
     h3 바스켓의 랭킹을 정해주세요
-    script(type='text/javascript')
     table(border='1')
       thead
         tr
@@ -17,8 +46,10 @@ block content
             tr
               td  #{basket.basket_name}
               td  
-                input(type='text', name="basket_rank" value = '#{basket.basket_rank}')
+                input(type='text', name="basket_rank" value = '#{basket.basket_rank}' )
 
 
     p
-      input(type='submit', value="수정")
+      input(type='submit', id="saveBtn", value="수정")
+
+  
