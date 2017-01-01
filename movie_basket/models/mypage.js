@@ -164,6 +164,7 @@ function settingMypage (settingInfo, callback) {
 }
 
 
+
 //movie-delete
 function movieDelete(movieDeleteInfo, callback){
     var sql_update_my_movie_delete =
@@ -206,9 +207,92 @@ function movieDelete(movieDeleteInfo, callback){
 
 
 
+
+// 4 -g 담은 바스켓 빼기
+function deleteBasket (basketInfo, callback) {
+    var sql_update_basket_list =
+        'delete from basket_heart where b_id = ? and u_id = ?';
+    var sql_update_basket_like =
+        'update basket set basket_like = basket_like - 1 where basket_id = ?';
+
+    dbPool.getConnection(function(error, dbConn) {
+        if (error) {
+            return callback(error);
+        }
+
+        var sendMessage = {};
+        if (basketInfo.member_token =='') {
+            dbConn.release();
+            sendMessage = { message : "is not logined"};
+            return callback(null, sendMessage);
+        }
+
+        dbConn.beginTransaction (function (error) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+
+            async.series([updateBasketList, updateBasketLike], function (error, results) {
+                if (error) {
+                    return dbConn.rollback( function () {
+                        dbConn.release();
+                        callback(error);
+                    });
+                }
+                dbConn.commit(function () {
+                    dbConn.release();
+                    sendMessage = {message : "delete success"};
+                    callback(null, sendMessage);
+                });
+            });
+
+            function updateBasketList (done) {
+                dbConn.query
+                (
+                    sql_update_basket_list,
+                    [
+                        basketInfo.basket_id,
+                        jwt.decodeToken(basketInfo.member_token).member_id
+                    ],
+                    function (error, rows) {
+                        if (error) {
+                            return done(error);
+                        }
+                        else if (rows.affectedRows == 0) {
+                            return done(new Error("delete failed"));
+                        }
+                        else {
+                            return done(null);
+                        }
+                    }
+                );
+            }
+
+            function updateBasketLike (done) {
+                dbConn.query
+                (
+                    sql_update_basket_like,
+                    [basketInfo.basket_id],
+                    function (error, rows) {
+                        if (error) {
+                            return done(error);
+                        }
+                        else {
+                            return done(null);
+                        }
+                    }
+                );
+            }
+        });
+    });
+}
+
 module.exports.movieBasket = movieBasket;
 module.exports.movieCart = movieCart;
 module.exports.movieRecommend = movieRecommend;
 module.exports.basicMypage = basicMypage;
 module.exports.settingMypage = settingMypage;
 module.exports.movieDelete = movieDelete;
+module.exports.deleteBasket = deleteBasket;
+
