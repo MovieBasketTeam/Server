@@ -56,17 +56,11 @@ function likeBasket(basketLikeInfo, callback) {
 
     // 마이 바스켓 목록 업데이트
     var sql_update_my_basket =
-    [
-        'insert into basket_heart(b_id, u_id) values (?, ?)',
-        'delete from basket_heart where b_id = ? and u_id = ?'
-    ];
+        'insert into basket_heart(b_id, u_id) values (?, ?)';
 
     // 바스켓 추천 수 업데이트
     var sql_update_basket_like =
-    [
-        'update basket set basket_like = basket_like + 1 where basket_id = ?',
-        'update basket set basket_like = basket_like - 1 where basket_id = ?'
-    ];
+        'update basket set basket_like = basket_like + 1 where basket_id = ?';
 
     dbPool.getConnection(function(error,dbConn) {
         if(error){
@@ -104,7 +98,7 @@ function likeBasket(basketLikeInfo, callback) {
             function updateMyBasket (done) {
                 dbConn.query
                 (
-                    sql_update_my_basket[basketLikeInfo.is_liked],
+                    sql_update_my_basket,
                     [
                         basketLikeInfo.basket_id,
                         jwt.decodeToken(basketLikeInfo.member_token).member_id
@@ -126,7 +120,7 @@ function likeBasket(basketLikeInfo, callback) {
             function updateBasketLike (done) {
                 dbConn.query
                 (
-                    sql_update_basket_like[basketLikeInfo.is_liked],
+                    sql_update_basket_like,
                     [basketLikeInfo.basket_id],
                     function (error, rows) {
                         if (error) {
@@ -147,9 +141,11 @@ function likeBasket(basketLikeInfo, callback) {
 function showBasketDetail (basketDetailInfo, callback) {
     var sql_basket_detail =
         'SELECT movie_id, movie_title, movie_image, movie_pub_date, movie_director, movie_user_rating, movie_link, movie_adder, movie_like,'+
-        '(CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked '+
+        '(CASE WHEN mh.u_id IS NULL THEN 0 ELSE 1 END) AS is_liked, '+
+        '(CASE WHEN mc.u_id IS NULL THEN 0 ELSE 1 END) AS is_cart '+
         'FROM movie AS m '+
         'LEFT JOIN (SELECT m_id, u_id FROM movie_heart WHERE u_id = ?) AS mh ON(m.movie_id = mh.m_id) '+
+        'LEFT JOIN (SELECT m_id, u_id FROM movie_clip WHERE u_id = ?) mc ON(m.movie_id = mc.m_id) '+
         'WHERE basket_id = ? '
         'ORDER BY m.movie_like DESC';
 
@@ -169,7 +165,7 @@ function showBasketDetail (basketDetailInfo, callback) {
         dbConn.query
         (
             sql_basket_detail,
-            [jwt.decodeToken(basketDetailInfo.member_token).member_id, basketDetailInfo.basket_id],
+            [jwt.decodeToken(basketDetailInfo.member_token).member_id, jwt.decodeToken(basketDetailInfo.member_token).member_id, basketDetailInfo.basket_id],
             function (error, rows) {
                 if (error) {
                     dbConn.release();
@@ -177,7 +173,7 @@ function showBasketDetail (basketDetailInfo, callback) {
                 }
                 else {
                     dbConn.release();
-                    basketDetailMessage = { movies : Common.refineMovieRating(rows)}
+                    basketDetailMessage = { result : Common.refineMovieRating(rows)}
                     return callback(null, basketDetailMessage);
                 }
             }
@@ -262,7 +258,6 @@ function movieCart(movieCartInfo, callback){
 
     dbPool.getConnection(function (error,dbConn) {
         if(error){
-            dbConn.release();
             return callback(error);
         }
         var movieCartMessage = {};
@@ -281,6 +276,7 @@ function movieCart(movieCartInfo, callback){
                     return callback(error);
                 }
                 else if (rows.affectedRows == 0) {
+                    dbConn.release();
                     return done(new Error("fail delete"));
                 }
                 else {
@@ -398,6 +394,7 @@ function movieAdd(movieAddInfo, callback){
         });
     });
 }
+
 
 module.exports.showBaksets = showBaksets;
 module.exports.likeBasket = likeBasket;

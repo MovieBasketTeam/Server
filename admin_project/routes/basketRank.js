@@ -5,7 +5,7 @@ var db_config = require('../config/db_config.json');
 var awsinfo_config = require('../config/awsinfo_config.json');
 var router = express.Router();
 
-
+var length = '';
 /*
 var s3 = new aws.S3();
 
@@ -41,7 +41,7 @@ router.get('/', function(req, res, next) {
       res.sendStatus(500);
     }
     else{
-        sql = 'select basket_id, basket_name, basket_rank from basket order by basket_rank ASC';
+        sql = 'select basket_id, basket_name, basket_rank from basket order by basket_id ASC';
       connection.query(sql, function(error, rows){
         if (error){
           console.log("Connection Error" + error);
@@ -51,7 +51,9 @@ router.get('/', function(req, res, next) {
         else {
           // res.status(201).send({result : 'create'});
           connection.release();
+          length = rows.length;
           console.log(rows);
+          console.log(length);
           res.render('basketRank',
             {
               title : '바스켓 랭킹 설정 페이지',
@@ -64,6 +66,7 @@ router.get('/', function(req, res, next) {
   });
 });
 
+<<<<<<< HEAD
 // router.post('/', function(req, res, next) {
 //   console.log(req.body);
 //   res.send({result : 'ok'});
@@ -98,6 +101,83 @@ router.get('/', function(req, res, next) {
 //         }
 //       });
 //     }
+// });
+=======
+router.post('/', function(req, res, next) {
+  console.log(req.body);
+  pool.getConnection(function(error, connection){
+    if (error){
+      console.log("getConnection Error" + error);
+      connection.release();
+      res.sendStatus(500);
+    }
+    else{
+        // for( var i = 0; i < length; i++ ){
+        //   sql =
+        // }
+        sql = "update basket set basket_rank='basket.basket_rank' where basket_name = 'basket.basket_name'";
+        connection.query(sql, function(error, rows){
+        if (error){
+          console.log("Connection Error" + error);
+          connection.release();
+          res.sendStatus(500);
+        }
+        else {
+          // res.status(201).send({result : 'create'});
+          connection.release();
+          console.log(rows);
+          // res.render('basketRank',
+          //   {
+          //     title : '바스켓 랭킹 설정 페이지',
+          //     baskets : rows
+          //   }
+          // );
+          res.send({result : 'ok'});
+        }
+      });
+    }
+  });
+});
+>>>>>>> refs/remotes/MovieBasketTeam/master
+
+
+// router.post('/', function(req, res, next) {
+//   console.log(req.body);
+//   res.send({result : 'ok'});
+//   // pool.getConnection(function(error, connection){
+//   //   if (error){
+//   //     console.log("getConnection Error" + error);
+//   //     connection.release();
+//   //     res.sendStatus(500);
+//   //   }
+//   //   else{
+//   //     //  sql = '';
+//   //     connection.release();
+//   //     console.log(req.body);
+//   //     res.send({result : 'ok'});
+//   //
+//   //     // connection.query(sql,[], function(error, rows){
+//   //     //   if (error){
+//   //     //     console.log("Connection Error" + error);
+//   //     //     res.sendStatus(500);
+//   //     //     connection.release();
+//   //     //   }
+//   //     //   else {
+//   //     //     // res.status(201).send({result : 'create'});
+//   //     //     connection.release();
+//   //     //     console.log(rows);
+//   //     //     res.render('basketRank',
+//   //     //       {
+//   //     //         title : '바스켓 랭킹 설정 페이지',
+//   //     //         baskets : rows
+//   //     //       }
+//   //     //     );
+//   //     //   }
+//   //     // });
+//   //   }
+//
+//   // });
+//
 // });
 
 module.exports = router;
