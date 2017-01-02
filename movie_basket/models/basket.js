@@ -292,13 +292,13 @@ function movieCart(movieCartInfo, callback){
 // 바스켓에 영화 정보 추가, 동시에 마이 영화 추천 정보에 영화 추가
 // 트랜젝션 적용
 function movieAdd(movieAddInfo, callback){
+    var sql_repetition = 'select * from movie where movie_title = ?';
     var sql_movie_add =
         'insert into movie '+
         '(movie_title, movie_image, movie_director, movie_pub_date, movie_user_rating, movie_link, movie_adder, movie_add_date, movie_like, basket_id) '+
         'values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    var sql_my_movie_id = 'select movie_id from movie where movie_title = ? and basket_id = ?';
     var sql_my_movie_add = 'insert into movie_heart (m_id, u_id) values (?, ?)';
-    var sql_repetition = 'select * from movie where movie_title = ?';
+    var sql_my_movie_id = 'select movie_id from movie where movie_title = ? and basket_id = ?';
     dbPool.getConnection (function (error,dbConn) {
         if (error) {
             return callback(error);
@@ -341,9 +341,10 @@ function movieAdd(movieAddInfo, callback){
                 else if (rows.length > 0) {
                     movieAddMessage = {message : "repetitionnnn" };
                     isRepetition = true;
-                    console.log(isRepetition);
+                    console.log("is REpetition");
                     return done(new Error("repetition"));
                 }
+                console.log("done checkREpitition");
                 return done(null);
               });
             };
@@ -371,6 +372,7 @@ function movieAdd(movieAddInfo, callback){
                             return done(error);
                         }
                         else {
+                            console.log("done updateMovieAdd");
                             return done(null);
                         }
                     }
@@ -379,6 +381,9 @@ function movieAdd(movieAddInfo, callback){
 
             // 영화 id를 위하여 검색
             function getMovieId (done) {
+                if (isRepetition) {
+                    return done(null);
+                }
                 dbConn.query(
                     sql_my_movie_id,
                     [movieAddInfo.movie_title, movieAddInfo.basket_id],
@@ -392,6 +397,7 @@ function movieAdd(movieAddInfo, callback){
                         else {
                             movieId = rows[0].movie_id;
                             return done(null);
+                            console.log("done getMovieId");
                         }
                     }
                 );
@@ -399,6 +405,9 @@ function movieAdd(movieAddInfo, callback){
 
             // 내 영화 정보에 영화 추가
             function updateMyMovieLike (done) {
+                if (isRepetition) {
+                    return done(null);
+                }
                 dbConn.query(
                     sql_my_movie_add,
                     [movieId, jwt.decodeToken(movieAddInfo.member_token).member_id],
@@ -408,6 +417,7 @@ function movieAdd(movieAddInfo, callback){
                         }
                         else {
                             return done(null);
+                            console.log("done updateMyMovieLike");
                         }
                     }
                 );
