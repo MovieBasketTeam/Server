@@ -71,6 +71,7 @@ router.post('/movie/recommend', function(req,res,next){
             res.send(error);
         }
         else {
+          //console.log(movieRecommendInfo.is_liked + "fuck!!!!!!!!");
             res.status(201).send({result : results});
         }
     });
