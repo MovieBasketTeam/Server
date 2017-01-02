@@ -117,6 +117,7 @@ router.post('/movie/cart/delete', function(req,res,next){
            res.status(201).send({result : results});
       }
     });
+
 });
 
 
