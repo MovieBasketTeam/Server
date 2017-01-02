@@ -52,13 +52,13 @@ function category (callback) {
                         return done(error);
                     }
                     else {
-                        categoryMessage.categories = [];
+                        categoryMessage.categories = {};
                         for (var i = 0 ; i < 3 ; i++) {
-                            categoryMessage.categories.push(_.filter(rows, function(item) {
+                            categoryMessage.categories["big_category_"+(i+1)+""] = _.filter(rows, function(item) {
                                 return item.big_category == i+1;
-                            }));
+                            });
                         }
-                    return done(null);
+                        return done(null);
                     }
                 });
             }
