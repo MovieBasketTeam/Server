@@ -36,7 +36,7 @@ var pool = mysql.createPool({
 router.get('/', function(req, res, next) {
   pool.getConnection(function(error, connection){
     if (error){
-      console.log("getConnection Error" + error);
+      console.log("getConnection Error" + error)
       res.sendStatus(500);
     }
     else{
