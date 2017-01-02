@@ -5,11 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
+var uploadBasket = require('./routes/uploadBasket');
 var users = require('./routes/users');
 var basketRank = require('./routes/basketRank');
 var category = require('./routes/category');
 var todayRecommend = require('./routes/todayRecommend');
+var main = require('./routes/main');
 
 var app = express();
 
@@ -26,11 +27,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/images', express.static(path.join(__dirname, 'uploads/images')));
-app.use('/', routes);
+app.use('/uploadBasket', uploadBasket);
 app.use('/users', users);
 app.use('/basketRank', basketRank);
 app.use('/category', category);
 app.use('/todayRecommend', todayRecommend);
+app.use('/', main);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
