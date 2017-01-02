@@ -113,10 +113,9 @@ router.post('/movie/cart/delete', function(req,res,next){
           console.log("Connection error " + error);
           res.send(error);
       }
-
-        else {
-            res.status(201).send({result : results});
-        }
+      else {
+           res.status(201).send({result : results});
+      }
     });
 });
 
