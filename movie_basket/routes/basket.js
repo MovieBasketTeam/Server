@@ -29,8 +29,8 @@ router.post('/like', function (req, res, next) {
     }
     Basket.likeBasket(basketLikeInfo, function (error, results) {
         if (error) {
-            console.log("Connection error " + error);
-            res.send(error);
+            console.log("2-b basket like error");
+            res.status(500).send({result : error});
         }
         else {
             res.status(201).send({result : results});
