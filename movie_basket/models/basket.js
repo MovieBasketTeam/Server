@@ -84,7 +84,7 @@ function likeBasket(basketLikeInfo, callback) {
                 if (error) {
                     return dbConn.rollback(function () {
                         dbConn.release();
-                        callback(error);
+                        callback({message : "like update failed"});
                     });
                 }
                 dbConn.commit(function () {
@@ -327,7 +327,7 @@ function movieAdd(movieAddInfo, callback){
                 }
                 dbConn.commit(function () {
                     dbConn.release();
-                    // movieAddMessage = {message : "movie add success"};
+                    movieAddMessage = {message : "movie add success"};
                     return callback(null, movieAddMessage);
                 });
             });
