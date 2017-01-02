@@ -108,7 +108,22 @@ router.post('/movie/cart/delete', function(req,res,next){
     }
 
     Mypage.movieDelete(movieDeleteInfo, function(error, results){
+
+      if (error) {
+          console.log("Connection error " + error);
+      }
+      else{
+        res.status(201).send({result : results});
+      }
+    });
+  });
+
         if(error){
+<<<<<<< HEAD
+        }
+      });
+    });
+=======
             console.log("Connection error " + error);
             res.send(error);
         }
@@ -117,6 +132,7 @@ router.post('/movie/cart/delete', function(req,res,next){
         }
     });
 });
+>>>>>>> refs/remotes/MovieBasketTeam/master
 
 router.post('/basket/delete', function (req, res, next) {
     var basketInfo = {
@@ -135,6 +151,9 @@ router.post('/basket/delete', function (req, res, next) {
         }
     });
 });
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> refs/remotes/MovieBasketTeam/master
 module.exports = router;
