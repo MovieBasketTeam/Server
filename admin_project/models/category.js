@@ -3,8 +3,8 @@ var async = require('async');
 var _ = require('underscore');
 
 function category (callback) {
-    var sql_basket = 'SELECT basket_name from basket';
-    var sql_category = 'SELECT small_category, big_category FROM category';
+    var sql_basket = 'SELECT basket_id, basket_name from basket';
+    var sql_category = 'SELECT c_id, small_category, big_category FROM category';
     dbPool.getConnection(function(error,dbConn){
         if(error){
             return callback(error);

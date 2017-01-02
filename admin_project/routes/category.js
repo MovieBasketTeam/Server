@@ -24,7 +24,6 @@ router.get('/', function (req, res, next) {
           // res.render('category', { categorys : results });
           res.render('category',
           {
-            title : '바스켓 카테고리 설정 페이지'
             baskets : results.baskets,
             categories : results.categories
           });
@@ -47,13 +46,17 @@ router.post('/', function(req, res, next) {
       res.sendStatus(500);
     }
     else{
-        sql = 'UPDATE basket SET basket_rank = CASE basket_id ';
-        for( var i =0; i < req.body["rank[]"].length; i++){
-            console.log(req.body["rank[]"][i]);
-            var newRank = req.body["rank[]"][i];
-            sql += 'WHEN '+(i+1)+' THEN '+newRank+' '
+        sql = 'INSERT INTO categoryKey(c_id, b_id) VALUES '
+        console.log(req.body["check[]"].length);
+        for( var i =0; i < req.body["check[]"].length; i++){
+          if(i != (req.body["check[]"].length - 1)){
+            console.log(req.body["check[]"][i]);
+            sql += '(' + req.body['check[]'][i] + ' , ' + req.body['basket[]'][0] + '),';
+          }
+          else {
+            sql += '(' + req.body['check[]'][i] + ' , ' + req.body['basket[]'][0] + ')';
+          }
         }
-        sql += 'ELSE basket_rank END';
         console.log(sql);
             connection.query(sql, function(error, rows){
                 if (error){
@@ -64,9 +67,9 @@ router.post('/', function(req, res, next) {
                 else {
                   connection.release();
                   res.send({result : rows});
-            }
+                }
           });
-    }
+        }
   });
 });
 
