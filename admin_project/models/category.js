@@ -49,11 +49,6 @@ function category (callback) {
                     }
                     else {
                         categoryMessage.categories = rows;
-                        // for (var i = 0 ; i < 3 ; i++) {
-                        //     categoryMessage.categories.push(_.filter(rows, function(item) {
-                        //         return item.big_category == i+1;
-                        //     }));
-                        // }
                     }
                     return done(null);
 
@@ -63,4 +58,74 @@ function category (callback) {
     });
 }
 
+function updateCategoryList (info, callback) {
+    var sql_delete_categories = 'DELETE from categoryKey WHERE b_id = ';
+    sql_delete_categories += ''+info.basket+'';
+    var sql_update_categories =
+    'INSERT INTO categoryKey(c_id, b_id) VALUES ';
+    for( var i =0; i < info.checks.length; i++){
+        if(i != (info.checks.length - 1)){
+            sql_update_categories += '(' + info.checks[i] + ' , ' + info.basket + '),';
+        }
+        else {
+            sql_update_categories += '(' + info.checks[i] + ' , ' + info.basket + ')';
+        }
+    }
+    console.log(sql_delete_categories);
+    console.log(sql_update_categories);
+    dbPool.getConnection(function (error, dbConn) {
+        if (error) {
+            console.log("Connection error " + error);
+            return callback(error);
+        }
+        var sendMessage = {};
+        dbConn.beginTransaction(function (error) {
+            if (error) {
+                dbConn.release();
+                return callback(error);
+            }
+
+            async.series([deleteCategories, updateCategories], function (error, result) {
+                if (error) {
+                    return dbConn.rollback(function () {
+                        dbConn.release();
+                        callback(error);
+                    });
+                }
+                dbConn.commit(function () {
+                    dbConn.release();
+                    callback(null, sendMessage);
+                });
+            });
+
+            function deleteCategories(done) {
+                dbConn.query(sql_delete_categories, function (error, rows) {
+                    if (error) {
+                        console.log("Connection Error" + error);
+                        done(error);
+                    }
+                    else {
+                        sendMessage = {message : "success"};
+                        done(null);
+                    }
+                });
+            }
+
+            function updateCategories(done) {
+                dbConn.query(sql_update_categories, function (error, rows) {
+                    if (error) {
+                        console.log("Connection Error" + error);
+                        done(error);
+                    }
+                    else {
+                        sendMessage = {message : "success"};
+                        done(null);
+                    }
+                });
+            }
+        });
+    });
+}
+
 module.exports.category = category;
+module.exports.updateCategoryList = updateCategoryList;
