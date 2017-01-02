@@ -10,8 +10,8 @@ function category (callback) {
             return callback(error);
         }
         var categoryMessage = {};
-
         dbConn.beginTransaction (function (error) {
+
             if (error) {
                 dbConn.release();
                 return callback(error);
@@ -59,10 +59,12 @@ function category (callback) {
 }
 
 function updateCategoryList (info, callback) {
+
     var sql_delete_categories = 'DELETE from categoryKey WHERE b_id = ';
-    sql_delete_categories += ''+info.basket+'';
+        sql_delete_categories += ''+info.basket+'';
+
     var sql_update_categories =
-    'INSERT INTO categoryKey(c_id, b_id) VALUES ';
+        'INSERT INTO categoryKey(c_id, b_id) VALUES ';
     for( var i =0; i < info.checks.length; i++){
         if(i != (info.checks.length - 1)){
             sql_update_categories += '(' + info.checks[i] + ' , ' + info.basket + '),';
@@ -71,8 +73,7 @@ function updateCategoryList (info, callback) {
             sql_update_categories += '(' + info.checks[i] + ' , ' + info.basket + ')';
         }
     }
-    console.log(sql_delete_categories);
-    console.log(sql_update_categories);
+
     dbPool.getConnection(function (error, dbConn) {
         if (error) {
             console.log("Connection error " + error);
