@@ -18,7 +18,7 @@ router.get('/', function (req, res, next) {
     Category.category(function (error, results) {
         if (error) {
             console.log("Connection error " + error);
-            res.send(error);
+            res.status(500).send({results :error});
         }
         else {
           // res.render('category', { categorys : results });

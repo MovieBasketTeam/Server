@@ -54,7 +54,7 @@ router.get('/withdraw', function(req,res,next) {
 
     Member.withdraw(withdrawInfo, function (error, results) {
       if (error) {
-          console.log("Connection error " + error);
+          console.log("1-c withdraw error : " + error);
           return res.status(500).send({result : error});
       }
       else {
@@ -78,7 +78,6 @@ router.get('/version', function (req, res, next) {
 
 // 1-e 로그인 상태 확인 token을 보내서 로그인 여부를 확인한다.
 router.get('/verify', function (req, res, next) {
-    console.log(req.headers);
     var verifyInfo =
     {
         member_token : req.headers.member_token

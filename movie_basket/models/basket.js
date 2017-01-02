@@ -84,7 +84,7 @@ function likeBasket(basketLikeInfo, callback) {
                 if (error) {
                     return dbConn.rollback(function () {
                         dbConn.release();
-                        callback(error);
+                        callback({message : "like update failed"});
                     });
                 }
                 dbConn.commit(function () {
