@@ -1,0 +1,46 @@
+extends layout
+
+block content
+  h1= title
+
+    h3 오늘의 추천 카테고리를 정해주세요
+    p
+        -for (var i = 0; i < categories.length; i++) {
+          input(type='checkbox', name='checkcheck', value='#{categories[i].c_id}')
+          | #{categories[i].small_category}
+          br
+        -}
+    p   
+        input(type='submit', id="saveBtn", value="수정")
+        
+    script.
+      $(function() {
+        $("#saveBtn").click(function(){
+          var checks = [];
+          $(":checkbox[name='checkcheck']:checked").each(function(pi, po){
+            checks.push(po.value);
+          });
+        
+          var param = {
+            check : checks
+          };
+          
+          if (checks.length != 4) {
+              alert("must check 4 categories");
+              return;
+          }
+          
+          $.ajax({
+            url: "http://localhost:8080/todayRecommend",
+            type: "POST",
+            dataType: "json",
+            data: param,
+            success: function (data) {
+              alert(data.result);
+            },
+            error: function (data) {
+              alert("code:"+data.status+"\n");
+            }
+          });
+        });
+      });
