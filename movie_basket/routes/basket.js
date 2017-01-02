@@ -76,6 +76,7 @@ router.post('/movie/recommend', function(req,res,next){
     });
 });
 
+
 // 영화 담기 /movie/cart경로로 영화담기 post방식 요청 처리
 router.post('/movie/cart', function(req,res,next){
 
