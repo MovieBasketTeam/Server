@@ -63,47 +63,6 @@ router.get('/', function(req, res, next) {
   });
 });
 
-
-
-// router.post('/', function(req, res, next) {
-//   console.log(req.body);
-//   res.send({result : 'ok'});
-//   pool.getConnection(function(error, connection){
-//     if (error){
-//       console.log("getConnection Error" + error);
-//       connection.release();
-//       res.sendStatus(500);
-//     }
-//     else{
-//       //  sql = '';
-//       connection.release();
-//       console.log(req.body);
-//       res.send({result : 'ok'});
-//
-//       connection.query(sql,[], function(error, rows){
-//         if (error){
-//           console.log("Connection Error" + error);
-//           res.sendStatus(500);
-//           connection.release();
-//         }
-//         else {
-//           // res.status(201).send({result : 'create'});
-//           connection.release();
-//           console.log(rows);
-//           res.render('basketRank',
-//             {
-//               title : '바스켓 랭킹 설정 페이지',
-//               baskets : rows
-//             }
-//           );
-//         }
-//       });
-//     }
-// });
-
-
-
-
 router.post('/', function(req, res, next) {
   //console.log(req.body);
   pool.getConnection(function(error, connection){
@@ -113,11 +72,13 @@ router.post('/', function(req, res, next) {
       res.sendStatus(500);
     }
     else{
+
         sql = 'UPDATE basket SET basket_rank = CASE basket_id ';
         for( var i =0; i < req.body["rank[]"].length; i++){
             console.log(req.body["rank[]"][i]);
             var newRank = req.body["rank[]"][i];
-            sql += 'WHEN '+(i+1)+' THEN '+newRank+' '
+            sql += 'WHEN '+(i+1)+' THEN '+newRank+' ';
+
         }
         sql += 'ELSE basket_rank END';
         console.log(sql);
@@ -142,7 +103,6 @@ router.post('/', function(req, res, next) {
     }
   });
 });
-
 
 
 // router.post('/', function(req, res, next) {
