@@ -62,47 +62,4 @@ router.post('/', upload.single('basket_image'), function(req, res, next) {
   });
 });
 
-// 아래부터 재림이가 한 부분
-/*
-router.get('/', function(req, res, next) {
-  pool.getConnection(function(error, connection){
-    if (error){
-      console.log("getConnection Error" + error);
-      connection.release();
-      res.sendStatus(500);
-    }
-    else{
-        sql = 'select small_category from category';
-      connection.query(sql, function(error, rows){
-        if (error){
-          console.log("Connection Error" + error);
-          connection.release();
-          res.sendStatus(500);
-        }
-        else {
-          connection.release();
-          console.log(rows);
-          res.render('index',
-            {
-              title : '오늘 추천 카테고리',
-              baskets : rows
-            }
-          );
-        }
-      });
-    }
-  });
-});
-*/
-/*
-router.post('/', function(req, res, next) {
-  var info = {
-    req.bodyParser.job.value()
-  };
-  console.log(info);
-  res.send({result : 'ok'});
-
-  });
-*/
-
 module.exports = router;
