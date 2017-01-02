@@ -2,18 +2,58 @@ extends layout
 
 block content
   h1= title
-
+  h1 바스켓 카테고리 설정 페이지 
   form(action='/', method="post", enctype="multipart/form-data")    
+  
+  
 
-  h4 ▶ 카테고리 추가하기      
+  h4 ▶ 바스켓 선택
   h5
     p
-      script(type='text/javascript')
-      table(border='0')
-        tr
-        each category, i in categorys
-          td
-            input(type='checkbox', name='#{category.small_category}' value = '#{category.small_category}')
-            | #{category.small_category}
-      p
-      input(type='submit', value="카테고리에 추가")
+      -for (var i = 0; i < baskets.length; i++) {
+        input(type='radio', name='radio_basket' value='#{baskets[i].basket_id}')
+        | #{baskets[i].basket_name}
+      -}
+      br
+  h4 ▶ 카테고리 선택
+  h5
+    p
+      -for (var i = 0; i < categories.length; i++) {
+        input(type='checkbox', name='checkcheck', value='#{categories[i].c_id}')
+        | #{categories[i].small_category}
+        br
+      -}
+    p
+      input(type='submit', id='saveBtn' value="카테고리에 추가")
+      
+    script.
+      $(function() {
+        $("#saveBtn").click(function(){
+          var checks = [];
+          var baskets = [];
+          $(":checkbox[name='checkcheck']:checked").each(function(pi, po){
+            checks.push(po.value);
+          });
+          $(":radio[name='radio_basket']:checked").each(function(pi, po){
+            baskets.push(po.value);
+          });
+          
+          var param = {
+            check : checks,
+            basket : baskets
+            
+          };
+          $.ajax({
+            url: "http://Localhost:8080/category",
+            type: "POST",
+            dataType: "json",
+            data: param,
+            success: function (data) {
+              alert(data.result);
+            },
+            error: function (data) {
+              alert("code:"+data.status+"\n");
+            }
+          });
+        });
+      });

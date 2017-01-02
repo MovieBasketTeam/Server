@@ -21,10 +21,12 @@ function basicMypage (mypageInfo, callback) {
 function movieBasket(mypageInfo, callback) {
 
     var sql_movieBasket =
-    'SELECT b.basket_id, b.basket_name, b.basket_image, b.basket_like ' +
+    'SELECT b.basket_id, b.basket_name, b.basket_image, b.basket_like, ' +
+    '(CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked ' +
     'FROM basket b JOIN basket_heart bh ON (b.basket_id = bh.b_id) ' +
     'JOIN member m ON (bh.u_id = m.member_id) ' +
     'WHERE m.member_id = ? ';
+    //is_liked 수정
 
     dbPool.getConnection (function(error, dbConn) {
         if(error) {
@@ -295,4 +297,3 @@ module.exports.basicMypage = basicMypage;
 module.exports.settingMypage = settingMypage;
 module.exports.movieDelete = movieDelete;
 module.exports.deleteBasket = deleteBasket;
-
