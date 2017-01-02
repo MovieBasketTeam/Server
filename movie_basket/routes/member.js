@@ -18,7 +18,7 @@ router.post('/', function (req, res, next) {
 
     Member.logIn(logInInfo, function (error, results) {
         if (error) {
-            console.log("Connection error " + error);
+            console.log("1-a login error : " + error);
             return res.send(error);
         }
         res.status(201).send({result : results});
@@ -36,7 +36,7 @@ router.post('/signUp', function (req, res, next) {
 
     Member.signUp(signUpInfo, function (error, results) {
         if (error) {
-            console.log("Connection error " + error);
+            console.log("1-b signUp error : " + error);
             res.send(error);
         }
         else {
@@ -55,7 +55,7 @@ router.get('/withdraw', function(req,res,next) {
     Member.withdraw(withdrawInfo, function (error, results) {
       if (error) {
           console.log("Connection error " + error);
-          return res.send(error);
+          return res.status(500).send({result : error});
       }
       else {
           res.status(201).send({result : results});
