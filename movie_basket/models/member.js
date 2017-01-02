@@ -121,7 +121,7 @@ function withdraw(withdrawInfo, callback) {
         dbConn.query(sql_withdraw, [jwt.decodeToken(withdrawInfo.member_token).member_id], function(error,rows){
             if (error) {
                 dbConn.release();
-                return callback(error);
+                return callback({message : "withdraw failed"});
             }
             else {
                 dbConn.release();

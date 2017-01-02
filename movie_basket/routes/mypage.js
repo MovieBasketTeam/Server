@@ -130,7 +130,9 @@ router.post('/basket/delete', function (req, res, next) {
         if (error) {
 
             console.log("Connection error " + error);
-            res.send(error);
+            res.status(500).send({result : {
+                message : "delete failed"
+            }});
         }
         else {
             res.status(201).send({result : results});

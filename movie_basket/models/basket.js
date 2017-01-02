@@ -327,7 +327,7 @@ function movieAdd(movieAddInfo, callback){
                 }
                 dbConn.commit(function () {
                     dbConn.release();
-                    // movieAddMessage = {message : "movie add success"};
+                    movieAddMessage = {message : "movie add success"};
                     return callback(null, movieAddMessage);
                 });
             });
