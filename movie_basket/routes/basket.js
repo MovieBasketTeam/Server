@@ -71,6 +71,7 @@ router.post('/movie/recommend', function(req,res,next){
             res.send(error);
         }
         else {
+            console.log({result : results});
             res.status(201).send({result : results});
         }
     });

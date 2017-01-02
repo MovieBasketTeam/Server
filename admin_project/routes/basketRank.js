@@ -86,7 +86,7 @@ router.post('/', function(req, res, next) {
           // res.status(201).send({result : 'create'});
           connection.release();
           console.log("in body");
-          console.log(req.body);
+          console.log(req.body["rank[]"]);
           // res.render('basketRank',
           //   {
           //     title : '바스켓 랭킹 설정 페이지',

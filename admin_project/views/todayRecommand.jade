@@ -1,17 +1,20 @@
 extends layout
 
 block content
-  h1= title
-
-  form(action='/', method="post", enctype="multipart/form-data")
-    h4 바스켓의 랭킹을 정해주세요
-  
-    script(type='text/javascript')
-    select(name='job')
-      option(value='') 성별 선택
-      option(value='남') 남
-      option(value='여') 여
-  
+    h1= title
+    -for(var i = 0 ; i < categories.length ; i++) {
+        
+        -if (i % 7 == 0) {
+            br
+        -}
+        
+        input(type='checkbox', name="category", value='#{categories[i].small_category}')
+        |#{categories[i].small_category}
+        &nbsp
+        
+    -}
+    
     p
-      input(type='submit', value="수정")
+        input(type='submit', id="saveBtn", value="수정")
+  
       

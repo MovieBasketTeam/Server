@@ -34,7 +34,7 @@ router.get('/', function(req, res, next) {
           res.render('todayRecommand',
             {
               title : '오늘 추천 카테고리',
-              baskets : rows
+              categories : rows
             }
           );
         }

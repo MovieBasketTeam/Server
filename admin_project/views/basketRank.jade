@@ -26,18 +26,15 @@ block content
             var length = #{baskets.length};
             $("#saveBtn").click(function() {
                 for (var i = 1 ; i <= length ; i++) {
-                     var id = '#id_'+i;
-                     ranks.push($(id).find("td:eq(1)").find("input").val());
+                    var id = '#id_'+i;
+                    ranks.push($(id).find("td:eq(1)").find("input").val());
                 }
                 
-                var param = {
-                    rank : ranks
-                };
                 $.ajax({
                     url: "http://localhost:8080/basketRank", //API
                     type: "POST",
                     dataType: "json",
-                    data: param,
+                    data: { rank : ranks},
                     success: function (data) {
                         alert(data.result);
                     },
