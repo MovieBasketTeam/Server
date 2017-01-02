@@ -37,7 +37,6 @@ router.get('/', function(req, res, next) {
   pool.getConnection(function(error, connection){
     if (error){
       console.log("getConnection Error" + error);
-      connection.release();
       res.sendStatus(500);
     }
     else{
@@ -103,45 +102,5 @@ router.post('/', function(req, res, next) {
     }
   });
 });
-
-
-// router.post('/', function(req, res, next) {
-//   console.log(req.body);
-//   res.send({result : 'ok'});
-//   // pool.getConnection(function(error, connection){
-//   //   if (error){
-//   //     console.log("getConnection Error" + error);
-//   //     connection.release();
-//   //     res.sendStatus(500);
-//   //   }
-//   //   else{
-//   //     //  sql = '';
-//   //     connection.release();
-//   //     console.log(req.body);
-//   //     res.send({result : 'ok'});
-//   //
-//   //     // connection.query(sql,[], function(error, rows){
-//   //     //   if (error){
-//   //     //     console.log("Connection Error" + error);
-//   //     //     res.sendStatus(500);
-//   //     //     connection.release();
-//   //     //   }
-//   //     //   else {
-//   //     //     // res.status(201).send({result : 'create'});
-//   //     //     connection.release();
-//   //     //     console.log(rows);
-//   //     //     res.render('basketRank',
-//   //     //       {
-//   //     //         title : '바스켓 랭킹 설정 페이지',
-//   //     //         baskets : rows
-//   //     //       }
-//   //     //     );
-//   //     //   }
-//   //     // });
-//   //   }
-//
-//   // });
-//
-// });
 
 module.exports = router;
