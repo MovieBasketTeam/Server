@@ -40,9 +40,13 @@ block content
           
           var param = {
             check : checks,
-            basket : baskets
-            
+            basket : baskets    
           };
+          
+          if (baskets.length != 1 || checks.length <= 0) {
+              alert("check information");
+              return;
+          }
           $.ajax({
             url: "http://Localhost:8080/category",
             type: "POST",
