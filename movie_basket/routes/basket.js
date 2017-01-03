@@ -15,7 +15,8 @@ router.get('/', function (req, res, next) {
     Basket.showBaksets(basketInfo, function (error, results) {
         if (error) {
           console.log("2-a show basket error : " + error);
-          return res.status(500).send({result : error});
+        //   return res.status(500).send({result : error});
+        return res.send(error);
         }
         else {
             res.status(201).send({result : results});
@@ -74,7 +75,7 @@ router.post('/movie/recommend', function(req,res,next){
     Basket.movieRecommend(movieRecommendInfo, function(error, results){
         if(error){
             console.log("Connection error " + error);
-            res.send(error);
+            res.status(500).send({result : error});
         }
         else {
           //console.log(movieRecommendInfo.is_liked + "fuck!!!!!!!!");

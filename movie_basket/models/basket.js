@@ -38,7 +38,7 @@ function showBaksets (basketInfo, callback) {
         dbConn.query(current_sql, [jwt.decodeToken(basketInfo.member_token).member_id], function (error, rows) {
             if (error) {
               dbConn.release();
-              return callback({message : "fail view"});
+              return callback(error);
             }
             else {
                 dbConn.release();
@@ -221,10 +221,11 @@ function movieRecommend (movieRecommendInfo, callback) {
                 [movieRecommendInfo.movie_id, jwt.decodeToken(movieRecommendInfo.member_token).member_id],
                 function (error, rows) {
                     if (error) {
-                        return done(error);
+                        console.log(error);
+                        return done({message : "fail delete"});
                     }
                     else if (rows.affectedRows == 0) {
-                        return done(new Error("fail delete"));
+                        return done({message : "fail delete"});
                     }
                     else {
                       if(movieRecommendInfo.is_liked==0){
