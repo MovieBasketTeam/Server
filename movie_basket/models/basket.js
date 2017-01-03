@@ -227,6 +227,12 @@ function movieRecommend (movieRecommendInfo, callback) {
                         return done(new Error("fail delete"));
                     }
                     else {
+                      if(movieRecommendInfo.is_liked==0){
+                        console.log("change to like");
+                      }
+                      else{
+                        console.log("change to delete");
+                      }
                         return done(null);
                     }
                 }
