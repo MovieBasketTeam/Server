@@ -1,18 +1,29 @@
 extends layout
 
 block content
-  h1= title
 
-    h3 오늘의 추천 카테고리를 정해주세요
-    p
-        -for (var i = 0; i < categories.length; i++) {
-          input(type='checkbox', name='checkcheck', value='#{categories[i].c_id}')
-          | #{categories[i].small_category}
-          br
-        -}
-    p   
-        input(type='submit', id="saveBtn", value="수정")
-        
+    div(id="content")
+        div(id="content_title")
+            | 오늘의 추천 카테고리를 정해주세요
+        div(id="content_body")
+            br
+            -for (var i = 0; i < categories.length; i++) {
+                -if (i % 5 == 0) {
+                        br
+                        br
+                -}
+                div(class="checks")
+                    input(type='checkbox', name='checkcheck', value='#{categories[i].c_id}' id="#{categories[i].c_id}")
+                    label(for="#{categories[i].c_id}") #{categories[i].small_category}
+                | &nbsp &nbsp
+            -}
+            br
+            br
+            br
+            br
+            div(class='buttonbox')
+                input(type='submit', id="saveBtn", value="수정")
+            
     script.
       $(function() {
         $("#saveBtn").click(function(){

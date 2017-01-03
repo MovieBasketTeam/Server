@@ -1,24 +1,28 @@
 extends layout
 block content
-    h1= title
-
-    h3 바스켓의 랭킹을 정해주세요
-    table(border='1')
-        thead
-            tr
-                th 바스켓 이름
-                th 바스켓 랭킹
-            tbody
-                -var index=0
-                each basket in baskets
-                    - index++
-                    tr(id=('id_'+index))
-                        td  #{basket.basket_name}
-                        td  
-                            input(type='text', name="basket_rank" ,value = '#{basket.basket_rank}' )
-    p
-        input(type='submit', id="saveBtn", value="수정")
-     
+    div(id="content")
+        div(id="content_title") 
+            | 바스켓의 랭킹을 정해주세요
+            p
+        div(id="content_body")
+            br
+            table(border='1')
+                thead
+                    tr
+                        th 바스켓 이름
+                        th(id="rankcell") 랭크
+                        tbody
+                        -var index=0
+                        each basket in baskets
+                            - index++
+                            tr(id=('id_'+index))
+                                td  #{basket.basket_name}
+                                td(id="rankcell")  
+                                    div(class='textbox')
+                                        input(type='text', name="basket_rank" ,value = '#{basket.basket_rank}', id="tableinput" )
+            div(class='buttonbox' style="padding-left : 20px")
+                input(type='submit', id="saveBtn", value="수정")
+         
     script.
         $(function() {
             var length = #{baskets.length};
