@@ -74,6 +74,7 @@ router.post('/movie/recommend', function(req,res,next){
     Basket.movieRecommend(movieRecommendInfo, function(error, results){
         if(error){
             console.log("Connection error " + error);
+            console.log(req.body);
             res.send(error);
         }
         else {
