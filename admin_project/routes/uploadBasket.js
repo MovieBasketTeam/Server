@@ -29,7 +29,7 @@ var pool = mysql.createPool({
 });
 
 router.get('/', function(req, res, next) {
-    res.render('index', { title : '바스켓 추가 페이지'});
+    res.render('uploadBasket', { title : '바스켓 추가 페이지'});
 });
 
 router.post('/', upload.single('basket_image'), function(req, res, next) {

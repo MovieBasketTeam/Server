@@ -37,8 +37,8 @@ function showBaksets (basketInfo, callback) {
 
         dbConn.query(current_sql, [jwt.decodeToken(basketInfo.member_token).member_id], function (error, rows) {
             if (error) {
-                dbConn.release();
-                return callback(error);
+              dbConn.release();
+              return callback({message : "fail view"});
             }
             else {
                 dbConn.release();
@@ -64,7 +64,8 @@ function likeBasket(basketLikeInfo, callback) {
 
     dbPool.getConnection(function(error,dbConn) {
         if(error){
-            return callback(error);
+          dbConn.release();
+          return callback({message : "like update failed"});
         }
 
         var basketLikeMessage = {};
@@ -84,7 +85,7 @@ function likeBasket(basketLikeInfo, callback) {
                 if (error) {
                     return dbConn.rollback(function () {
                         dbConn.release();
-                        callback(error);
+                        callback({message : "like update failed"});
                     });
                 }
                 dbConn.commit(function () {
@@ -168,8 +169,8 @@ function showBasketDetail (basketDetailInfo, callback) {
             [jwt.decodeToken(basketDetailInfo.member_token).member_id, jwt.decodeToken(basketDetailInfo.member_token).member_id, basketDetailInfo.basket_id],
             function (error, rows) {
                 if (error) {
-                    dbConn.release();
-                    return callback(error);
+                  dbConn.release();
+                  return callback({message : "basket detail failed"});
                 }
                 else {
                     dbConn.release();
@@ -327,7 +328,7 @@ function movieAdd(movieAddInfo, callback){
                 }
                 dbConn.commit(function () {
                     dbConn.release();
-                    // movieAddMessage = {message : "movie add success"};
+                    movieAddMessage = {message : "movie add success"};
                     return callback(null, movieAddMessage);
                 });
             });
