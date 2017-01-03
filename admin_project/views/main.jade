@@ -1,32 +1,9 @@
 extends layout
-script.
-    $(function () {
-        $("#firstButton").click(function () {
-            $("#myframe").attr("src", "http://localhost:8080/uploadBasket");
-        });
-        $("#secondButton").click(function () {
-            $("#myframe").attr("src", "http://localhost:8080/basketRank");
-        });
-        $("#thirdButton").click(function () {
-            $("#myframe").attr("src", "http://localhost:8080/todayRecommend");
-        });
-        $("#fourthButton").click(function () {
-            $("#myframe").attr("src", "http://localhost:8080/category");
-        });
-    });
+
 block content
     div(id = "container")
         header
             h1 MovieBasket 관리자 페이지
-<<<<<<< HEAD
-        div(id = "menu")
-            input.menu_button(type="button" value="1.바스켓 추가하기" id="firstButton") 
-            input.menu_button(type="button" value="2.바스켓 관리자 추천 순위" id="secondButton") 
-            input.menu_button(type="button" value="3.오늘의 추천카테고리" id="thirdButton") 
-            input.menu_button(type="button" value="4.카테고리 바스켓 설정" id="fourthButton") 
-        
-        iframe.content(id="myframe" src="http://localhost:8080/uploadBasket")
-=======
         div(id = "content")
             div(id = "menu")
                 input.menu_button(type="button" value="1.바스켓 추가하기" id="firstButton") 
@@ -34,7 +11,20 @@ block content
                 input.menu_button(type="button" value="3.오늘의 추천카테고리" id="thirdButton") 
                 input.menu_button(type="button" value="4.카테고리 바스켓 설정" id="fourthButton") 
             iframe(id="myframe" src="http://localhost:8080/uploadBasket")
->>>>>>> refs/remotes/MovieBasketTeam/master
             
             
-    
+    script.
+        $(function () {
+            $("#firstButton").click(function () {
+                $("#myframe").attr("src", "http://localhost:8080/uploadBasket");
+            });
+            $("#secondButton").click(function () {
+                $("#myframe").attr("src", "http://localhost:8080/basketRank");
+            });
+            $("#thirdButton").click(function () {
+                $("#myframe").attr("src", "http://localhost:8080/todayRecommend");
+            });
+            $("#fourthButton").click(function () {
+                $("#myframe").attr("src", "http://localhost:8080/category");
+            });
+        });
