@@ -17,7 +17,11 @@ a {
 
 #container {
     background-color : #ffffff;
+<<<<<<< HEAD
     height: 100%;
+=======
+    clear : both;
+>>>>>>> refs/remotes/MovieBasketTeam/master
 }
 
 header {
