@@ -96,7 +96,7 @@ router.post('/movie/cart', function(req,res,next){
     Basket.movieCart(movieCartInfo, function(error, results){
         if(error){
             console.log("Connection error " + error);
-            console.log(req.body);
+            //console.log(req.body);
             res.send(error);
         }
         else {
