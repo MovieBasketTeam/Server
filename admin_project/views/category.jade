@@ -6,29 +6,38 @@ block content
         div(id="content_title")
             | 바스켓 카테고리 설정 페이지 
         div(id="content_body")
-            form(action='/', method="post", enctype="multipart/form-data")    
-                h4 ▶ 바스켓 선택
-                br
-                -for (var i = 0; i < baskets.length; i++) {
-                    input(type='radio', name='radio_basket' value='#{baskets[i].basket_id}')
-                    | #{baskets[i].basket_name}
+
+            br
+            br
+
+            h4 ▶ 바스켓 선택
+            br
+            -for (var i = 0; i < baskets.length; i++) {
+                -if (i%5 ==0) {
+                    br
+                    br
                 -}
-                br
-                h4 ▶ 카테고리 선택
-                -for (var i = 0; i < categories.length; i++) {
-                    -if (i%5 ==0) {
-                        br
-                        br
-                    -}
-                    div(class="checks")
-                        input(type='checkbox', name='checkcheck', value='#{categories[i].c_id}' id="#{categories[i].c_id}")
-                        label(for="#{categories[i].c_id}") #{categories[i].small_category}
+                input(type='radio', name='radio_basket' value='#{baskets[i].basket_id}')
+                | #{baskets[i].basket_name} &nbsp&nbsp&nbsp
+            -}
+            br
+            br
+            br
+            h4 ▶ 카테고리 선택
+            -for (var i = 0; i < categories.length; i++) {
+                -if (i%5 ==0) {
+                    br
+                    br
                 -}
-                p
-                br
-                
-                div(class='buttonbox')
-                    input(type='submit', id='saveBtn' value="카테고리에 추가")
+                div(class="checks")
+                    input(type='checkbox', name='checkcheck', value='#{categories[i].c_id}' id="#{categories[i].c_id}")
+                    label(for="#{categories[i].c_id}") #{categories[i].small_category}
+            -}
+            p
+            br
+            
+            div(class='buttonbox')
+                input(type='submit', id='saveBtn' value="카테고리에 추가")
               
     script.
         $(function() {
@@ -52,12 +61,12 @@ block content
                     return;
                 }
                 $.ajax({
-                    url: "http://Localhost:8080/category",
+                    url: "#{urls}/category",
                     type: "POST",
                     dataType: "json",
                     data: param,
                     success: function (data) {
-                        alert(data.result);
+                        alert(data);
                     },
                     error: function (data) {
                         alert("code:"+data.status+"\n");

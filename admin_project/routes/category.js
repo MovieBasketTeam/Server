@@ -25,7 +25,8 @@ router.get('/', function (req, res, next) {
           res.render('category',
           {
             baskets : results.baskets,
-            categories : results.categories
+            categories : results.categories,
+            urls : awsinfo_config.url
           });
         }
     });
