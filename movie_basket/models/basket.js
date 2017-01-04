@@ -37,8 +37,8 @@ function showBaksets (basketInfo, callback) {
 
         dbConn.query(current_sql, [jwt.decodeToken(basketInfo.member_token).member_id], function (error, rows) {
             if (error) {
-                dbConn.release();
-                return callback(error);
+              dbConn.release();
+              return callback({message : "fail view"});
             }
             else {
                 dbConn.release();
@@ -64,7 +64,8 @@ function likeBasket(basketLikeInfo, callback) {
 
     dbPool.getConnection(function(error,dbConn) {
         if(error){
-            return callback(error);
+          dbConn.release();
+          return callback({message : "like update failed"});
         }
 
         var basketLikeMessage = {};
@@ -168,8 +169,8 @@ function showBasketDetail (basketDetailInfo, callback) {
             [jwt.decodeToken(basketDetailInfo.member_token).member_id, jwt.decodeToken(basketDetailInfo.member_token).member_id, basketDetailInfo.basket_id],
             function (error, rows) {
                 if (error) {
-                    dbConn.release();
-                    return callback(error);
+                  dbConn.release();
+                  return callback({message : "basket detail failed"});
                 }
                 else {
                     dbConn.release();
@@ -226,6 +227,12 @@ function movieRecommend (movieRecommendInfo, callback) {
                         return done(new Error("fail delete"));
                     }
                     else {
+                      if(movieRecommendInfo.is_liked==0){
+                        console.log("change to like");
+                      }
+                      else{
+                        console.log("change to delete");
+                      }
                         return done(null);
                     }
                 }
@@ -292,7 +299,7 @@ function movieCart(movieCartInfo, callback){
 // 바스켓에 영화 정보 추가, 동시에 마이 영화 추천 정보에 영화 추가
 // 트랜젝션 적용
 function movieAdd(movieAddInfo, callback){
-    var sql_repetition = 'select * from movie where movie_title = ?';
+    var sql_repetition = 'select * from movie where movie_title = ? and basket_id=?';
     var sql_movie_add =
         'insert into movie '+
         '(movie_title, movie_image, movie_director, movie_pub_date, movie_user_rating, movie_link, movie_adder, movie_add_date, movie_like, basket_id) '+
@@ -334,7 +341,7 @@ function movieAdd(movieAddInfo, callback){
 
             // 영화 담기 중복확인
             function checkRepitition (done) {
-              dbConn.query(sql_repetition,[movieAddInfo.movie_title], function (err, rows){
+              dbConn.query(sql_repetition,[movieAddInfo.movie_title, movieAddInfo.basket_id], function (err, rows){
                 if (error) {
                     return done(error);
                 }
@@ -342,10 +349,11 @@ function movieAdd(movieAddInfo, callback){
                     movieAddMessage = {message : "repetitionnnn" };
                     isRepetition = true;
                     console.log("is REpetition");
-                    return done(new Error("repetition"));
+                    return done({message : "movie add failed"});
                 }
                 console.log("done checkREpitition");
                 return done(null);
+                //return done(new Error("movie add failed"));
               });
             };
             // 영화 테이블에 영화 추가

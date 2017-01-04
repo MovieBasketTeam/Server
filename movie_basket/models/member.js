@@ -156,7 +156,7 @@ function checkVersion (callback) {
         dbConn.query(ver_sql, function (error, rows) {
             if (error) {
                 dbConn.release();
-                return callback(error);
+                return callback({message : "version check failed"});
             }
 
             else {

@@ -4,6 +4,8 @@ var router = express.Router();
 
 // basket 목록을 보여주는 get 요청 처리
 // query params에 sort 정보를 전달해준다.
+
+// 2-a 바스켓 보여주기  지정한 정렬방식으로 바스켓 목록을 보여준다
 router.get('/', function (req, res, next) {
     var basketInfo = {
         sort : req.query.sort,
@@ -12,7 +14,8 @@ router.get('/', function (req, res, next) {
 
     Basket.showBaksets(basketInfo, function (error, results) {
         if (error) {
-            console.log("Connection error " + error);
+          console.log("2-a show basket error : " + error);
+          return res.status(500).send({result : error});
         }
         else {
             res.status(201).send({result : results});
@@ -21,6 +24,7 @@ router.get('/', function (req, res, next) {
 });
 
 // 바스켓 /like 경로로 바스켓 담기 post 방식 요청 처리, 바스켓 추천과 담기
+// 2-b 바스켓 담기 선택한 바스켓을 담는다
 router.post('/like', function (req, res, next) {
     var basketLikeInfo =
     {
@@ -30,6 +34,7 @@ router.post('/like', function (req, res, next) {
     Basket.likeBasket(basketLikeInfo, function (error, results) {
         if (error) {
             console.log("2-b basket like error");
+            //console.log(basketLikeInfo.basket_id);
             res.status(500).send({result : error});
         }
         else {
@@ -39,6 +44,7 @@ router.post('/like', function (req, res, next) {
 });
 
 // 바스켓 내부 영화 상세 목록 조회 get 방식 요청 처리
+// 2-c 바스켓 상세보기
 router.get('/detail/:basket_id', function (req, res, next) {
     var basketDetailInfo =
     {
@@ -48,8 +54,8 @@ router.get('/detail/:basket_id', function (req, res, next) {
 
     Basket.showBasketDetail(basketDetailInfo, function (error, results) {
         if (error) {
-            console.log("Connection error " + error);
-            res.send(error);
+          console.log("2-c basket detail error");
+          res.status(500).send({result : error});
         }
         else {
             res.status(200).send({result : results});
@@ -68,9 +74,11 @@ router.post('/movie/recommend', function(req,res,next){
     Basket.movieRecommend(movieRecommendInfo, function(error, results){
         if(error){
             console.log("Connection error " + error);
+            console.log(req.body);
             res.send(error);
         }
         else {
+          //console.log(movieRecommendInfo.is_liked + "fuck!!!!!!!!");
             res.status(201).send({result : results});
         }
     });
@@ -89,6 +97,7 @@ router.post('/movie/cart', function(req,res,next){
     Basket.movieCart(movieCartInfo, function(error, results){
         if(error){
             console.log("Connection error " + error);
+            //console.log(req.body);
             res.send(error);
         }
         else {
@@ -112,7 +121,8 @@ router.post('/movie/add', function(req,res,next){
     Basket.movieAdd(movieAddInfo, function(error, results){
         if(error){
             console.log("Connection error " + error);
-            res.send(error);
+            //res.send(error);
+            res.status(500).send({result : error});
         }
         else {
             res.status(201).send({result : results});

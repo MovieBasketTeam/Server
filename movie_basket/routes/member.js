@@ -67,8 +67,8 @@ router.get('/withdraw', function(req,res,next) {
 router.get('/version', function (req, res, next) {
     Member.checkVersion(function (error, results) {
         if (error) {
-            console.log("Connection error " + error);
-            res.send(error);
+          console.log("1-d version check error : " + error);
+          return res.status(500).send({result : error});
         }
         else {
             res.status(200).send({result : results});
