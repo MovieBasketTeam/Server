@@ -349,7 +349,7 @@ function movieAdd(movieAddInfo, callback){
                     movieAddMessage = {message : "repetitionnnn" };
                     isRepetition = true;
                     console.log("is REpetition");
-                    return done(new Error("movie add failed"));
+                    return done({message : "movie add failed"});
                 }
                 console.log("done checkREpitition");
                 return done(null);
