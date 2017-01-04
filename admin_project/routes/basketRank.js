@@ -5,6 +5,8 @@ var db_config = require('../config/db_config.json');
 var awsinfo_config = require('../config/awsinfo_config.json');
 var router = express.Router();
 
+var url = awsinfo_config.url;
+
 var length = '';
 /*
 var s3 = new aws.S3();
@@ -56,7 +58,8 @@ router.get('/', function(req, res, next) {
           res.render('basketRank',
             {
               title : '바스켓 랭킹 설정 페이지',
-              baskets : rows
+              baskets : rows,
+              urls : url
             }
           );
         }

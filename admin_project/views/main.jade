@@ -10,21 +10,21 @@ block content
                 input.menu_button(type="button" value="2.바스켓 관리자 추천 순위" id="secondButton") 
                 input.menu_button(type="button" value="3.오늘의 추천카테고리" id="thirdButton") 
                 input.menu_button(type="button" value="4.카테고리 바스켓 설정" id="fourthButton") 
-            iframe(id="myframe" src="http://localhost:8080/uploadBasket")
+            iframe(id="myframe" src="#{urls}/uploadBasket")
 
 
     script.
         $(function () {
             $("#firstButton").click(function () {
-                $("#myframe").attr("src", "http://localhost:8080/uploadBasket");
+                $("#myframe").attr("src", "#{urls}/uploadBasket");
             });
             $("#secondButton").click(function () {
-                $("#myframe").attr("src", "http://localhost:8080/basketRank");
+                $("#myframe").attr("src", "#{urls}/basketRank");
             });
             $("#thirdButton").click(function () {
-                $("#myframe").attr("src", "http://localhost:8080/todayRecommend");
+                $("#myframe").attr("src", "#{urls}/todayRecommend");
             });
             $("#fourthButton").click(function () {
-                $("#myframe").attr("src", "http://localhost:8080/category");
+                $("#myframe").attr("src", "#{urls}/category");
             });
         });

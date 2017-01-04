@@ -7,6 +7,7 @@ var router = express.Router();
 var fs = require('fs');
 var multer = require('multer');
 
+
 var _storage = multer.diskStorage({
   destination: function(req, file, cb){
     cb(null, './uploads/images/');
@@ -29,7 +30,10 @@ var pool = mysql.createPool({
 });
 
 router.get('/', function(req, res, next) {
-    res.render('uploadBasket', { title : '바스켓 추가 페이지'});
+    res.render('uploadBasket',
+    {
+      title : '바스켓 추가 페이지'
+    });
 });
 
 router.post('/', upload.single('basket_image'), function(req, res, next) {

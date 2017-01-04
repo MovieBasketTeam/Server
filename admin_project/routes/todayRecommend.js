@@ -13,6 +13,8 @@ var pool = mysql.createPool({
   connectionLimit : db_config.connectionLimit
 });
 
+var url = awsinfo_config.url;
+
 router.get('/', function(req, res, next) {
   pool.getConnection(function(error, connection){
     if (error){
@@ -34,7 +36,8 @@ router.get('/', function(req, res, next) {
           res.render('todayRecommend',
             {
               title : '오늘의 추천 카테고리 설정',
-              categories : rows
+              categories : rows,
+              urls : url
             }
           );
         }
