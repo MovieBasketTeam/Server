@@ -76,12 +76,9 @@ router.post('/movie/recommend', function(req,res,next){
     Basket.movieRecommend(movieRecommendInfo, function(error, results){
         if(error){
             console.log("Connection error " + error);
-<<<<<<< HEAD
             res.status(500).send({result : error});
-=======
             console.log(req.body);
-            res.send(error);
->>>>>>> refs/remotes/MovieBasketTeam/master
+            //res.send(error);
         }
         else {
           //console.log(movieRecommendInfo.is_liked + "fuck!!!!!!!!");
