@@ -94,7 +94,7 @@ function likeBasket(basketLikeInfo, callback) {
                 }
                 dbConn.commit(function () {
                     dbConn.release();
-                    //basketLikeMessage = {message : "like update success"};
+                    basketLikeMessage = {message : "like update success"};
                     callback(null, basketLikeMessage);
                 });
             });
