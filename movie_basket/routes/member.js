@@ -1,5 +1,6 @@
 var express = require('express');
 var Member = require('../models/member');
+var multerUpload = require('../models/multer').upload;
 var router = express.Router();
 
 
@@ -18,7 +19,6 @@ router.post('/', function (req, res, next) {
 
     Member.logIn(logInInfo, function (error, results) {
         if (error) {
-            console.log("1-a login error : " + error);
             return res.send(error);
         }
         res.status(201).send({result : results});
@@ -37,7 +37,7 @@ router.post('/signUp', function (req, res, next) {
     Member.signUp(signUpInfo, function (error, results) {
         if (error) {
             console.log("1-b signUp error : " + error);
-            res.send(error);
+            res.status(500).send({result : error});
         }
         else {
             res.status(201).send({result : results});
@@ -86,6 +86,41 @@ router.get('/verify', function (req, res, next) {
         if (error) {
             console.log("Connection error " + error);
             return res.send(error);
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
+});
+
+// 1-f 프로필 사진 업데이트
+router.post('/uploadprofile', multerUpload.single('profile_file'), function (req, res, next) {
+    var info = {
+        member_token : req.headers.member_token,
+        file : req.file
+    };
+
+    Member.uploadProfile(info, function (error, results) {
+        if (error) {
+            console.log("Connection error "+error);
+            return res.status(500).send({result : error});
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
+});
+
+// 1-g 프로필 사진 삭제
+router.delete('/deleteprofile', function (req, res, next) {
+    var info = {
+        member_token : req.headers.member_token
+    };
+
+    Member.deleteProfile(info, function (error, results) {
+        if (error) {
+            console.log("1-g connection error");
+            return res.status(500).send({result : error});
         }
         else {
             res.status(201).send({result : results});

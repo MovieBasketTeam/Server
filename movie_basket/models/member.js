@@ -2,6 +2,9 @@ var dbPool = require('./common').dbPool;
 var jwt = require('./jwt');
 var async = require('async');
 var crypto = require('crypto');
+var winston = require('./winston').logger;
+var awsInfo_config = require('../config/awsinfo_config');
+var server_error = {message : "internal server error"};
 
 // 암호화 함수 password 를 넣으면 암호화된 password 값을 리턴.
 function cipherPassword (password) {
@@ -21,15 +24,17 @@ function decipherPassword (password) {
 
 // 1-a 로그인 처리 함수
 function logIn (logInInfo, callback) {
-    var sql_login_check = 'select member_id, member_name, member_email, member_pwd from member where member_email = ? and member_pwd = ? and available = 1';
+    var sql_login_check = 'select member_id, member_name, member_email, member_pwd, member_image from member where member_email = ? and member_pwd = ? and available = 1';
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
+            winston.log('error', "db Pool get Connection error.");
             return callback(error);
         }
 
         var logInMessage = {};
         dbConn.query(sql_login_check, [logInInfo.member_email, cipherPassword(logInInfo.member_pwd)], function (error, rows) {
             if (error) {
+                winston.log('error', "db Connection query error\n. query is : "+sql_login_check+"");
                 dbConn.release();
                 return callback(error);
             }
@@ -41,11 +46,14 @@ function logIn (logInInfo, callback) {
                     message : "login success",
                     member_token : jwt.makeToken(rows[0])
                 };
+                winston.log('info',""+logInInfo.member_email+" is logined.")
+                winston.log('info', logInMessage);
                 return callback(null, logInMessage);
             }
             // 아이디 혹은 비밀번호가 잘못됨 혹은 탈퇴된 회원
             else {
                 dbConn.release();
+                winston.crit('email : '+logInInfo.member_email+' - check information.');
                 logInMessage = { message : "check information"};
                 return callback(null, logInMessage);
             }
@@ -59,9 +67,11 @@ function logIn (logInInfo, callback) {
 function signUp (signUpInfo, callback) {
     var sql_repetition = 'select * from member where member_email = ? or member_name = ?';
     var sql_insert_member = 'insert into member(member_name, member_email, member_pwd) values (?, ?, ?)';
+    var server_error = {message : "internal server error"};
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
-            return callback(error);
+            winston.log('error', "db Pool get Connection error.");
+            return callback(server_error);
         }
 
         var signUpMessage = {};
@@ -69,7 +79,7 @@ function signUp (signUpInfo, callback) {
         async.series([checkRepetition, completeSignUp], function (error, results) {
             if (error) {
                 dbConn.release();
-                return callback(error);
+                return callback(server_error);
             }
             dbConn.release();
             return callback(null, signUpMessage);
@@ -78,9 +88,10 @@ function signUp (signUpInfo, callback) {
         function checkRepetition (done) {
             dbConn.query(sql_repetition, [signUpInfo.member_email, signUpInfo.member_name], function (error, rows) {
                 if (error) {
-                    return done(error);
+                    return done(server_error);
                 }
                 else if (rows.length > 0) {
+                    winston.log('notice', ""+signUpInfo.member_email+" or " + signUpInfo.member_name +" havs repetition");
                     signUpMessage = {message : "repetition" };
                     isRepetition = true;
                 }
@@ -94,8 +105,9 @@ function signUp (signUpInfo, callback) {
             }
             dbConn.query(sql_insert_member, [signUpInfo.member_name, signUpInfo.member_email, cipherPassword(signUpInfo.member_pwd)], function (error, rows) {
                 if (error) {
-                    return done(error);
+                    return done(server_error);
                 }
+                winston.log('info', "sign up completed");
                 signUpMessage = { message : "create" };
                 return done(null);
             });
@@ -189,8 +201,135 @@ function verify (verifyInfo, callback) {
         });
     });
 }
+
+// 1-f 프로필 사진 등록 함수
+function uploadProfile (info, callback) {
+    var sql_update_member = 'update member set member_image = ? where member_id = ?';
+    var sql_member_info = 'select member_id, member_name, member_email, member_pwd, member_image from member where member_id = ?';
+    var server_error = {message : "internal server error"};
+    dbPool.getConnection( function (error, dbConn) {
+        if (error) {
+            return callback(error);
+        }
+
+        var sendMessage = {};
+        if (info.member_token =='') {
+            dbConn.release();
+            sendMessage = {message : "is not logined"};
+            return callback(null, sendMessage);
+        }
+
+        if (!info.file) {
+            dbConn.release();
+            sendMessage = {message : "request file is null"};
+            return callback(sendMessage);
+        }
+
+        var url = "http://"+awsinfo_config.url+'/images/'+info.file.filename;
+        async.series([uploadfile, remakeToken], function (error, results) {
+            if (error) {
+                dbConn.release();
+                return callback(server_error);
+            }
+            dbConn.release();
+            return callback(null, sendMessage);
+        });
+
+        function uploadfile (done) {
+            dbConn.query
+            (
+                sql_update_member,
+                [url, jwt.decodeToken(info.member_token).member_id],
+                function (error, rows) {
+                    if (error) {
+                        return done(server_error);
+                    }
+
+                    sendMessage = {message : "upload file success"};
+                    return done(null);
+                }
+            );
+        }
+
+        function remakeToken (done) {
+            dbConn.query
+            (
+                sql_member_info,
+                [jwt.decodeToken(info.member_token).member_id],
+                function (error, rows) {
+                    if (error) {
+                        return done(server_error);
+                    }
+                    sendMessage.member_token = jwt.makeToken(rows[0]);
+                    return done(null);
+                }
+            );
+        }
+    });
+}
+
+function deleteProfile (info, callback) {
+
+    var sql_delete_profile ='update member set member_image = ? where member_id = ?';
+    var sql_member_info = 'select member_id, member_name, member_email, member_pwd, member_image from member where member_id = ?';
+
+    dbPool.getConnection(function (error, dbConn) {
+        if (error) {
+            return callback(error);
+        }
+
+        var sendMessage = {};
+        if (info.member_token =='') {
+            sendMessage = {message : "is not logined"};
+            dbConn.release();
+            return callback(null, sendMessage);
+        }
+
+        async.series([deleteFile, remakeToken], function (error, results) {
+            if (error) {
+                dbConn.release();
+                return callback(server_error);
+            }
+            dbConn.release();
+            return callback(null, sendMessage);
+        });
+
+        function deleteFile (done) {
+            dbConn.query
+            (
+                sql_delete_profile,
+                ['', jwt.decodeToken(info.member_token).member_id],
+                function (error, rows) {
+                    if (error) {
+                        return done(server_error);
+                    }
+
+                    sendMessage = {message : "delete file success"};
+                    return done(null);
+                }
+            );
+        }
+
+        function remakeToken (done) {
+            dbConn.query
+            (
+                sql_member_info,
+                [jwt.decodeToken(info.member_token).member_id],
+                function (error, rows) {
+                    if (error) {
+                        return done(server_error);
+                    }
+                    sendMessage.member_token = jwt.makeToken(rows[0]);
+                    return done(null);
+                }
+            );
+        }
+    });
+}
 module.exports.logIn = logIn;
 module.exports.signUp = signUp;
 module.exports.checkVersion = checkVersion;
 module.exports.withdraw = withdraw;
 module.exports.verify = verify;
+module.exports.uploadProfile = uploadProfile;
+module.exports.deleteProfile = deleteProfile;
