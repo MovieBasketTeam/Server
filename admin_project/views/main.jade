@@ -8,29 +8,11 @@ block content
             nav(id = "topMenu")
                 ul
                     li( id = "firstButton") 
-                        a( href = "http://localhost:8080/uploadBasket" target = "frame" class = "menuLink") 바스켓 추가하기
+                        a( href = "#{urls}/uploadBasket" target = "frame" class = "menuLink") 바스켓 추가하기
                     li( id = "secondButton")
-                        a( href = "http://localhost:8080/basketRank" target = "frame" class = "menuLink") 바스켓 관리자 추천 순위
+                        a( href = "#{urls}/basketRank" target = "frame" class = "menuLink") 바스켓 관리자 추천 순위
                     li( id = "thirdButton")
-                        a( href = "http://localhost:8080/todayRecommend" target = "frame" class = "menuLink") 오늘의 추천 카테고리
+                        a( href = "#{urls}/todayRecommend" target = "frame" class = "menuLink") 오늘의 추천 카테고리
                     li( id = "fourthButton")
-                        a( href = "http://localhost:8080/category" target = "frame" class = "menuLink") 카테고리 바스켓 설정
-            
-            iframe(id="myframe" src="http://localhost:8080/uploadBasket" name = "frame")
-            
-            
-    script.
-        $(function () {
-            //- $("#firstButton").click(function () {
-            //-     $("#myframe").attr("src", "http://localhost:8080/uploadBasket");
-            //- });
-            $("#secondButton").click(function () {
-                $("#myframe").attr("src", "http://localhost:8080/basketRank");
-            });
-            $("#thirdButton").click(function () {
-                $("#myframe").attr("src", "http://localhost:8080/todayRecommend");
-            });
-            $("#fourthButton").click(function () {
-                $("#myframe").attr("src", "http://localhost:8080/category");
-            });
-        });
+                        a( href = "#{urls}/category" target = "frame" class = "menuLink") 카테고리 바스켓 설정
+            iframe(id="myframe" src="#{urls}/uploadBasket" name = "frame")
