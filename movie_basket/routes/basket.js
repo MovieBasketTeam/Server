@@ -35,6 +35,7 @@ router.post('/like', function (req, res, next) {
         if (error) {
             console.log("2-b basket like error");
             //console.log(basketLikeInfo.basket_id);
+            console.log({results : error});
             res.status(500).send({result : error});
         }
         else {
@@ -122,6 +123,7 @@ router.post('/movie/add', function(req,res,next){
         if(error){
             console.log("Connection error " + error);
             //res.send(error);
+            console.log({results : error});
             res.status(500).send({result : error});
         }
         else {
