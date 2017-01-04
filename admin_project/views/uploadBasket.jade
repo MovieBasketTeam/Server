@@ -1,0 +1,43 @@
+extends layout
+
+block content
+    form(action='/', method="post", enctype="multipart/form-data")
+        div(id= "content")
+            div(id= "content_title") 
+                | 바스켓 추가하기
+                p
+            div(id="content_body")
+                br
+                br
+                | 바스켓 이름 
+                br
+                br
+                div(class="textbox")
+                    input(type='text', name="basket_name", placeholder="Basket name") 
+                br
+                br
+                div(class="filebox")
+                    input(class="upload-name" value="파일선택" disabled="disabled")
+                    label(for="ex_filename") 이미지 파일 업로드
+                    input(type="file", name="basket_image", id="ex_filename", class="upload-hidden")
+                br
+                div(class="buttonbox")
+                    input(type='submit', value="제출하기", id="saveBtn")
+                    
+    script.
+        $(document).ready(function () {
+            var fileTarget = $('.filebox .upload-hidden');
+            fileTarget.change(function () {
+                if (window.FileReader) {
+                    var filename = $(this)[0].files[0].name;
+                }
+                else {
+                    var filename = $(this).val().split('/').pop().split('\\').pop();
+                }
+                $(this).siblings('.filebox .upload-name').val(filename);
+            });
+        });
+
+
+        
+  

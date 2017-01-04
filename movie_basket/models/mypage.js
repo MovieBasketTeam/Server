@@ -240,6 +240,7 @@ function deleteBasket (basketInfo, callback) {
                     return dbConn.rollback( function () {
                         dbConn.release();
                         callback(error);
+                        console.log("dbConnection rollback");
                     });
                 }
                 dbConn.commit(function () {
@@ -262,9 +263,11 @@ function deleteBasket (basketInfo, callback) {
                             return done(error);
                         }
                         else if (rows.affectedRows == 0) {
+                            console.log("Cannot delete");
                             return done(new Error("delete failed"));
                         }
                         else {
+                            console.log("done updateBasketList");
                             return done(null);
                         }
                     }
@@ -281,6 +284,7 @@ function deleteBasket (basketInfo, callback) {
                             return done(error);
                         }
                         else {
+                            console.log("done updateBasketLike");
                             return done(null);
                         }
                     }

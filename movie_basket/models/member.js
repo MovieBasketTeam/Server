@@ -121,7 +121,7 @@ function withdraw(withdrawInfo, callback) {
         dbConn.query(sql_withdraw, [jwt.decodeToken(withdrawInfo.member_token).member_id], function(error,rows){
             if (error) {
                 dbConn.release();
-                return callback(error);
+                return callback({message : "withdraw failed"});
             }
             else {
                 dbConn.release();
@@ -144,7 +144,7 @@ function checkVersion (callback) {
         dbConn.query(ver_sql, function (error, rows) {
             if (error) {
                 dbConn.release();
-                return callback(error);
+                return callback({message : "version check failed"});
             }
 
             else {
