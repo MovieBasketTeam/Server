@@ -77,8 +77,10 @@ router.post('/movie/recommend', function(req,res,next){
         if(error){
             console.log("Connection error " + error);
             res.status(500).send({result : error});
+
             console.log(req.body);
             //res.send(error);
+
         }
         else {
           //console.log(movieRecommendInfo.is_liked + "fuck!!!!!!!!");
@@ -126,6 +128,21 @@ router.post('/movie/add', function(req,res,next){
             console.log("Connection error " + error);
             //res.send(error);
             console.log({results : error});
+            res.status(500).send({result : error});
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
+});
+
+router.get('/movie/detail/:id', function (req, res, next) {
+    var info = {
+        movie_id : req.params.id
+    };
+
+    Basket.getMovieInfo(info, function (error, results) {
+        if (error) {
             res.status(500).send({result : error});
         }
         else {

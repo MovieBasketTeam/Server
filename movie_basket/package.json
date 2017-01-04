@@ -8,6 +8,7 @@
   "dependencies": {
     "async": "^2.1.4",
     "body-parser": "~1.15.1",
+    "cheerio": "^0.22.0",
     "connect-redis": "^3.2.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
@@ -21,6 +22,7 @@
     "mysql": "^2.12.0",
     "passport": "^0.3.2",
     "redis": "^2.6.3",
+    "request": "^2.79.0",
     "serve-favicon": "~2.3.0",
     "underscore": "^1.8.3",
     "winston": "^2.3.0"

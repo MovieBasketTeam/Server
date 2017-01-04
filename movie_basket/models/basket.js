@@ -2,7 +2,8 @@ var dbPool = require('./common').dbPool;
 var Common = require('./common');
 var async = require('async');
 var jwt = require('./jwt');
-
+var Crawler = require('./crawler');
+var server_error = {message : "internal server error"};
 // 홈 화면에서 바스켓 조회
 function showBaksets (basketInfo, callback) {
 
@@ -461,6 +462,61 @@ function movieAdd(movieAddInfo, callback){
     });
 }
 
+function getMovieInfo (info, callback) {
+    var link ='';
+    var sendMessage = {};
+    var sql_movie_info = 'select movie_title, movie_pub_date, movie_image, movie_director, movie_user_rating, movie_link from movie where movie_id = ?'
+    dbPool.getConnection (function (error, dbConn) {
+        if (error) {
+            return callback(server_error);
+        }
+
+        async.series([findMovieInfo, findCrawlingInfo], function (error, results) {
+            if (error) {
+                dbConn.release();
+                return callback(server_error);
+            }
+            dbConn.release();
+            return callback(null, sendMessage);
+        });
+
+        function findMovieInfo (done) {
+            dbConn.query
+            (
+                sql_movie_info,
+                [info.movie_id],
+                function (error, rows) {
+                    if (error) {
+                        console.log(error);
+                        return done(server_error);
+                    }
+                    rows = Common.refineMovieRating(rows);
+                    sendMessage.movie_title = rows[0].movie_title;
+                    sendMessage.movie_pub_date = rows[0].movie_pub_date;
+                    sendMessage.movie_image = rows[0].movie_image;
+                    sendMessage.movie_director = rows[0].movie_director;
+                    sendMessage.movie_user_rating = rows[0].movie_user_rating;
+                    link = rows[0].movie_link;
+                    return done(null);
+                }
+            );
+        }
+
+        function findCrawlingInfo (done) {
+            Crawler.findContent (link, function (error, results) {
+                if (error) {
+                    return done(error);
+                }
+                else {
+                    sendMessage.content = results.content;
+                    sendMessage.actors = results.actor;
+                    return done(null);
+                }
+            });
+        }
+    });
+}
+
 
 module.exports.showBaksets = showBaksets;
 module.exports.likeBasket = likeBasket;
@@ -468,3 +524,4 @@ module.exports.showBasketDetail = showBasketDetail;
 module.exports.movieRecommend = movieRecommend;
 module.exports.movieCart = movieCart;
 module.exports.movieAdd = movieAdd;
+module.exports.getMovieInfo = getMovieInfo;
