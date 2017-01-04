@@ -59,6 +59,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 //app.use('/', routes);
+app.use('/images', express.static(path.join(__dirname, 'uploads/images')));
 app.use('/users', users);
 app.use('/member', member);
 app.use('/mypage', mypage);
