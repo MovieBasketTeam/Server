@@ -6,11 +6,17 @@ block content
         div(id="content_title")
             | 바스켓 카테고리 설정 페이지 
         div(id="content_body")
+
             br
             br
+
             h4 ▶ 바스켓 선택
             br
             -for (var i = 0; i < baskets.length; i++) {
+                -if (i%5 ==0) {
+                    br
+                    br
+                -}
                 input(type='radio', name='radio_basket' value='#{baskets[i].basket_id}')
                 | #{baskets[i].basket_name} &nbsp&nbsp&nbsp
             -}
@@ -55,12 +61,12 @@ block content
                     return;
                 }
                 $.ajax({
-                    url: "http://Localhost:8080/category",
+                    url: "#{urls}/category",
                     type: "POST",
                     dataType: "json",
                     data: param,
                     success: function (data) {
-                        alert(data.result);
+                        alert(data);
                     },
                     error: function (data) {
                         alert("code:"+data.status+"\n");

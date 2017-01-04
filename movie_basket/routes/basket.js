@@ -126,7 +126,8 @@ router.post('/movie/add', function(req,res,next){
     Basket.movieAdd(movieAddInfo, function(error, results){
         if(error){
             console.log("Connection error " + error);
-            res.send(error);
+            //res.send(error);
+            res.status(500).send({result : error});
         }
         else {
             res.status(201).send({result : results});
