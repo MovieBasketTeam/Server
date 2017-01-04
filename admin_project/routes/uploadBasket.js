@@ -16,6 +16,7 @@ var _storage = multer.diskStorage({
     cb(null, Date.now() + "." + file.originalname.split('.').pop());
   }
 });
+
 var upload = multer({
   storage: _storage
 });
@@ -47,7 +48,7 @@ router.post('/', upload.single('basket_image'), function(req, res, next) {
       var date = new Date();
       if (req.file){
         sql = 'insert into basket(basket_name, basket_image, basket_date) values(?,?,?)';
-        var url = awsinfo_config.url+'/images/'+req.file.filename;
+        var url = "http://"+awsinfo_config.url+'/images/'+req.file.filename;
         inserts = [req.body.basket_name, url, date];
         console.log(req.file);
       }
@@ -58,8 +59,8 @@ router.post('/', upload.single('basket_image'), function(req, res, next) {
           connection.release();
         }
         else {
-          res.status(201).send({result : 'create'});
-          connection.release();
+            res.render('uploadBasket', { title : '바스켓 추가 페이지'});
+            connection.release();
         }
       });
     }
