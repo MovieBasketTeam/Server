@@ -54,6 +54,7 @@ function showBaksets (basketInfo, callback) {
 // 트렌젝션 적용
 function likeBasket(basketLikeInfo, callback) {
 
+  var sql_repetition = 'select * from basket_heart where b_id = ? and u_id=?';
     // 마이 바스켓 목록 업데이트
     var sql_update_my_basket =
         'insert into basket_heart(b_id, u_id) values (?, ?)';
@@ -69,6 +70,7 @@ function likeBasket(basketLikeInfo, callback) {
         }
 
         var basketLikeMessage = {};
+        var isRepetition = false;
         if (basketLikeInfo.member_token =='') {
             dbConn.release();
             basketLikeMessage = {message : "is not logined"};
@@ -81,22 +83,43 @@ function likeBasket(basketLikeInfo, callback) {
                 return callback(error);
             }
 
-            async.series([updateMyBasket, updateBasketLike], function (error, results) {
+            async.series([checkBasketRepitition, updateMyBasket, updateBasketLike], function (error, results) {
                 if (error) {
                     return dbConn.rollback(function () {
                         dbConn.release();
+                        //return callback(error);
                         callback({message : "like update failed"});
                     });
                 }
                 dbConn.commit(function () {
                     dbConn.release();
-                    basketLikeMessage = {message : "like update success"};
+                    //basketLikeMessage = {message : "like update success"};
                     callback(null, basketLikeMessage);
                 });
             });
 
+            function checkBasketRepitition (done) {
+              dbConn.query(sql_repetition,[basketLikeInfo.basket_id, jwt.decodeToken(basketLikeInfo.member_token).member_id], function (err, rows){
+                if (error) {
+                    return done(error);
+                }
+                else if (rows.length > 0) {
+                    basketLikeMessage = {message : "basket add failed" };
+                    isRepetition = true;
+                    console.log("is REpetition");
+                    return done(null);
+                }
+                console.log("done checkREpitition");
+                return done(null);
+                //return done(new Error("movie add failed"));
+              });
+            };
+
             // 자신의 바스켓 목록 업데이트 함수
             function updateMyBasket (done) {
+                if (isRepetition) {
+                  return done(null);
+                }
                 dbConn.query
                 (
                     sql_update_my_basket,
@@ -119,6 +142,9 @@ function likeBasket(basketLikeInfo, callback) {
             }
         // 바스켓 좋아요 수 업데이트 함수
             function updateBasketLike (done) {
+                if (isRepetition) {
+                  return done(null);
+                }
                 dbConn.query
                 (
                     sql_update_basket_like,
@@ -335,7 +361,6 @@ function movieAdd(movieAddInfo, callback){
                 }
                 dbConn.commit(function () {
                     dbConn.release();
-                    movieAddMessage = {message : "movie add success"};
                     return callback(null, movieAddMessage);
                 });
             });
@@ -347,10 +372,10 @@ function movieAdd(movieAddInfo, callback){
                     return done(error);
                 }
                 else if (rows.length > 0) {
-                    movieAddMessage = {message : "repetitionnnn" };
+                    movieAddMessage = {message : "movie add failed" };
                     isRepetition = true;
                     console.log("is REpetition");
-                    return done({message : "movie add failed"});
+                    return done(null);
                 }
                 console.log("done checkREpitition");
                 return done(null);
@@ -425,6 +450,7 @@ function movieAdd(movieAddInfo, callback){
                             return done(error);
                         }
                         else {
+                            movieAddMessage = {message : "movie add success"};
                             return done(null);
                             console.log("done updateMyMovieLike");
                         }
