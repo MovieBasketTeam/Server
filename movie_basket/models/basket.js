@@ -349,11 +349,11 @@ function movieAdd(movieAddInfo, callback){
                     movieAddMessage = {message : "repetitionnnn" };
                     isRepetition = true;
                     console.log("is REpetition");
-                    return done(new Error("repetition"));
+                    return done(new Error("movie add failed"));
                 }
                 console.log("done checkREpitition");
-                //return done(null);
-                return done(new Error("repetition"));
+                return done(null);
+                //return done(new Error("movie add failed"));
               });
             };
             // 영화 테이블에 영화 추가
