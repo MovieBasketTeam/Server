@@ -352,7 +352,8 @@ function movieAdd(movieAddInfo, callback){
                     return done(new Error("repetition"));
                 }
                 console.log("done checkREpitition");
-                return done(null);
+                //return done(null);
+                return done(new Error("repetition"));
               });
             };
             // 영화 테이블에 영화 추가
