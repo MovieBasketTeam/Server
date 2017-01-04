@@ -34,7 +34,7 @@ block content
                 }
                 
                 $.ajax({
-                    url: "http://52.78.217.168:8080/basketRank", //API
+                    url: "#{urls}/basketRank", 
                     type: "POST",
                     dataType: "json",
                     data: { rank : ranks},

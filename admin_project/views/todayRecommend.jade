@@ -40,9 +40,9 @@ block content
               alert("must check 4 categories");
               return;
           }
-          
+
           $.ajax({
-            url: "http://localhost:8080/todayRecommend",
+            url: "#{urls}/todayRecommend",
             type: "POST",
             dataType: "json",
             data: param,
