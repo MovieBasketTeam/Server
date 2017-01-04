@@ -12,7 +12,6 @@ var category = require('./routes/category');
 var todayRecommend = require('./routes/todayRecommend');
 var main = require('./routes/main');
 var login = require('./routes/login');
-
 var app = express();
 
 // view engine setup
