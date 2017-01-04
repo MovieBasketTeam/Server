@@ -11,6 +11,7 @@ var basketRank = require('./routes/basketRank');
 var category = require('./routes/category');
 var todayRecommend = require('./routes/todayRecommend');
 var main = require('./routes/main');
+var login = require('./routes/login');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use('/basketRank', basketRank);
 app.use('/category', category);
 app.use('/todayRecommend', todayRecommend);
 app.use('/', main);
+app.use('/login',login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

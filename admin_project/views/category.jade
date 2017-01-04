@@ -7,12 +7,16 @@ block content
             | 바스켓 카테고리 설정 페이지 
         div(id="content_body")
             form(action='/', method="post", enctype="multipart/form-data")    
+                br
+                br
                 h4 ▶ 바스켓 선택
                 br
                 -for (var i = 0; i < baskets.length; i++) {
                     input(type='radio', name='radio_basket' value='#{baskets[i].basket_id}')
-                    | #{baskets[i].basket_name}
+                    | #{baskets[i].basket_name} &nbsp&nbsp&nbsp
                 -}
+                br
+                br
                 br
                 h4 ▶ 카테고리 선택
                 -for (var i = 0; i < categories.length; i++) {
