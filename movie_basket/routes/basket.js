@@ -134,8 +134,7 @@ router.post('/movie/add', function(req,res,next){
 
 router.get('/movie/detail/:id', function (req, res, next) {
     var info = {
-        movie_id : req.params.id,
-        link : req.query.link
+        movie_id : req.params.id
     };
 
     Basket.getMovieInfo(info, function (error, results) {

@@ -463,9 +463,9 @@ function movieAdd(movieAddInfo, callback){
 }
 
 function getMovieInfo (info, callback) {
-    var url = info.link;
+    var link ='';
     var sendMessage = {};
-    var sql_movie_info = 'select movie_title, movie_pub_date, movie_image, movie_director, movie_user_rating from movie where movie_id = ?'
+    var sql_movie_info = 'select movie_title, movie_pub_date, movie_image, movie_director, movie_user_rating, movie_link from movie where movie_id = ?'
     dbPool.getConnection (function (error, dbConn) {
         if (error) {
             return callback(server_error);
@@ -496,13 +496,14 @@ function getMovieInfo (info, callback) {
                     sendMessage.movie_image = rows[0].movie_image;
                     sendMessage.movie_director = rows[0].movie_director;
                     sendMessage.movie_user_rating = rows[0].movie_user_rating;
+                    link = rows[0].movie_link;
                     return done(null);
                 }
             );
         }
 
         function findCrawlingInfo (done) {
-            Crawler.findContent (url, function (error, results) {
+            Crawler.findContent (link, function (error, results) {
                 if (error) {
                     return done(error);
                 }
