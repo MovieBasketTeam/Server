@@ -157,10 +157,11 @@ function settingMypage (settingInfo, callback) {
         showMessage = {message : "is not logined"};
         return callback(null, showMessage);
     }
-
+    var decodedToken = jwt.decodeToken(settingInfo.member_token);
     showMessage = {
-        member_name : jwt.decodeToken(settingInfo.member_token).member_name,
-        member_email : jwt.decodeToken(settingInfo.member_token).member_email
+        member_name : decodedToken.member_name,
+        member_email : decodedToken.member_email,
+        member_image : decodedToken.member_image
     }
     return callback(null, showMessage);
 }
