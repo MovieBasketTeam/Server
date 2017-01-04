@@ -287,8 +287,7 @@ function deleteBasket (basketInfo, callback) {
                             console.log("done updateBasketLike");
                             return done(null);
                         }
-                    }
-                );
+                    });
             }
         });
     });
