@@ -105,7 +105,7 @@ function likeBasket(basketLikeInfo, callback) {
                     return done(error);
                 }
                 else if (rows.length > 0) {
-                    basketLikeMessage = {message : "basket add failed" };
+                    basketLikeMessage = {message : "like update failed" };
                     isRepetition = true;
                     return done(null);
                 }
@@ -131,7 +131,7 @@ function likeBasket(basketLikeInfo, callback) {
                             return done(error);
                         }
                         else if (rows.affectedRows == 0) {
-                            return done(new Error("fail delete"));
+                            return done(server_error);
                         }
                         else {
                           basketLikeMessage = {message : "like update success"};
@@ -151,7 +151,7 @@ function likeBasket(basketLikeInfo, callback) {
                     [basketLikeInfo.basket_id],
                     function (error, rows) {
                         if (error) {
-                            return done(error);
+                            return done(server_error);
                         }
                         else {
                             return done(null);

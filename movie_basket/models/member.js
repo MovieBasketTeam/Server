@@ -3,7 +3,7 @@ var jwt = require('./jwt');
 var fs = require('fs');
 var async = require('async');
 var crypto = require('crypto');
-var winston = require('./winston').logger;
+var logger = require('./winston').logger;
 var awsinfo_config = require('../config/awsinfo_config.json');
 var server_error = {message : "internal server error"};
 
@@ -28,14 +28,14 @@ function logIn (logInInfo, callback) {
     var sql_login_check = 'select member_id, member_name, member_email, member_pwd, member_image from member where member_email = ? and member_pwd = ? and available = 1';
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
-            winston.log('error', "db Pool get Connection error.");
+            logger.debug("In function logIn : Get Connection Error");
             return callback(error);
         }
 
         var logInMessage = {};
         dbConn.query(sql_login_check, [logInInfo.member_email, cipherPassword(logInInfo.member_pwd)], function (error, rows) {
             if (error) {
-                winston.log('error', "db Connection query error\n. query is : "+sql_login_check+"");
+                logger.debug("In function logIn : db Connection query error\n. query is : "+sql_login_check+"");
                 dbConn.release();
                 return callback(error);
             }
@@ -47,14 +47,13 @@ function logIn (logInInfo, callback) {
                     message : "login success",
                     member_token : jwt.makeToken(rows[0])
                 };
-                winston.log('info',""+logInInfo.member_email+" is logined.")
-                winston.log('info', logInMessage);
+                logger.debug("member email : "+logInInfo.member_email+" is logined.");
                 return callback(null, logInMessage);
             }
             // 아이디 혹은 비밀번호가 잘못됨 혹은 탈퇴된 회원
             else {
                 dbConn.release();
-                winston.crit('email : '+logInInfo.member_email+' - check information.');
+                logger.debug('member email : '+logInInfo.member_email+' - check information.');
                 logInMessage = { message : "check information"};
                 return callback(null, logInMessage);
             }
@@ -71,7 +70,7 @@ function signUp (signUpInfo, callback) {
     var server_error = {message : "internal server error"};
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
-            winston.log('error', "db Pool get Connection error.");
+            logger.debug("In function signUp , Get Connection Error");
             return callback(server_error);
         }
 
@@ -89,10 +88,11 @@ function signUp (signUpInfo, callback) {
         function checkRepetition (done) {
             dbConn.query(sql_repetition, [signUpInfo.member_email, signUpInfo.member_name], function (error, rows) {
                 if (error) {
+                    logger.debug("In function checkRepetition , query error : "+sql_repetition);
                     return done(server_error);
                 }
                 else if (rows.length > 0) {
-                    winston.log('notice', ""+signUpInfo.member_email+" or " + signUpInfo.member_name +" havs repetition");
+                    logger.debug("email : "+signUpInfo.member_email+" or name : " + signUpInfo.member_name +" has repetition");
                     signUpMessage = {message : "repetition" };
                     isRepetition = true;
                 }
@@ -106,9 +106,10 @@ function signUp (signUpInfo, callback) {
             }
             dbConn.query(sql_insert_member, [signUpInfo.member_name, signUpInfo.member_email, cipherPassword(signUpInfo.member_pwd)], function (error, rows) {
                 if (error) {
+                    logger.debug("In function completeSignUp , query error : "+sql_insert_member);
                     return done(server_error);
                 }
-                winston.log('info', "sign up completed");
+                logger.debug("Complete Sign Up, email : "+signUpInfo.member_email+"name : "+signUpInfo.member_name);
                 signUpMessage = { message : "create" };
                 return done(null);
             });
@@ -121,6 +122,7 @@ function withdraw(withdrawInfo, callback) {
     var sql_withdraw = 'update member set available = 0 where member_id = ? and available = 1';
     dbPool.getConnection( function(error,dbConn) {
         if(error){
+            logger.debug("In function withdraw, Get Connection Error");
             return callback(error);
         }
 
@@ -133,11 +135,13 @@ function withdraw(withdrawInfo, callback) {
 
         dbConn.query(sql_withdraw, [jwt.decodeToken(withdrawInfo.member_token).member_id], function(error,rows){
             if (error) {
+                logger.debug("In function withdraw, query error : "+sql_withdraw);
                 dbConn.release();
                 return callback({message : "withdraw failed"});
             }
             else {
                 dbConn.release();
+                logger.debug("withdraw success , email : "+jwt.decodeToken(withdrawInfo.member_token).member_email);
                 withdrawMessage = { message : "withdraw success"};
                 return callback(null, withdrawMessage);
             }
@@ -156,12 +160,14 @@ function checkVersion (callback) {
         var checkVerMessage = {};
         dbConn.query(ver_sql, function (error, rows) {
             if (error) {
+                logger.debug("In function checkVersion, query error : "+ver_sql);
                 dbConn.release();
                 return callback({message : "version check failed"});
             }
 
             else {
                 dbConn.release();
+                logger.debug("In function checkVersion, version is : "+rows[0].ver);
                 checkVerMessage = { version : rows[0].ver };
                 return callback(null, checkVerMessage);
             }
@@ -174,28 +180,33 @@ function verify (verifyInfo, callback) {
     var sql_verify = 'select member_id from member where member_id = ?';
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
+            logger.debug("In function verify, Get Connection Error");
             return callback(error);
         }
 
         var verifyMessage = {};
         if (verifyInfo.member_token =='') {
             dbConn.release();
+            logger.debug("In function verify, token is none, member is not logined");
             verifyMessage = {message : "is not logined"};
             return callback(null, verifyMessage);
         }
-
-        dbConn.query(sql_verify, [jwt.decodeToken(verifyInfo.member_token).member_id], function (error, rows) {
+        var decodedToken = jwt.decodeToken(verifyInfo.member_token);
+        dbConn.query(sql_verify, [decodedToken.member_id], function (error, rows) {
             if (error) {
+                logger.debug("In function verify, query error : "+sql_verify);
                 dbConn.release();
                 return callback(error);
             }
             else if (rows.length == 0) {
                 dbConn.release();
+                logger.debug("In function verify, token is none, member is not logined");
                 verifyMessage = {message : "is not logined"};
                 return callback(null, verifyMessage);
             }
             else {
                 dbConn.release();
+                logger.debug("email : "+decodedToken.member_email+" is logined");
                 verifyMessage = {message : "is logined"};
                 return callback(null, verifyMessage);
             }
@@ -207,50 +218,68 @@ function verify (verifyInfo, callback) {
 function uploadProfile (info, callback) {
     var sql_update_member = 'update member set member_image = ? where member_id = ?';
     var sql_member_info = 'select member_id, member_name, member_email, member_pwd, member_image from member where member_id = ?';
-    var server_error = {message : "internal server error"};
     dbPool.getConnection( function (error, dbConn) {
         if (error) {
+            logger.debug("In function uploadProfile, Get Connection Error");
             return callback(server_error);
         }
 
         var sendMessage = {};
         if (info.member_token =='') {
             dbConn.release();
+            logger.debug("In function uploadProfile, token is none, member is not logined");
             sendMessage = {message : "is not logined"};
             return callback(null, sendMessage);
         }
 
         if (!info.file) {
             dbConn.release();
+            logger.debug("In function uploadProfile, request file is null");
             sendMessage = {message : "request file is null"};
             return callback(sendMessage);
         }
 
         var url = "http://"+awsinfo_config.url+'/images/'+info.file.filename;
-        async.series([uploadfile, remakeToken], function (error, results) {
+        async.series([uploadFile, deletePastFile, remakeToken], function (error, results) {
             if (error) {
                 dbConn.release();
                 return callback(server_error);
             }
             dbConn.release();
+            logger.debug("In function uploadProfile, upload profile completed");
             return callback(null, sendMessage);
         });
 
-        function uploadfile (done) {
+        function uploadFile (done) {
             dbConn.query
             (
                 sql_update_member,
                 [url, jwt.decodeToken(info.member_token).member_id],
                 function (error, rows) {
                     if (error) {
+                        logger.debug("In function uploadProfile - uploadFile, query error : "+sql_update_member);
                         return done(server_error);
                     }
 
                     sendMessage = {message : "upload file success"};
-                    console.log("done upload file");
                     return done(null);
                 }
             );
+        }
+
+        function deletePastFile (done) {
+            var image_url = jwt.decodeToken(info.member_token).member_image;
+            if (image_url=='') {
+                return done(null);
+            }
+            var url = './uploads/images'+image_url.substring(image_url.lastIndexOf('/'));
+            fs.unlink(url, function (error) {
+                if (error) {
+                    logger.debug("In function uploadProfile - deletePastFile, Error : "+error);
+                    return done(server_error);
+                }
+                return done(null);
+            });
         }
 
         function remakeToken (done) {
@@ -260,10 +289,10 @@ function uploadProfile (info, callback) {
                 [jwt.decodeToken(info.member_token).member_id],
                 function (error, rows) {
                     if (error) {
+                        logger.debug("In function uploadProfile - remakeToken, query error : "+sql_member_info);
                         return done(server_error);
                     }
                     sendMessage.member_token = jwt.makeToken(rows[0]);
-                    console.log("done remakeToken");
                     return done(null);
                 }
             );
@@ -283,6 +312,7 @@ function deleteProfile (info, callback) {
 
         var sendMessage = {};
         if (info.member_token =='') {
+            logger.debug("In function deleteProfile, token is none, member is not logined");
             sendMessage = {message : "is not logined"};
             dbConn.release();
             return callback(null, sendMessage);
@@ -294,6 +324,7 @@ function deleteProfile (info, callback) {
                 return callback(server_error);
             }
             dbConn.release();
+            logger.debug("In function deleteProfile, delete profile completed");
             return callback(null, sendMessage);
         });
         function deleteFile (done) {
@@ -301,7 +332,7 @@ function deleteProfile (info, callback) {
             var url = './uploads/images'+image_url.substring(image_url.lastIndexOf('/'));
             fs.unlink(url, function (error) {
                 if (error) {
-                    console.log("file remove error");
+                    logger.debug("In function deleteProfile - deleteFile, Error : "+error);
                     return done(server_error);
                 }
                 return done(null);
@@ -315,6 +346,7 @@ function deleteProfile (info, callback) {
                 ['', jwt.decodeToken(info.member_token).member_id],
                 function (error, rows) {
                     if (error) {
+                        logger.debug("In function deleteProfile - deleteInDB, query error : "+sql_delete_profile);
                         return done(server_error);
                     }
 
@@ -331,6 +363,7 @@ function deleteProfile (info, callback) {
                 [jwt.decodeToken(info.member_token).member_id],
                 function (error, rows) {
                     if (error) {
+                        logger.debug("In function deleteProfile - deleteInDB, query error : "+sql_member_info);
                         return done(server_error);
                     }
                     sendMessage.member_token = jwt.makeToken(rows[0]);
