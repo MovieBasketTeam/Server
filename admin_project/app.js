@@ -12,9 +12,10 @@ var category = require('./routes/category');
 var todayRecommend = require('./routes/todayRecommend');
 var main = require('./routes/main');
 var login = require('./routes/login');
-
 var app = express();
 
+// 세션과 인증
+var session = require('express-session');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -27,6 +28,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+    secret : 'test',
+    resave: false,
+    saveUninitialized : false,
+    cookie : {
+        path : '/',
+        httpOnly : true,
+        secure : false,
+        maxAge : 1000 * 60 * 60 * 24 * 30
+    }
+}));
+
 app.use('/images', express.static(path.join(__dirname, 'uploads/images')));
 app.use('/uploadBasket', uploadBasket);
 app.use('/users', users);
@@ -35,6 +48,9 @@ app.use('/category', category);
 app.use('/todayRecommend', todayRecommend);
 app.use('/', main);
 app.use('/login',login);
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
