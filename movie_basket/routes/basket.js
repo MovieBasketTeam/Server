@@ -1,6 +1,7 @@
 var express = require('express');
 var Basket = require('../models/basket');
 var router = express.Router();
+var logger = require('../models/winston');
 
 // basket 목록을 보여주는 get 요청 처리
 // query params에 sort 정보를 전달해준다.
@@ -14,9 +15,8 @@ router.get('/', function (req, res, next) {
 
     Basket.showBaksets(basketInfo, function (error, results) {
         if (error) {
-          console.log("2-a show basket error : " + error);
-        //   return res.status(500).send({result : error});
-        return res.send(error);
+            logger.Debug("2-a error");
+            return res.send(error);
         }
         else {
             res.status(201).send({result : results});
@@ -34,9 +34,7 @@ router.post('/like', function (req, res, next) {
     }
     Basket.likeBasket(basketLikeInfo, function (error, results) {
         if (error) {
-            console.log("2-b basket like error");
-            //console.log(basketLikeInfo.basket_id);
-            console.log({results : error});
+            logger.Debug("2-b error");
             res.status(500).send({result : error});
         }
         else {
@@ -56,8 +54,8 @@ router.get('/detail/:basket_id', function (req, res, next) {
 
     Basket.showBasketDetail(basketDetailInfo, function (error, results) {
         if (error) {
-          console.log("2-c basket detail error");
-          res.status(500).send({result : error});
+            logger.Debug("2-c error");
+            res.status(500).send({result : error});
         }
         else {
             res.status(200).send({result : results});
@@ -66,7 +64,7 @@ router.get('/detail/:basket_id', function (req, res, next) {
 });
 
 
-// 영화 추천 /movie/recommend 경로로 영화추천 post방식 요청 처리
+// 2-d 영화 추천 /movie/recommend 경로로 영화추천 post방식 요청 처리
 router.post('/movie/recommend', function(req,res,next){
     var movieRecommendInfo = {
         is_liked : req.body.is_liked,
@@ -75,22 +73,17 @@ router.post('/movie/recommend', function(req,res,next){
     }
     Basket.movieRecommend(movieRecommendInfo, function(error, results){
         if(error){
-            console.log("Connection error " + error);
+            logger.Debug("2-d error");
             res.status(500).send({result : error});
-
-            console.log(req.body);
-            //res.send(error);
-
         }
         else {
-          //console.log(movieRecommendInfo.is_liked + "fuck!!!!!!!!");
             res.status(201).send({result : results});
         }
     });
 });
 
 
-// 영화 담기 /movie/cart경로로 영화담기 post방식 요청 처리
+// 2-e 영화 담기 /movie/cart경로로 영화담기 post방식 요청 처리
 router.post('/movie/cart', function(req,res,next){
 
     var movieCartInfo = {
@@ -101,8 +94,7 @@ router.post('/movie/cart', function(req,res,next){
 
     Basket.movieCart(movieCartInfo, function(error, results){
         if(error){
-            console.log("Connection error " + error);
-            //console.log(req.body);
+            logger.Debug("2-e error");
             res.send(error);
         }
         else {
@@ -111,7 +103,7 @@ router.post('/movie/cart', function(req,res,next){
     });
 });
 
-// 영화 추가 /movie/add 경로로 영화담기 post방식 요청 처리
+// 2-f 영화 추가 /movie/add 경로로 영화담기 post방식 요청 처리
 router.post('/movie/add', function(req,res,next){
     var movieAddInfo = {
         basket_id : req.body.basket_id,
@@ -125,9 +117,7 @@ router.post('/movie/add', function(req,res,next){
     }
     Basket.movieAdd(movieAddInfo, function(error, results){
         if(error){
-            console.log("Connection error " + error);
-            //res.send(error);
-            console.log({results : error});
+            logger.Debug("2-f error");
             res.status(500).send({result : error});
         }
         else {
@@ -136,6 +126,7 @@ router.post('/movie/add', function(req,res,next){
     });
 });
 
+// 2-g 영화 상세 정보 영화의 상세 정보 GET 요청 처리
 router.get('/movie/detail/:id', function (req, res, next) {
     var info = {
         movie_id : req.params.id
@@ -143,6 +134,7 @@ router.get('/movie/detail/:id', function (req, res, next) {
 
     Basket.getMovieInfo(info, function (error, results) {
         if (error) {
+            logger.Debug("2-g error");
             res.status(500).send({result : error});
         }
         else {

@@ -1,10 +1,52 @@
 var winston = require('winston');
-winston.setLevels(winston.config.syslog.levels);
-var logger = new (winston.Logger) ({
-    transports: [
-        new (winston.transports.Console)()
+var warnLogger = new (winston.Logger) ({
+    levels : {
+        warn : 0
+    },
+    colors : {
+        warn : 'yellow'
+    },
+    transports :
+    [
+        new (winston.transports.Console) ({
+            level : 'warn',
+            colorize : true
+        })
     ]
 });
-logger.setLevels(winston.config.syslog.levels);
+var errLogger = new (winston.Logger) ({
+    levels : {
+        error : 0
+    },
+    colors : {
+        error : 'red'
+    },
+    transports :
+    [
+        new (winston.transports.Console) ({
+            level : 'error',
+            colorize : true
+        })
+    ]
+});
+var logger = new (winston.Logger) ({
+    levels : {
+        debug : 1
+    },
+    colors: {
+        debug : 'blue'
+    },
+    transports :
+    [
+        new (winston.transports.Console)(
+            {
+                level : 'debug',
+                colorize : true
+            })
+    ]
+});
+
 
 module.exports.logger = logger;
+module.exports.warnLogger = warnLogger;
+module.exports.errLogger = errLogger;

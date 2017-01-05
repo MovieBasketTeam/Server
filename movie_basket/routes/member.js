@@ -1,13 +1,9 @@
 var express = require('express');
 var Member = require('../models/member');
 var multerUpload = require('../models/multer').upload;
+var logger = require('../models/winston').logger;
 var router = express.Router();
 
-
-router.get('/', function (req, res) {
-    console.log(req.session);
-    res.send({result : 'check'});
-});
 
 // 1-a 로그인 '/' post 방식 요청 처리
 router.post('/', function (req, res, next) {
@@ -19,6 +15,7 @@ router.post('/', function (req, res, next) {
 
     Member.logIn(logInInfo, function (error, results) {
         if (error) {
+            logger.Debug("1-a error");
             return res.send(error);
         }
         res.status(201).send({result : results});
@@ -36,7 +33,7 @@ router.post('/signUp', function (req, res, next) {
 
     Member.signUp(signUpInfo, function (error, results) {
         if (error) {
-            console.log("1-b signUp error : " + error);
+            logger.Debug("1-b error");
             res.status(500).send({result : error});
         }
         else {
@@ -54,7 +51,7 @@ router.get('/withdraw', function(req,res,next) {
 
     Member.withdraw(withdrawInfo, function (error, results) {
       if (error) {
-          console.log("1-c withdraw error : " + error);
+          logger.Debug("1-c error");
           return res.status(500).send({result : error});
       }
       else {
@@ -67,7 +64,7 @@ router.get('/withdraw', function(req,res,next) {
 router.get('/version', function (req, res, next) {
     Member.checkVersion(function (error, results) {
         if (error) {
-          console.log("1-d version check error : " + error);
+          logger.Debug("1-d error");
           return res.status(500).send({result : error});
         }
         else {
@@ -84,7 +81,7 @@ router.get('/verify', function (req, res, next) {
     }
     Member.verify(verifyInfo, function (error, results) {
         if (error) {
-            console.log("Connection error " + error);
+            logger.Debug("1-e error");
             return res.send(error);
         }
         else {
@@ -102,7 +99,7 @@ router.post('/uploadprofile', multerUpload.single('profile_file'), function (req
 
     Member.uploadProfile(info, function (error, results) {
         if (error) {
-            console.log("Connection error "+error);
+            logger.Debug("1-f error");
             return res.status(500).send({result : error});
         }
         else {
@@ -119,7 +116,7 @@ router.delete('/deleteprofile', function (req, res, next) {
 
     Member.deleteProfile(info, function (error, results) {
         if (error) {
-            console.log("1-g connection error");
+            logger.Debug("1-g error");
             return res.status(500).send({result : error});
         }
         else {
