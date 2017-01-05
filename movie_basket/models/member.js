@@ -1,9 +1,10 @@
 var dbPool = require('./common').dbPool;
 var jwt = require('./jwt');
+var fs = require('fs');
 var async = require('async');
 var crypto = require('crypto');
 var winston = require('./winston').logger;
-var awsInfo_config = require('../config/awsinfo_config');
+var awsinfo_config = require('../config/awsinfo_config.json');
 var server_error = {message : "internal server error"};
 
 // 암호화 함수 password 를 넣으면 암호화된 password 값을 리턴.
@@ -209,7 +210,7 @@ function uploadProfile (info, callback) {
     var server_error = {message : "internal server error"};
     dbPool.getConnection( function (error, dbConn) {
         if (error) {
-            return callback(error);
+            return callback(server_error);
         }
 
         var sendMessage = {};
@@ -246,6 +247,7 @@ function uploadProfile (info, callback) {
                     }
 
                     sendMessage = {message : "upload file success"};
+                    console.log("done upload file");
                     return done(null);
                 }
             );
@@ -261,6 +263,7 @@ function uploadProfile (info, callback) {
                         return done(server_error);
                     }
                     sendMessage.member_token = jwt.makeToken(rows[0]);
+                    console.log("done remakeToken");
                     return done(null);
                 }
             );
@@ -285,7 +288,7 @@ function deleteProfile (info, callback) {
             return callback(null, sendMessage);
         }
 
-        async.series([deleteFile, remakeToken], function (error, results) {
+        async.series([deleteFile, deleteInDB, remakeToken], function (error, results) {
             if (error) {
                 dbConn.release();
                 return callback(server_error);
@@ -293,8 +296,19 @@ function deleteProfile (info, callback) {
             dbConn.release();
             return callback(null, sendMessage);
         });
-
         function deleteFile (done) {
+            var image_url = jwt.decodeToken(info.member_token).member_image;
+            var url = './uploads/images'+image_url.substring(image_url.lastIndexOf('/'));
+            fs.unlink(url, function (error) {
+                if (error) {
+                    console.log("file remove error");
+                    return done(server_error);
+                }
+                return done(null);
+            });
+        }
+
+        function deleteInDB (done) {
             dbConn.query
             (
                 sql_delete_profile,

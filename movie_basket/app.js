@@ -21,6 +21,8 @@ var basket = require('./routes/basket');
 var mypage = require('./routes/mypage');
 
 var app = express();
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -28,35 +30,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-app.use(session({
-    secret : 'test',
-    /*
-    store : new redisStore({
-        host: "127.0.0.1",
-        port: 6379,
-        client : redisClient
-    }),*/
-    resave: false,
-    saveUninitialized : false,
-    cookie : {
-        path : '/',
-        httpOnly : true,
-        secure : false,
-        maxAge : 1000 * 60 * 60 * 24 * 30
-    }
-}));
-/*
-app.use(passport.initialize());
-app.use(passport.session());*/
-
-// app.use(express.static(path.join(__dirname, 'public')));
-// view engine setup
-
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
 //app.use('/', routes);
 app.use('/images', express.static(path.join(__dirname, 'uploads/images')));

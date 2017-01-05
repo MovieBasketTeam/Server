@@ -102,7 +102,7 @@ router.post('/uploadprofile', multerUpload.single('profile_file'), function (req
 
     Member.uploadProfile(info, function (error, results) {
         if (error) {
-            console.log("Connection error "+error);
+            console.log(error);
             return res.status(500).send({result : error});
         }
         else {

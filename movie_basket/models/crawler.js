@@ -12,8 +12,6 @@ function findContent (url, callback) {
         var contents = $(".con_tx");
         var trimmedContent = contents.text().replace(/[\r\n]/g, "");
         var actorSel = $(".step3+dd").find("p");
-        console.log(actorSel.text());
-        console.log(actorSel.text().replace(/\([^)]+\)/g, ""));
         actors = actorSel.text().replace(/\([^)]+\)/g, "");
         message.content = trimmedContent;
         message.actor = actors;

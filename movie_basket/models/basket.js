@@ -107,10 +107,8 @@ function likeBasket(basketLikeInfo, callback) {
                 else if (rows.length > 0) {
                     basketLikeMessage = {message : "basket add failed" };
                     isRepetition = true;
-                    console.log("is REpetition");
                     return done(null);
                 }
-                console.log("done checkREpitition");
                 return done(null);
                 //return done(new Error("movie add failed"));
               });
@@ -375,10 +373,8 @@ function movieAdd(movieAddInfo, callback){
                 else if (rows.length > 0) {
                     movieAddMessage = {message : "movie add failed" };
                     isRepetition = true;
-                    console.log("is REpetition");
                     return done(null);
                 }
-                console.log("done checkREpitition");
                 return done(null);
                 //return done(new Error("movie add failed"));
               });
