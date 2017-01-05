@@ -175,7 +175,7 @@ function showBasketDetail (basketDetailInfo, callback) {
         'FROM movie AS m '+
         'LEFT JOIN (SELECT m_id, u_id FROM movie_heart WHERE u_id = ?) AS mh ON(m.movie_id = mh.m_id) '+
         'LEFT JOIN (SELECT m_id, u_id FROM movie_clip WHERE u_id = ?) mc ON(m.movie_id = mc.m_id) '+
-        'WHERE basket_id = ? '
+        'WHERE basket_id = ? '+
         'ORDER BY m.movie_like DESC';
 
     dbPool.getConnection ( function (error, dbConn) {
