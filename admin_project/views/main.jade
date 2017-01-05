@@ -3,16 +3,17 @@ extends layout
 block content
     div(id = "wraper")
         header
-            img(src = "/images/logo.png")
+            a(href="#{urls}/main")
+                img(src = "/images/logo.png")
         div(id = "container")
             nav(id = "topMenu")
-                ul
-                    li( id = "firstButton") 
+                    li( class="navlist" id = "firstButton") 
                         a( href = "#{urls}/uploadBasket" target = "frame" class = "menuLink") 바스켓 추가하기
-                    li( id = "secondButton")
+                    li( class="navlist" id = "secondButton")
                         a( href = "#{urls}/basketRank" target = "frame" class = "menuLink") 바스켓 관리자 추천 순위
-                    li( id = "thirdButton")
+                    li( class="navlist" id = "thirdButton")
                         a( href = "#{urls}/todayRecommend" target = "frame" class = "menuLink") 오늘의 추천 카테고리
-                    li( id = "fourthButton")
-                        a( href = "#{urls}/category" target = "frame" class = "menuLink") 카테고리 바스켓 설정
+                    li( class="navlist" id = "fourthButton")
+                        a( href = "#{urls}/category" target = "frame" class = "menuLink") 카테고리 바스켓 설정    
             iframe(id="myframe" src="#{urls}/uploadBasket" name = "frame")
+    
