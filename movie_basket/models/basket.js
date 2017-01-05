@@ -134,6 +134,7 @@ function likeBasket(basketLikeInfo, callback) {
                             return done(new Error("fail delete"));
                         }
                         else {
+                          basketLikeMessage = {message : "like update success"};
                             return done(null);
                         }
                     }

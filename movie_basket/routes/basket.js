@@ -77,6 +77,10 @@ router.post('/movie/recommend', function(req,res,next){
         if(error){
             console.log("Connection error " + error);
             res.status(500).send({result : error});
+
+            console.log(req.body);
+            //res.send(error);
+
         }
         else {
           //console.log(movieRecommendInfo.is_liked + "fuck!!!!!!!!");
