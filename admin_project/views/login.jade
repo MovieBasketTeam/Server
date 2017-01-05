@@ -1,18 +1,20 @@
 extends layout
 
 block content
-    div(id = "loginwraper" )
-        div(id = "logincontainer")
-            table(border='0' width='350px')
-                tr
-                    td 아이디        
-                    td 
-                        input(type='text', name="basket_name", placeholder="ID") 
-                tr    
-                    td 비밀번호        
-                    td 
-                            input(type='text', name="basket_name", placeholder="Password") 
-        br
-        a(href="#{urls}")
-            input(type='submit', value="로그인", id="saveBtn")
-    
+    form(action="login" method="POST")
+        div(id = "loginwraper" )
+            div(id = "logincontainer")
+                | 아이디 
+                &nbsp &nbsp &nbsp
+                input(type='text', name="id", placeholder="ID") 
+                br
+                br
+                | 비밀번호    
+                &nbsp
+                input(type='password', name="pwd", placeholder="Password") 
+            br
+            br
+            br
+            a(href = "#{urls}")
+                input(type='submit', value="로그인", id="loginBtn")
+        

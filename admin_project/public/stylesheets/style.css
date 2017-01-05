@@ -18,19 +18,20 @@ header.img {
 }
 #wraper {
     width : 100%;
-    height : 800px;
+    height : 100%;
     background-color : white;
 }
 #loginwraper{
-    width: 100%;
-    height: 100%;
     text-align: center;
-    background-image: url(/images/main.jpg);
+    height : 800px;
+    background-image: url(/images/movie.jpg);
     background-size: contain;
 }
 #logincontainer{
     display: inline-block;
-    padding-top: 15%;
+    padding-top: 20%;
+    text-align: center;
+    color: white;
 }
 
 header {
@@ -52,7 +53,10 @@ header {
     height : 90%;
     background-color : white;
 }
+.navlist{
+    list-style:none;
 
+}
 
 #topMenu .menuLink {
     text-decoration:none;
@@ -100,7 +104,16 @@ iframe {
     color : #999;
     cursor : text;
 }
-
+.textboxLogin input[type="text"]{
+    width : 80%;
+    height : auto;
+    line-height: normal;
+    padding : 10px 5px;
+    font-family: inherit;
+    border : 1px solid #999;
+    border-radius: 3px;
+    outline-style: none;
+}
 .textbox input[type="text"] {
     width : 40%;
     height : auto;
@@ -111,7 +124,20 @@ iframe {
     border-radius: 3px;
     outline-style: none;
 }
-
+#loginBtn {
+     display: inline-block;
+     padding : 7px 30px 7px 30px;
+     color: #828282;
+     font-size: inherit;
+     line-height: normal;
+     vertical-align: middle;
+     background-color: #fdfdfd;
+     cursor: pointer;
+     border: 1px solid #cbcbcb;
+     border-bottom-color: #e2e2e2;
+     border-radius: .25em;
+     background-color : white;
+}
 .textbox #tableinput {
     width : 100%;
     height : auto;
