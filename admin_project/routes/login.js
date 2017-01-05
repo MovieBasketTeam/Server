@@ -5,6 +5,7 @@ var db_config = require('../config/db_config.json');
 var awsinfo_config = require('../config/awsinfo_config.json');
 var url = awsinfo_config.url;
 var Member = require('../models/login');
+
 router.get('/', function (req, res, next) {
     res.render('login', { urls : url });
 });
@@ -21,7 +22,8 @@ router.post('/', function (req, res, next) {
             return res.send(error);
         }
         else if (results.message == 'check information') {
-            res.status(201).render('login', {urls :url});
+            // res.status(201).render('login', {urls :url});
+            res.redirect('login');
         }
         else {
             if (results.member_info) {

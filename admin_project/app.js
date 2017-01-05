@@ -46,7 +46,7 @@ app.use('/users', users);
 app.use('/basketRank', basketRank);
 app.use('/category', category);
 app.use('/todayRecommend', todayRecommend);
-app.use('/', main);
+app.use('/main', main);
 app.use('/login',login);
 
 
