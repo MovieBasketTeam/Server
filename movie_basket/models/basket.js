@@ -27,7 +27,7 @@ function showBaksets (basketInfo, callback) {
     var current_sql = sql_basket_shows[basketInfo.sort - 1];
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
-            logger.Debug("In function showBaskets, Get Connection Error");
+            logger.debug("In function showBaskets, Get Connection Error");
             return callback(error);
         }
 
@@ -38,7 +38,6 @@ function showBaksets (basketInfo, callback) {
             dbConn.release();
             return callback(null, showMessage);
         }
-
         var decodedToken = jwt.decodeToken(basketInfo.member_token);
         dbConn.query(current_sql, [decodedToken.member_id], function (error, rows) {
             if (error) {
@@ -71,7 +70,7 @@ function likeBasket(basketLikeInfo, callback) {
     dbPool.getConnection(function(error,dbConn) {
         if(error) {
             dbConn.release();
-            logger.Debug("In function likeBasket, Get Connection Error");
+            logger.debug("In function likeBasket, Get Connection Error");
             return callback({message : "like update failed"});
         }
 
@@ -188,7 +187,7 @@ function showBasketDetail (info, callback) {
 
     dbPool.getConnection ( function (error, dbConn) {
         if (error) {
-            logger.Debug("In function showBasketDetail, Get Connection Error");
+            logger.debug("In function showBasketDetail, Get Connection Error");
             return callback(error);
         }
 
@@ -235,14 +234,14 @@ function movieRecommend (info, callback) {
 
     dbPool.getConnection (function (error,dbConn) {
         if (error) {
-            logger.Debug("In function movieRecommend, Get Connection Error");
+            logger.debug("In function movieRecommend, Get Connection Error");
             return callback(error);
         }
 
         var movieRecommendMessage = {};
         if (info.member_token == '') {
             dbConn.release();
-            logger.Debug("In function movieRecommend, token is none, member is not logined");
+            logger.debug("In function movieRecommend, token is none, member is not logined");
             movieRecommendMessage = { message : "is not logined"};
             return callback(null, movieRecommendMessage);
         }
@@ -467,7 +466,7 @@ function movieAdd(info, callback){
                 }
                 dbConn.query(
                     sql_my_movie_add,
-                    [movieId, jwt.decodeToken(movieAddInfo.member_token).member_id],
+                    [movieId, decodedToken.member_id],
                     function (error, rows) {
                         if (error) {
                             logger.debug("In function movieAdd - updateMyMovieLike, query error : "+sql_my_movie_add);

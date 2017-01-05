@@ -1,4 +1,5 @@
 var dbPool = require('./common').dbPool;
+var logger = require('./winston').logger;
 var jwt = require('./jwt');
 var async = require('async');
 var _ = require('underscore');
@@ -11,12 +12,14 @@ function category (callback) {
     var sql_category = 'SELECT c_id, small_category, big_category FROM category';
     dbPool.getConnection(function(error,dbConn){
         if(error){
+            logger.debug("In function category, Get Connection Error");
             return callback(error);
         }
         var categoryMessage = {};
 
         dbConn.beginTransaction (function (error) {
             if (error) {
+                logger.debug("In function category, Begin Transaction Error");
                 dbConn.release();
                 return callback(error);
             }
@@ -30,6 +33,7 @@ function category (callback) {
                 }
                 dbConn.commit(function () {
                     dbConn.release();
+                    logger.debug("Category show success.");
                     callback(null, categoryMessage);
                 });
             });
@@ -37,6 +41,7 @@ function category (callback) {
             function categoryTodayRecommend(done){
                 dbConn.query(sql_category_todayRecommend, function(err,rows){
                     if(error){
+                        logger.debug("In function category - categoryTodayRecommend, query error : "+sql_category_todayRecommend);
                         return done(error);
                     }
                     else{
@@ -49,6 +54,7 @@ function category (callback) {
             function categoryAll(done){
                 dbConn.query(sql_category, function(err, rows){
                     if (error) {
+                        logger.debug("In function category - categoryTodayRecommend, query error : "+sql_category);
                         return done(error);
                     }
                     else {
@@ -74,22 +80,23 @@ function detailCategory (searchInfo, callback) {
     'FROM basket AS b LEFT JOIN (SELECT b_id, u_id FROM basket_heart WHERE u_id = ?) AS bh ON (b.basket_id = bh.b_id) '+
   	'JOIN (SELECT c_id, b_id FROM categoryKey WHERE c_id = ?) AS ck ON (b.basket_id = ck.b_id)';
 
-    dbPool.getConnection(function(error,dbConn){
-
+    dbPool.getConnection(function(error,dbConn) {
         if(error){
+            logger.debug("In function detailCategory, Get Connection Error");
             return callback(error);
         }
 
         var showMessage = {};
-
         if (searchInfo.member_token == '') {
             dbConn.release();
+            logger.debug("In function detailCategory, token is none, member is not logined");
             showMessage = {message : "is not logined"};
             return callback(null, showMessage);
         }
 
         dbConn.beginTransaction (function (error) {
             if (error) {
+                logger.debug("In function detailCategory, Begin Transaction Error");
                 dbConn.release();
                 return callback(error);
             }
@@ -102,6 +109,7 @@ function detailCategory (searchInfo, callback) {
                 }
                 dbConn.commit(function () {
                     dbConn.release();
+                    logger.debug("Showing Detail Basket success. category id : "+searchInfo.c_id);
                     showMessage = { baskets : rows};
                     return callback(null, showMessage);
                 });

@@ -1,12 +1,13 @@
 var express = require('express');
 var Search = require('../models/search');
+var logger = require('../models/winston').logger;
 var router = express.Router();
 
 
 router.get('/', function (req, res, next) {
     Search.category(function (error, results) {
         if (error) {
-            console.log("Connection error " + error);
+            logger.debug("3-a error");
             res.send(error);
         }
         else {
@@ -25,7 +26,7 @@ router.get('/:c_id', function (req, res, next) {
 
     Search.detailCategory(searchInfo, function (error, results) {
         if (error) {
-            console.log("Connection error " + error);
+            logger.debug("3-b error");
             res.send(error);
         }
         else {

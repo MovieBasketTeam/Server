@@ -1,7 +1,7 @@
 var express = require('express');
 var Basket = require('../models/basket');
 var router = express.Router();
-var logger = require('../models/winston');
+var logger = require('../models/winston').logger;
 
 // basket 목록을 보여주는 get 요청 처리
 // query params에 sort 정보를 전달해준다.
@@ -15,7 +15,7 @@ router.get('/', function (req, res, next) {
 
     Basket.showBaksets(basketInfo, function (error, results) {
         if (error) {
-            logger.Debug("2-a error");
+            logger.debug("2-a error");
             return res.send(error);
         }
         else {
@@ -34,7 +34,7 @@ router.post('/like', function (req, res, next) {
     }
     Basket.likeBasket(basketLikeInfo, function (error, results) {
         if (error) {
-            logger.Debug("2-b error");
+            logger.debug("2-b error");
             res.status(500).send({result : error});
         }
         else {
@@ -54,7 +54,7 @@ router.get('/detail/:basket_id', function (req, res, next) {
 
     Basket.showBasketDetail(basketDetailInfo, function (error, results) {
         if (error) {
-            logger.Debug("2-c error");
+            logger.debug("2-c error");
             res.status(500).send({result : error});
         }
         else {
@@ -73,7 +73,7 @@ router.post('/movie/recommend', function(req,res,next){
     }
     Basket.movieRecommend(movieRecommendInfo, function(error, results){
         if(error){
-            logger.Debug("2-d error");
+            logger.debug("2-d error");
             res.status(500).send({result : error});
         }
         else {
@@ -94,7 +94,7 @@ router.post('/movie/cart', function(req,res,next){
 
     Basket.movieCart(movieCartInfo, function(error, results){
         if(error){
-            logger.Debug("2-e error");
+            logger.debug("2-e error");
             res.send(error);
         }
         else {
@@ -117,7 +117,7 @@ router.post('/movie/add', function(req,res,next){
     }
     Basket.movieAdd(movieAddInfo, function(error, results){
         if(error){
-            logger.Debug("2-f error");
+            logger.debug("2-f error");
             res.status(500).send({result : error});
         }
         else {
@@ -134,7 +134,7 @@ router.get('/movie/detail/:id', function (req, res, next) {
 
     Basket.getMovieInfo(info, function (error, results) {
         if (error) {
-            logger.Debug("2-g error");
+            logger.debug("2-g error");
             res.status(500).send({result : error});
         }
         else {

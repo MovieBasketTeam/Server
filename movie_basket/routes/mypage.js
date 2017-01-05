@@ -1,5 +1,6 @@
 var express = require('express');
 var Mypage = require('../models/mypage');
+var logger = require('../models/winston');
 var router = express.Router();
 
 // 4-a.마이페이지 메인
@@ -12,24 +13,13 @@ router.get('/', function(req, res, next) {
 
     Mypage.basicMypage(mypageInfo, function(error, results){
       if (error) {
-          console.log("Connection error " + error);
+          logger.debug("4-a error");
+          res.status(500).send({result : error});
       }
       else{
-        console.log("in here");
         res.status(201).send({result : results});
       }
     });
-  /*
-  Mypage.showMypages(mypageInfo, function (error, results) {
-    if(error) {
-      console.log("Connection error " + error);
-      res.send(error);
-    }
-    else {
-      res.status(201).send({result : results});
-    }
-  });
-  */
 });
 
 // 4-b. 담은 바스켓 조회
@@ -39,9 +29,10 @@ router.get('/basket', function(req, res, next) {
           member_token : req.headers.member_token
     };
 
-    Mypage.movieBasket(mypageInfo, function(error, results) {
+    Mypage.showMyBasket(mypageInfo, function(error, results) {
         if(error) {
-            console.log("Connection error " + error);
+            logger.debug("4-b error");
+            res.status(500).send({result : error});
         }
         else {
             res.status(201).send({result : results});
@@ -51,18 +42,19 @@ router.get('/basket', function(req, res, next) {
 
 // 4-c.담은 영화
 router.get('/movie/cart', function(req, res, next) {
-  var mypageInfo = {
-      member_token : req.headers.member_token
-  }
+    var mypageInfo = {
+        member_token : req.headers.member_token
+    }
 
-  Mypage.movieCart(mypageInfo, function(error, results) {
-    if(error) {
-      console.log("Connection error " + error);
-    }
-    else {
-      res.status(201).send({result : results});
-    }
-  });
+    Mypage.showCartedMovie(mypageInfo, function(error, results) {
+        if(error) {
+            logger.debug("4-c error");
+            res.status(500).send({result : error});
+        }
+        else {
+            res.status(201).send({result : results});
+        }
+    });
 });
 
 // 4-d. 추천한 영화
@@ -71,9 +63,10 @@ router.get('/movie/recommend', function(req, res, next) {
           member_token : req.headers.member_token
     }
 
-    Mypage.movieRecommend(mypageInfo, function(error, results) {
+    Mypage.showRecommendedMovie(mypageInfo, function(error, results) {
         if(error) {
-            console.log("Connection error " + error);
+            logger.debug("4-d error");
+            res.status(500).send({result : error});
         }
         else {
             res.status(201).send({result : results});
@@ -89,12 +82,13 @@ router.get('/setting', function (req, res, next) {
     }
 
     Mypage.settingMypage(settingInfo, function(error, results){
-      if (error) {
-          console.log("Connection error " + error);
-      }
-      else{
-        res.status(201).send({result : results});
-      }
+        if (error) {
+            logger.debug("4-e error");
+            res.status(500).send({result : error});
+        }
+        else{
+            res.status(201).send({result : results});
+        }
     });
 });
 
@@ -107,11 +101,11 @@ router.post('/movie/cart/delete', function(req,res,next){
         member_token : req.headers.member_token
     }
 
-    Mypage.movieDelete(movieDeleteInfo, function(error, results){
+    Mypage.deleteMyMovie(movieDeleteInfo, function(error, results){
 
       if (error) {
-          console.log("Connection error " + error);
-          res.send(error);
+            logger.debug("4-f error");
+            res.status(500).send({result : error});
       }
       else {
            res.status(201).send({result : results});
@@ -121,6 +115,7 @@ router.post('/movie/cart/delete', function(req,res,next){
 });
 
 
+//4-g 담은 바스켓 빼기
 router.post('/basket/delete', function (req, res, next) {
     var basketInfo = {
         basket_id : req.body.basket_id,
@@ -129,13 +124,8 @@ router.post('/basket/delete', function (req, res, next) {
 
     Mypage.deleteBasket(basketInfo, function (error, results) {
         if (error) {
-
-            console.log("Connection error " + error);
-            console.log(req.body);
-            res.status(500).send({result : {
-                message : "delete failed"
-            }
-          });
+            logger.debug("4-f error");
+            res.status(500).send({result : error});
         }
         else {
             res.status(201).send({result : results});
