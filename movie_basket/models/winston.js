@@ -31,7 +31,7 @@ var errLogger = new (winston.Logger) ({
 });
 var logger = new (winston.Logger) ({
     levels : {
-        debug : 1
+        debug : 5
     },
     colors: {
         debug : 'blue'

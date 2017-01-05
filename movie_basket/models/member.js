@@ -350,7 +350,7 @@ function deleteProfile (info, callback) {
                         return done(server_error);
                     }
 
-                    sendMessage = {message : "delete file success"};
+                    sendMessage = {message : "delete profile success"};
                     return done(null);
                 }
             );
@@ -363,7 +363,7 @@ function deleteProfile (info, callback) {
                 [jwt.decodeToken(info.member_token).member_id],
                 function (error, rows) {
                     if (error) {
-                        logger.debug("In function deleteProfile - deleteInDB, query error : "+sql_member_info);
+                        logger.debug("In function deleteProfile - remakeToken, query error : "+sql_member_info);
                         return done(server_error);
                     }
                     sendMessage.member_token = jwt.makeToken(rows[0]);

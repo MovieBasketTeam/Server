@@ -15,7 +15,7 @@ router.post('/', function (req, res, next) {
 
     Member.logIn(logInInfo, function (error, results) {
         if (error) {
-            logger.Debug("1-a error");
+            logger.debug("1-a error");
             return res.send(error);
         }
         res.status(201).send({result : results});
@@ -33,7 +33,7 @@ router.post('/signUp', function (req, res, next) {
 
     Member.signUp(signUpInfo, function (error, results) {
         if (error) {
-            logger.Debug("1-b error");
+            logger.debug("1-b error");
             res.status(500).send({result : error});
         }
         else {
@@ -51,7 +51,7 @@ router.get('/withdraw', function(req,res,next) {
 
     Member.withdraw(withdrawInfo, function (error, results) {
       if (error) {
-          logger.Debug("1-c error");
+          logger.debug("1-c error");
           return res.status(500).send({result : error});
       }
       else {
@@ -64,7 +64,7 @@ router.get('/withdraw', function(req,res,next) {
 router.get('/version', function (req, res, next) {
     Member.checkVersion(function (error, results) {
         if (error) {
-          logger.Debug("1-d error");
+          logger.debug("1-d error");
           return res.status(500).send({result : error});
         }
         else {
@@ -81,7 +81,7 @@ router.get('/verify', function (req, res, next) {
     }
     Member.verify(verifyInfo, function (error, results) {
         if (error) {
-            logger.Debug("1-e error");
+            logger.debug("1-e error");
             return res.send(error);
         }
         else {
@@ -99,7 +99,7 @@ router.post('/uploadprofile', multerUpload.single('profile_file'), function (req
 
     Member.uploadProfile(info, function (error, results) {
         if (error) {
-            logger.Debug("1-f error");
+            logger.debug("1-f error");
             return res.status(500).send({result : error});
         }
         else {
@@ -116,7 +116,7 @@ router.delete('/deleteprofile', function (req, res, next) {
 
     Member.deleteProfile(info, function (error, results) {
         if (error) {
-            logger.Debug("1-g error");
+            logger.debug("1-g error");
             return res.status(500).send({result : error});
         }
         else {
