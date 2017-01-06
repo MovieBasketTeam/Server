@@ -111,7 +111,7 @@ function likeBasket(basketLikeInfo, callback) {
                     return done(error);
                 }
                 else if (rows.length > 0) {
-                    logger.debug("In function showBaskets - checkBasketRepitition, repetition checked");
+                    logger.debug("In function likeBasket - checkBasketRepitition, repetition checked");
                     basketLikeMessage = {message : "like update failed" };
                     isRepetition = true;
                     return done(null);
@@ -263,11 +263,11 @@ function movieRecommend (info, callback) {
                 [info.movie_id, jwt.decodeToken(info.member_token).member_id],
                 function (error, rows) {
                     if (error) {
-                        logger.debug("In function movieRecommend - updateMyMovieRecommend, query error : "+sql_update_my_movie_recommend[info.is_liked]);
+                        logger.debug("In function movieRecommend - updateMyMovieRecommend, query error : "+sql_update_my_movie_recommend[info.is_liked]+" movie id : "+info.movie_id);
                         return done({message : "fail delete"});
                     }
                     else if (rows.affectedRows == 0) {
-                        logger.debug("In function movieRecommend - updateMyMovieRecommend, query error : delete failed");
+                        logger.debug("In function movieRecommend - updateMyMovieRecommend, query error : delete failed "+" movie id : "+info.movie_id);
                         return done({message : "fail delete"});
                     }
                     else {
@@ -320,12 +320,12 @@ function movieCart(info, callback){
             [info.movie_id, decodedToken.member_id],
             function (error, rows) {
                 if (error) {
-                    logger.debug("In function movieCart, query error : "+sql_update_my_movie_cart[info.is_carted]);
+                    logger.debug("In function movieCart, query error : "+sql_update_my_movie_cart[info.is_carted] +" movie id : "+info.movie_id);
                     dbConn.release();
                     return callback(error);
                 }
                 else if (rows.affectedRows == 0) {
-                    logger.debug("In function movieCart, query error : delete failed");
+                    logger.debug("In function movieCart, query error : delete failed "+" movie id : "+info.movie_id);
                     dbConn.release();
                     return done(server_error);
                 }
