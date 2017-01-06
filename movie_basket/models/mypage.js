@@ -17,7 +17,7 @@ function basicMypage (mypageInfo, callback) {
     var decodedToken = jwt.decodeToken(mypageInfo.member_token);
     showMessage = {
         member_name : decodedToken.member_name
-    }
+    };
 
     logger.debug("show my page success. member id : "+decodedToken.member_id+" member name : "+decodedToken.member_name);
     return callback(null, showMessage);
@@ -31,11 +31,10 @@ function showMyBasket(mypageInfo, callback) {
     '(CASE WHEN u_id IS NULL THEN 0 ELSE 1 END) AS is_liked ' +
     'FROM basket b JOIN basket_heart bh ON (b.basket_id = bh.b_id) ' +
     'JOIN member m ON (bh.u_id = m.member_id) ' +
-    'WHERE m.member_id = ? ';
+    'WHERE m.member_id = ?';
     //is_liked 수정
 
     dbPool.getConnection (function(error, dbConn) {
-
         if(error) {
             logger.debug("In function movieBasket , Get Connection Error");
             return callback(server_error);
@@ -68,7 +67,7 @@ function showMyBasket(mypageInfo, callback) {
                     dbConn.release();
                     logger.debug("Showing my basket list success. member email : "+decodedToken.member_email);
                     showMessage = { baskets : rows }
-                    return callback(null, showMessage);
+                    callback(null, showMessage);
                 });
             });
         });
@@ -109,14 +108,14 @@ function showCartedMovie(mypageInfo, callback) {
                     return dbConn.rollback(function () {
                         logger.debug("In function showCartedMovie, query error : "+sql_movieCart);
                         dbConn.release();
-                        return callback(error);
+                        callback(error);
                     });
                 }
                 dbConn.commit(function () {
                     dbConn.release();
                     showMessage = { result : Common.refineMovieRating(rows) }
                     logger.debug("Showing carted movie list success. member id : "+decodedToken.member_id);
-                    return callback(null, showMessage);
+                    callback(null, showMessage);
                 });
             });
         });
@@ -165,7 +164,7 @@ function showRecommendedMovie(mypageInfo, callback) {
                     dbConn.release();
                     logger.debug("Showing recommended movie list success. member id : "+member_id);
                     showMessage = { result : Common.refineMovieRating(rows) }
-                    return callback(null, showMessage);
+                    callback(null, showMessage);
                 });
             });
         });
@@ -223,6 +222,7 @@ function deleteMyMovie(movieDeleteInfo, callback){
                     return callback(error);
                 }
                 else if (rows.affectedRows == 0) {
+                    dbConn.release();
                     logger.debug("In function deleteMyMovie, delete failed");
                     return callback({message : "fail delete"});
                 }

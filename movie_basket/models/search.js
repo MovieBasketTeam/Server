@@ -111,7 +111,7 @@ function detailCategory (searchInfo, callback) {
                     dbConn.release();
                     logger.debug("Showing Detail Basket success. category id : "+searchInfo.c_id);
                     showMessage = { baskets : rows};
-                    return callback(null, showMessage);
+                    callback(null, showMessage);
                 });
             });
         });

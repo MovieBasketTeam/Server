@@ -94,13 +94,13 @@ function likeBasket(basketLikeInfo, callback) {
                 if (error) {
                     return dbConn.rollback(function () {
                         dbConn.release();
-                        return callback({message : "like update failed"});
+                        callback({message : "like update failed"});
                     });
                 }
                 dbConn.commit(function () {
                     dbConn.release();
                     logger.debug("In function likeBasket, like update success member email : "+decodedToken.member_email+" basket id : "+basketLikeInfo.basket_id);
-                    return callback(null, basketLikeMessage);
+                    callback(null, basketLikeMessage);
                 });
             });
 
@@ -322,12 +322,12 @@ function movieCart(info, callback){
                 if (error) {
                     logger.debug("In function movieCart, query error : "+sql_update_my_movie_cart[info.is_carted] +" movie id : "+info.movie_id);
                     dbConn.release();
-                    return callback(error);
+                    return callback(server_error);
                 }
                 else if (rows.affectedRows == 0) {
                     logger.debug("In function movieCart, query error : delete failed "+" movie id : "+info.movie_id);
                     dbConn.release();
-                    return done(server_error);
+                    return callback(server_error);
                 }
                 else {
                     dbConn.release();
@@ -377,13 +377,13 @@ function movieAdd(info, callback){
                 if (error) {
                     return dbConn.rollback(function () {
                         dbConn.release();
-                        return callback(error);
+                        callback(error);
                     });
                 }
                 dbConn.commit(function () {
                     dbConn.release();
                     logger.debug("Movie add success. member email : "+decodedToken.member_email+" basket id : "+info.basket_id+" movie title : "+info.movie_title);
-                    return callback(null, movieAddMessage);
+                    callback(null, movieAddMessage);
                 });
             });
 
