@@ -1,0 +1,51 @@
+extends layout
+block content
+    div(id="content")
+        div(id="content_title") 
+            | 바스켓의 랭킹을 정해주세요
+            p
+        div(id="content_body")
+            br
+            table(border='1')
+                thead
+                    tr
+                        th 바스켓 이름
+                        th(id="rankcell") 랭크
+                        tbody
+                        -var index=0
+                        each basket in baskets
+                            - index++
+                            tr(id=('id_'+index))
+                                td  #{basket.basket_name}
+                                td(id="rankcell")  
+                                    div(class='textbox')
+                                        input(type='text', name="basket_rank" ,value = '#{basket.basket_rank}', id="tableinput" )
+            div(class='buttonbox' style="padding-left : 20px")
+                input(type='submit', id="saveBtn", value="수정")
+         
+    script.
+        $(function() {
+            var length = #{baskets.length};
+            $("#saveBtn").click(function() {
+                var ranks = [];
+                for (var i = 1 ; i <= length ; i++) {
+                    var id = '#id_'+i;
+                    ranks.push($(id).find("td:eq(1)").find("input").val());
+                }
+                
+                $.ajax({
+                    url: "#{urls}/basketRank", 
+                    type: "POST",
+                    dataType: "json",
+                    data: { rank : ranks},
+                    success: function (data) {
+                        alert(data.result);
+                    },
+                    error: function(data){
+                        alert("code:"+data.status+"\n");
+                    }
+                });
+            });
+        });
+
+  
