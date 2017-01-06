@@ -1,0 +1,310 @@
+body {
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-position: center;
+    margin: 0px;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+
+ul li{
+    display: inline;
+}
+
+header.img {
+    position : relative;
+}
+#wraper {
+    width : 100%;
+    height : 100%;
+    background-color : white;
+}
+#loginwraper{
+    text-align: center;
+    height : 800px;
+    background-image: url(/images/movie.jpg);
+    background-size: contain;
+}
+#logincontainer{
+    display: inline-block;
+    padding-top: 20%;
+    text-align: center;
+    color: white;
+}
+
+header {
+    display: block;
+    text-align : center;
+    color : white;
+    background-color : white;
+    height : 15%;
+    align-items : center;
+    vertical-align: middle;
+    padding-top : 20px;
+    padding-bottom : 20px;
+    width: 100%;
+    margin : 0px;
+}
+
+#container {
+    width : 100%;
+    height : 90%;
+    background-color : white;
+}
+.navlist{
+    list-style:none;
+
+}
+
+#topMenu .menuLink {
+    text-decoration:none;
+    color: white;
+    width: 25%;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #b78553;
+    float: left;
+    line-height: 50px;
+    text-align: center;
+ }
+
+#topMenu .menuLink:hover {
+     background-color: white;
+     color : #b78553;
+ }
+
+iframe {
+    width : 100%;
+    height : 100%;
+    border-width : 0px 0px 0px 0px;
+    padding: 70px;
+}
+
+#content_title {
+    display : block;
+    font-size : 24px;
+    height : 15%;
+    position : relative;
+    top : 10px;
+    border-width : 0px 0px 1px 0px;
+    border-bottom-style: solid;
+    border-bottom-color : #b78553;
+}
+
+.textbox {
+    position : relative;
+}
+
+.textbox label {
+    top : 1px;
+    left : 1px;
+    padding : 10px 5px;
+    color : #999;
+    cursor : text;
+}
+.textboxLogin input[type="text"]{
+    width : 80%;
+    height : auto;
+    line-height: normal;
+    padding : 10px 5px;
+    font-family: inherit;
+    border : 1px solid #999;
+    border-radius: 3px;
+    outline-style: none;
+}
+.textbox input[type="text"] {
+    width : 40%;
+    height : auto;
+    line-height: normal;
+    padding : 10px 5px;
+    font-family: inherit;
+    border : 1px solid #999;
+    border-radius: 3px;
+    outline-style: none;
+}
+#loginBtn {
+     display: inline-block;
+     padding : 7px 30px 7px 30px;
+     color: #828282;
+     font-size: inherit;
+     line-height: normal;
+     vertical-align: middle;
+     background-color: #fdfdfd;
+     cursor: pointer;
+     border: 1px solid #cbcbcb;
+     border-bottom-color: #e2e2e2;
+     border-radius: .25em;
+     background-color : white;
+}
+.textbox #tableinput {
+    width : 100%;
+    height : auto;
+    line-height: normal;
+    padding : 5px 2px;
+    font-family: inherit;
+    border : 1px solid #999;
+    border-radius: 3px;
+    outline-style: none;
+    text-align: center;
+}
+
+.filebox label {
+     display: inline-block;
+     padding: .25em .5em;
+     color: #828282;
+     font-size: inherit;
+     line-height: normal;
+     vertical-align: middle;
+     background-color: #fdfdfd;
+     cursor: pointer;
+     border: 1px solid #cbcbcb;
+     border-bottom-color: #e2e2e2;
+     border-radius: .25em;
+     background-color : white;
+}
+
+.filebox .upload-name {
+    display: inline-block;
+    padding : .25em .5em;
+    color : #828282;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    background-color: #f5f5f5;
+    border: 1px solid #ebebeb;
+    border-bottom-color: #e2e2e2;
+    border-radius: .25em;
+    -webkit-appearance: none; /* 네이티브 외형 감추기 */
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.filebox input[type="file"] {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip:rect(0,0,0,0);
+    border: 0;
+}
+
+.buttonbox label {
+     display: inline-block;
+     padding: .5em .75em;
+     color: #828282;
+     font-size: inherit;
+     line-height: normal;
+     vertical-align: middle;
+     background-color: #fdfdfd;
+     cursor: pointer;
+     border: 1px solid #cbcbcb;
+     border-bottom-color: #e2e2e2;
+     border-radius: .25em;
+     background-color : white;
+}
+
+.buttonbox #saveBtn {
+     display: inline-block;
+     padding : 7px 30px 7px 30px;
+     color: #828282;
+     font-size: inherit;
+     line-height: normal;
+     vertical-align: middle;
+     background-color: #fdfdfd;
+     cursor: pointer;
+     border: 1px solid #cbcbcb;
+     border-bottom-color: #e2e2e2;
+     border-radius: .25em;
+     background-color : white;
+}
+
+table {
+    border-collapse: seperate;
+    border-spacing: 1px;
+    text-align: left;
+    line-height: 1.5;
+    border-top: 1px solid #ccc;
+    margin : 20px 10px;
+    outline : 0;
+    border : 0;
+}
+
+table th {
+    width: 150px;
+    padding: 10px;
+    font-weight: bold;
+    vertical-align: top;
+    border-bottom: 1px solid #ccc;
+    background: #efefef;
+    text-align : center;
+}
+
+table td {
+    width: 350px;
+    padding: 10px;
+    vertical-align: top;
+    border-bottom: 1px solid #ccc;
+}
+
+table  #rankcell {
+    width: 50px;
+    padding: 10px;
+    vertical-align: top;
+    border-bottom: 1px solid #ccc;
+}
+
+.checks {
+    display : inline;
+    position : relative;
+    width : 20%;
+    padding: 10px;
+}
+
+.checks input[type="checkbox"] {
+    width : 1px;
+    height : 1px;
+    padding : 0;
+    margin : -1px;
+    overflow : hidden;
+    clip:rect(0,0,0,0);
+    border : 0;
+}
+
+.checks input[type="checkbox"] + label {
+    display : inline-block;
+    position : relative;
+    cursor : pointer;
+}
+
+.checks input[type="checkbox"] + label:before {
+    content: '';
+    display : inline-block;
+    width : 21px;
+    height : 21px;
+    line-height: 21px;
+    margin: -2px 8px 0 0;
+    text-align: center;
+    vertical-align: middle;
+    background: #fafafa;
+    border: 1px solid #cacece;
+    border-radius: 3px;
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+}
+
+.checks input[type="checkbox"] + label:active:before,
+.checks input[type="checkbox"]:checked + label:active:before {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.05);
+}
+
+.checks input[type="checkbox"]:checked + label:before {
+    content: '\2714';
+    color: #99a1a7;
+    text-shadow: 1px 1px #fff;
+    background : #e9ecee;
+    border-color: #adb8c0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+}

@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    div(id = "wraper")
+        header
+            a(href="#{urls}/main")
+                img(src = "/images/logo.png")
+        div(id = "container")
+            nav(id = "topMenu")
+                    li( class="navlist" id = "firstButton") 
+                        a( href = "#{urls}/uploadBasket" target = "frame" class = "menuLink") 바스켓 추가하기
+                    li( class="navlist" id = "secondButton")
+                        a( href = "#{urls}/basketRank" target = "frame" class = "menuLink") 바스켓 관리자 추천 순위
+                    li( class="navlist" id = "thirdButton")
+                        a( href = "#{urls}/todayRecommend" target = "frame" class = "menuLink") 오늘의 추천 카테고리
+                    li( class="navlist" id = "fourthButton")
+                        a( href = "#{urls}/category" target = "frame" class = "menuLink") 카테고리 바스켓 설정    
+            iframe(id="myframe" src="#{urls}/uploadBasket" name = "frame")
+    
